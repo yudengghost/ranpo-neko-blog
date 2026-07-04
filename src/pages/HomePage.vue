@@ -40,8 +40,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="home-page">
-    <!-- Hero Section -->
+  <div>
+    <!-- Hero outside container for full-width background -->
     <section class="hero">
       <div class="hero-bg"></div>
       <div class="hero-overlay"></div>
@@ -56,33 +56,29 @@ onMounted(() => {
       </div>
     </section>
 
-    <!-- Articles Section -->
-    <section class="articles-section" ref="featuredRef">
-      <div class="section-header">
-        <h2 class="section-title">Featured</h2>
-        <div class="section-line"></div>
-      </div>
+    <!-- Content container -->
+    <div class="home-page">
+      <section class="articles-section" ref="featuredRef">
+        <div class="section-header">
+          <h2 class="section-title">Featured</h2>
+          <div class="section-line"></div>
+        </div>
 
-      <div v-if="articles.length > 0" class="articles-list">
-        <ArticleCard v-for="article in articles" :key="article.slug" :article="article" />
-      </div>
+        <div v-if="articles.length > 0" class="articles-list">
+          <ArticleCard v-for="article in articles" :key="article.slug" :article="article" />
+        </div>
 
-      <div v-else class="articles-empty">
-        <p class="empty-text">Coming soon...</p>
-        <p class="empty-sub">Add articles to the <code>src/articles/home/</code> folder.</p>
-      </div>
-    </section>
+        <div v-else class="articles-empty">
+          <p class="empty-text">Coming soon...</p>
+          <p class="empty-sub">Add articles to the <code>src/articles/home/</code> folder.</p>
+        </div>
+      </section>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.home-page {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
-}
-
-/* ===== Hero ===== */
+/* ===== Hero (full viewport width) ===== */
 .hero {
   position: relative;
   min-height: calc(100vh - 64px);
@@ -100,6 +96,20 @@ onMounted(() => {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    black 15%,
+    black 85%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    black 15%,
+    black 85%,
+    transparent 100%
+  );
 }
 
 .hero-overlay {
@@ -107,8 +117,8 @@ onMounted(() => {
   inset: 0;
   background: linear-gradient(
     180deg,
-    color-mix(in srgb, var(--color-bg) 30%, transparent) 0%,
-    color-mix(in srgb, var(--color-bg) 60%, transparent) 50%,
+    color-mix(in srgb, var(--color-bg) 20%, transparent) 0%,
+    color-mix(in srgb, var(--color-bg) 50%, transparent) 50%,
     var(--color-bg) 100%
   );
   transition: background 0.6s ease;
@@ -118,6 +128,7 @@ onMounted(() => {
   position: relative;
   z-index: 2;
   max-width: 700px;
+  padding: 0 24px;
 }
 
 .hero-title {
@@ -180,7 +191,13 @@ onMounted(() => {
   color: var(--color-textMuted);
 }
 
-/* ===== Articles Section ===== */
+/* ===== Content Container ===== */
+.home-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
 .articles-section {
   padding: 40px 0 100px;
 }
