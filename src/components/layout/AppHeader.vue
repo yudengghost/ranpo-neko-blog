@@ -397,8 +397,7 @@ onUnmounted(() => {
 .dropdown-panel {
   position: absolute;
   top: calc(100% + 12px);
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 12px;
@@ -514,8 +513,9 @@ onUnmounted(() => {
   }
 
   .dropdown-panel {
-    left: 0;
-    transform: none;
+    left: auto;
+    right: 0;
+    top: 0;
   }
 }
 </style>
