@@ -1,86 +1,208 @@
-/* color palette from <https://github.com/vuejs/theme> */
-:root {
-  --vt-c-white: #ffffff;
-  --vt-c-white-soft: #f8f8f8;
-  --vt-c-white-mute: #f2f2f2;
-
-  --vt-c-black: #181818;
-  --vt-c-black-soft: #222222;
-  --vt-c-black-mute: #282828;
-
-  --vt-c-indigo: #2c3e50;
-
-  --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
-  --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
-  --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
-  --vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
-
-  --vt-c-text-light-1: var(--vt-c-indigo);
-  --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
-  --vt-c-text-dark-1: var(--vt-c-white);
-  --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
-}
-
-/* semantic color variables for this project */
-:root {
-  --color-background: var(--vt-c-white);
-  --color-background-soft: var(--vt-c-white-soft);
-  --color-background-mute: var(--vt-c-white-mute);
-
-  --color-border: var(--vt-c-divider-light-2);
-  --color-border-hover: var(--vt-c-divider-light-1);
-
-  --color-heading: var(--vt-c-text-light-1);
-  --color-text: var(--vt-c-text-light-1);
-
-  --section-gap: 160px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: var(--vt-c-black);
-    --color-background-soft: var(--vt-c-black-soft);
-    --color-background-mute: var(--vt-c-black-mute);
-
-    --color-border: var(--vt-c-divider-dark-2);
-    --color-border-hover: var(--vt-c-divider-dark-1);
-
-    --color-heading: var(--vt-c-text-dark-1);
-    --color-text: var(--vt-c-text-dark-2);
-  }
-}
-
+/* ===== CSS Reset & Base ===== */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
   margin: 0;
-  font-weight: normal;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  min-height: 100vh;
+  font-family: 'Work Sans', system-ui, -apple-system, sans-serif;
+  font-weight: 300;
+  line-height: 1.7;
+  background-color: var(--color-bg);
   color: var(--color-text);
-  background: var(--color-background);
-  transition:
-    color 0.5s,
-    background-color 0.5s;
-  line-height: 1.6;
-  font-family:
-    Inter,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    'Fira Sans',
-    'Droid Sans',
-    'Helvetica Neue',
-    sans-serif;
-  font-size: 15px;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.6s ease, color 0.6s ease;
+  overflow-x: hidden;
+}
+
+/* ===== Typography ===== */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+h1 { font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 300; }
+h2 { font-size: clamp(1.8rem, 3.5vw, 3rem); font-weight: 400; }
+h3 { font-size: clamp(1.3rem, 2.5vw, 1.8rem); }
+h4 { font-size: clamp(1.1rem, 2vw, 1.4rem); }
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--color-primaryHover);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+code, pre {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.9em;
+}
+
+/* ===== Selection ===== */
+::selection {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bgAlt);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-textMuted);
+}
+
+/* ===== Page Transition ===== */
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-12px);
+}
+
+/* ===== Theme Color Variables ===== */
+:root,
+[data-theme='mint'] {
+  --color-bg: #F7FAF8;
+  --color-bgAlt: #EEF5F0;
+  --color-surface: #FFFFFF;
+  --color-surfaceHover: #F0F7F3;
+  --color-text: #2C3E35;
+  --color-textSecondary: #5A7D6C;
+  --color-textMuted: #8FA89D;
+  --color-primary: #7EB8A0;
+  --color-primaryHover: #5A9B7F;
+  --color-accent: #C4956B;
+  --color-accentHover: #A87A52;
+  --color-border: #D4E5DB;
+  --color-borderLight: #E8F2EC;
+  --color-glow: rgba(126, 184, 160, 0.15);
+  --color-glowSecondary: rgba(196, 149, 107, 0.1);
+}
+
+[data-theme='rose'] {
+  --color-bg: #FBF7F7;
+  --color-bgAlt: #F5EEEE;
+  --color-surface: #FFFFFF;
+  --color-surfaceHover: #F8F2F2;
+  --color-text: #3E2C2E;
+  --color-textSecondary: #7D5A5E;
+  --color-textMuted: #A88A8E;
+  --color-primary: #C49595;
+  --color-primaryHover: #A87A7A;
+  --color-accent: #8FA88D;
+  --color-accentHover: #6B8A68;
+  --color-border: #E8D4D5;
+  --color-borderLight: #F2E4E5;
+  --color-glow: rgba(196, 149, 149, 0.15);
+  --color-glowSecondary: rgba(143, 168, 141, 0.1);
+}
+
+[data-theme='lavender'] {
+  --color-bg: #F9F7FB;
+  --color-bgAlt: #F2EEF5;
+  --color-surface: #FFFFFF;
+  --color-surfaceHover: #F5F2F8;
+  --color-text: #2E2C3E;
+  --color-textSecondary: #5E5A7D;
+  --color-textMuted: #8E8AA8;
+  --color-primary: #9B8EC4;
+  --color-primaryHover: #7B6BA8;
+  --color-accent: #C4956B;
+  --color-accentHover: #A87A52;
+  --color-border: #E0D4E8;
+  --color-borderLight: #EDE4F2;
+  --color-glow: rgba(155, 142, 196, 0.15);
+  --color-glowSecondary: rgba(196, 149, 107, 0.1);
+}
+
+[data-theme='sand'] {
+  --color-bg: #FBF9F7;
+  --color-bgAlt: #F5F0EB;
+  --color-surface: #FFFFFF;
+  --color-surfaceHover: #F7F3EE;
+  --color-text: #3E352C;
+  --color-textSecondary: #7D6A5A;
+  --color-textMuted: #A8927D;
+  --color-primary: #C4A87E;
+  --color-primaryHover: #A88B5A;
+  --color-accent: #7E9BC4;
+  --color-accentHover: #5A7BA8;
+  --color-border: #E8DCCB;
+  --color-borderLight: #F2EBDE;
+  --color-glow: rgba(196, 168, 126, 0.15);
+  --color-glowSecondary: rgba(126, 155, 196, 0.1);
+}
+
+[data-theme='sage'] {
+  --color-bg: #F8F9F7;
+  --color-bgAlt: #F0F3EE;
+  --color-surface: #FFFFFF;
+  --color-surfaceHover: #F4F6F2;
+  --color-text: #2E352D;
+  --color-textSecondary: #5A6B58;
+  --color-textMuted: #8A9888;
+  --color-primary: #8FA88D;
+  --color-primaryHover: #6B8A68;
+  --color-accent: #A88DA0;
+  --color-accentHover: #8A6B82;
+  --color-border: #D8E0D5;
+  --color-borderLight: #E8EDE5;
+  --color-glow: rgba(143, 168, 141, 0.15);
+  --color-glowSecondary: rgba(168, 141, 160, 0.1);
+}
+
+[data-theme='ocean'] {
+  --color-bg: #F7F9FA;
+  --color-bgAlt: #EEF2F5;
+  --color-surface: #FFFFFF;
+  --color-surfaceHover: #F2F5F8;
+  --color-text: #2C353E;
+  --color-textSecondary: #5A6B7D;
+  --color-textMuted: #8A9BA8;
+  --color-primary: #8EB4C4;
+  --color-primaryHover: #6B96A8;
+  --color-accent: #C4A87E;
+  --color-accentHover: #A88B5A;
+  --color-border: #D4DEE5;
+  --color-borderLight: #E5EBF0;
+  --color-glow: rgba(142, 180, 196, 0.15);
+  --color-glowSecondary: rgba(196, 168, 126, 0.1);
 }
