@@ -398,6 +398,7 @@ onUnmounted(() => {
   position: absolute;
   top: calc(100% + 12px);
   left: 0;
+  transform: none;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 12px;
