@@ -13,40 +13,89 @@ const articles = getHomeArticles()
 const featuredRef = ref<HTMLElement>()
 const subtitleRef = ref<HTMLElement>()
 
-onMounted(() => {
-  // Typewriter effect for subtitle
-  const fullText = siteConfig.subtitle
-  const charDuration = 0.06
-  const totalTypeTime = fullText.length * charDuration
+const subtitlePhrases = [
+  siteConfig.subtitle,
+  '以几何线条编织灵感空间',
+  '在代码与设计的边界漫步',
+  '每一像素都有它的诗意',
+  '于克制之中见丰富',
+]
 
+onMounted(() => {
+  const CHAR_SPEED = 0.05
+  const PAUSE_AFTER_TYPE = 2.5
+  const PAUSE_AFTER_DELETE = 0.3
+
+  // Start cursor blink (runs forever)
+  const startCursor = () => {
+    gsap.set('.hero-subtitle-cursor', { opacity: 1 })
+    gsap.to('.hero-subtitle-cursor', {
+      opacity: 0,
+      duration: 0.55,
+      repeat: -1,
+      yoyo: true,
+      ease: 'steps(1)',
+    })
+  }
+
+  // Type a phrase: animate obj.i from 0 → text.length
+  const typeText = (text: string): Promise<void> =>
+    new Promise((resolve) => {
+      const obj = { i: 0 }
+      gsap.to(obj, {
+        i: text.length,
+        duration: text.length * CHAR_SPEED,
+        ease: 'none',
+        onUpdate() {
+          if (subtitleRef.value) subtitleRef.value.textContent = text.slice(0, Math.floor(obj.i))
+        },
+        onComplete() {
+          if (subtitleRef.value) subtitleRef.value.textContent = text
+          resolve()
+        },
+      })
+    })
+
+  // Delete current text: animate remaining length → 0
+  const deleteText = (): Promise<void> =>
+    new Promise((resolve) => {
+      const current = subtitleRef.value?.textContent || ''
+      const len = current.length
+      if (len === 0) return resolve()
+      const obj = { i: len }
+      gsap.to(obj, {
+        i: 0,
+        duration: len * CHAR_SPEED * 0.6,
+        ease: 'none',
+        onUpdate() {
+          if (subtitleRef.value) subtitleRef.value.textContent = current.slice(0, Math.floor(obj.i))
+        },
+        onComplete() {
+          if (subtitleRef.value) subtitleRef.value.textContent = ''
+          resolve()
+        },
+      })
+    })
+
+  // Loop through phrases
+  async function runLoop() {
+    let idx = 0
+    startCursor()
+    await new Promise((r) => setTimeout(r, 200))
+    while (true) {
+      await typeText(subtitlePhrases[idx]!)
+      await new Promise((r) => setTimeout(r, PAUSE_AFTER_TYPE * 1000))
+      await deleteText()
+      await new Promise((r) => setTimeout(r, PAUSE_AFTER_DELETE * 1000))
+      idx = (idx + 1) % subtitlePhrases.length
+    }
+  }
+
+  // Main hero timeline
   const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
   tl.from('.hero-title', { y: 100, opacity: 0, duration: 1.4 })
     .from('.hero-line', { scaleX: 0, transformOrigin: 'left center', duration: 1.2 }, '-=0.8')
-    // Typewriter: reveal text char by char, cursor blinks throughout and after
-    .add(() => {
-      gsap.set('.hero-subtitle-cursor', { opacity: 1 })
-      gsap.to('.hero-subtitle-cursor', {
-        opacity: 0,
-        duration: 0.55,
-        repeat: -1,
-        yoyo: true,
-        ease: 'steps(1)',
-      })
-      const obj = { i: 0 }
-      gsap.to(obj, {
-        i: fullText.length,
-        duration: totalTypeTime,
-        ease: 'none',
-        onUpdate() {
-          if (subtitleRef.value) {
-            subtitleRef.value.textContent = fullText.slice(0, Math.floor(obj.i))
-          }
-        },
-        onComplete() {
-          if (subtitleRef.value) subtitleRef.value.textContent = fullText
-        },
-      })
-    }, '-=0.6')
+    .add(() => { runLoop() }, '-=0.6')
     .from('.hero-scroll-hint', { opacity: 0, y: 10, duration: 0.6 }, '-=0.2')
 
   if (featuredRef.value) {
