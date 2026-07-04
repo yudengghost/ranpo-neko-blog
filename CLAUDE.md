@@ -71,9 +71,9 @@ export default { name: 'MyPostArticle' }
 
 ### Color Scheme System
 
-Six curated themes defined in `src/theme/colors.ts`, applied via `data-theme` attribute on `<html>`. CSS custom properties in `src/assets/base.css` define per-theme colors under `[data-theme='mint']`, `[data-theme='rose']`, etc. The `useTheme()` composable in `src/composables/useTheme.ts` manages switching and localStorage persistence. Color transitions are handled via `transition: background-color 0.6s ease` on themed elements.
+Seven curated themes defined in `src/theme/colors.ts`, applied via `data-theme` attribute on `<html>`. CSS custom properties in `src/assets/base.css` define per-theme colors under `[data-theme='mint']`, `[data-theme='rose']`, etc. The `useTheme()` composable in `src/composables/useTheme.ts` manages switching and localStorage persistence. Color transitions are handled via `transition: background-color 0.6s ease` on themed elements.
 
-Themes: Mint Cream (default), Dusty Rose, Lavender Mist, Warm Sand, Sage Green, Ocean Haze.
+Themes: Mint Cream (default), Dusty Rose, Lavender Mist, Warm Sand, Sage Green, Ocean Haze, Noir Ink (dark).
 
 ### Comment System
 
@@ -90,11 +90,25 @@ The background uses `currentScheme` from `useTheme()` to redraw with the active 
 
 ### GSAP Usage Patterns
 
-- **Page transitions**: `src/App.vue` uses `<transition name="page">` with CSS for the enter/leave, but the timeline sequencing within pages is GSAP-driven
-- **Hero entrance**: `HomePage.vue` uses `gsap.timeline()` for staggered text reveal
-- **Scroll reveals**: `HomePage.vue` uses `ScrollTrigger` with `toggleActions: 'play none none none'` for card entrance animations
-- Always call `gsap.registerPlugin(ScrollTrigger)` in any component that uses scroll-linked animations
-- Always clean up ScrollTrigger instances if creating them dynamically (not needed for one-time mount triggers)
+- **`gsap.context()`**: Wrap all GSAP animations in `gsap.context(() => { ... })` in `onMounted`. Call `ctx.revert()` in `onUnmounted` to auto-kill all tweens, ScrollTriggers, and delayed calls. This is the standard cleanup pattern — see `HomePage.vue` for reference.
+- **Page transitions**: `src/App.vue` uses `<transition name="page">` with CSS for the enter/leave.
+- **Hero entrance**: `HomePage.vue` uses `gsap.timeline()` for staggered title reveal.
+- **Typewriter subtitle**: `HomePage.vue` cycles through 5 phrases with type → pause → delete → next loop. Uses `gsap.to({ i: N })` with `onUpdate` to slice `textContent`, wrapped in Promises with a `cancelled` flag for safe unmount.
+- **Scroll reveals**: `HomePage.vue` uses `ScrollTrigger` with `toggleActions: 'play none none none'` for card entrance animations.
+- Always call `gsap.registerPlugin(ScrollTrigger)` in any component that uses scroll-linked animations.
+
+### Spring Physics Navigation
+
+`src/components/layout/AppHeader.vue` runs a real-time spring simulation on nav links via `requestAnimationFrame`:
+- Each link is a mass-spring-damper system attracted to the mouse cursor position
+- Center coordinates are cached in `initSprings()` and updated on window resize (avoid `getBoundingClientRect()` per frame).
+- The RAF loop auto-suspends when all springs are at rest (`anyMoving` flag), restarts on `mousemove`.
+- Click feedback injects a scale impulse (0.8) with negative velocity for overshoot bounce, plus a GSAP-animated diamond indicator.
+- Categories dropdown toggles on click with a `▾` arrow; click-outside listener only registers when dropdown is open.
+
+### Article Typography
+
+Article prose styles are centralized in `src/assets/prose.css` (global, imported in `main.css`). Individual article SFCs should NOT duplicate `.prose` rules — use the shared stylesheet. Article-specific styles (e.g., `.article-figure`) stay scoped in the article file.
 
 ### Route Structure
 | Path | Component | Purpose |
@@ -103,6 +117,14 @@ The background uses `currentScheme` from `useTheme()` to redraw with the active 
 | `#/article/:slug` | `ArticlePage.vue` | Full article with cover, content, comments |
 | `#/category/:slug` | `CategoryPage.vue` | Articles filtered by category |
 | `#/about` | `AboutPage.vue` | About page |
+
+### Search
+
+`src/components/blog/SearchModal.vue` is a fixed-position floating panel triggered by the "Search" nav item. Filters articles by title/excerpt/tags, paginated at 5 results per page. No overlay/backdrop — pure floating panel with `box-shadow`.
+
+### Nav Structure
+
+Header nav: **Home** | **Categories** (click dropdown, lists all dynamic categories with article counts) | **Search** (opens modal) | **About**
 
 ### Image Assets
 
@@ -113,10 +135,14 @@ Images in `public/images/` are referenced as `/images/...` in code (no `public/`
 | File | Role |
 |------|------|
 | `src/types/index.ts` | All TypeScript interfaces |
-| `src/theme/colors.ts` | 6 color scheme definitions |
-| `src/assets/base.css` | CSS reset, typography, theme variables |
-| `src/composables/useArticles.ts` | `import.meta.glob` article discovery |
+| `src/theme/colors.ts` | 7 color scheme definitions (6 light + 1 dark) |
+| `src/assets/base.css` | CSS reset, typography, 7 theme variable groups |
+| `src/assets/prose.css` | Shared article typography (do not duplicate in article SFCs) |
+| `src/composables/useArticles.ts` | `import.meta.glob` article auto-discovery |
 | `src/composables/useTheme.ts` | Theme state + localStorage persistence |
 | `src/composables/useComments.ts` | Comment CRUD + GitHub Issues bridge |
 | `src/config.ts` | Site metadata (name, nav, social links) |
+| `src/components/layout/AppHeader.vue` | Spring physics nav + categories dropdown + search trigger |
+| `src/components/blog/SearchModal.vue` | Paginated article search floating panel |
+| `src/components/ui/PixiBackground.vue` | WebGL geometric background (grid, lines, particles) |
 | `public/images/hero-bg.jpg` | Full-viewport hero background |
