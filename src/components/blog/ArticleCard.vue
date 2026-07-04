@@ -60,7 +60,7 @@ defineProps<{ article: ArticleMeta }>()
 /* Cover (left side) */
 .card-cover {
   width: 320px;
-  min-height: 220px;
+  aspect-ratio: 16 / 10;
   flex-shrink: 0;
   overflow: hidden;
   background: var(--color-bgAlt);
@@ -165,8 +165,7 @@ defineProps<{ article: ArticleMeta }>()
 
   .card-cover {
     width: 100%;
-    min-height: 200px;
-    max-height: 260px;
+    aspect-ratio: 16 / 10;
   }
 
   .card-body {
