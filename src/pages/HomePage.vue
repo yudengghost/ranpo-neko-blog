@@ -11,12 +11,42 @@ gsap.registerPlugin(ScrollTrigger)
 const { getHomeArticles } = useArticles()
 const articles = getHomeArticles()
 const featuredRef = ref<HTMLElement>()
+const subtitleRef = ref<HTMLElement>()
 
 onMounted(() => {
+  // Typewriter effect for subtitle
+  const fullText = siteConfig.subtitle
+  const charDuration = 0.06
+  const totalTypeTime = fullText.length * charDuration
+
   const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
   tl.from('.hero-title', { y: 100, opacity: 0, duration: 1.4 })
     .from('.hero-line', { scaleX: 0, transformOrigin: 'left center', duration: 1.2 }, '-=0.8')
-    .from('.hero-subtitle', { y: 40, opacity: 0, duration: 0.8 }, '-=0.6')
+    // Typewriter: reveal text char by char, cursor blinks throughout and after
+    .add(() => {
+      gsap.set('.hero-subtitle-cursor', { opacity: 1 })
+      gsap.to('.hero-subtitle-cursor', {
+        opacity: 0,
+        duration: 0.55,
+        repeat: -1,
+        yoyo: true,
+        ease: 'steps(1)',
+      })
+      const obj = { i: 0 }
+      gsap.to(obj, {
+        i: fullText.length,
+        duration: totalTypeTime,
+        ease: 'none',
+        onUpdate() {
+          if (subtitleRef.value) {
+            subtitleRef.value.textContent = fullText.slice(0, Math.floor(obj.i))
+          }
+        },
+        onComplete() {
+          if (subtitleRef.value) subtitleRef.value.textContent = fullText
+        },
+      })
+    }, '-=0.6')
     .from('.hero-scroll-hint', { opacity: 0, y: 10, duration: 0.6 }, '-=0.2')
 
   if (featuredRef.value) {
@@ -48,7 +78,10 @@ onMounted(() => {
       <div class="hero-content">
         <h1 class="hero-title">{{ siteConfig.title }}</h1>
         <div class="hero-line"></div>
-        <p class="hero-subtitle">{{ siteConfig.subtitle }}</p>
+        <p class="hero-subtitle">
+          <span ref="subtitleRef" class="hero-subtitle-text"></span>
+          <span class="hero-subtitle-cursor">|</span>
+        </p>
       </div>
       <div class="hero-scroll-hint">
         <span class="scroll-line"></span>
@@ -160,6 +193,15 @@ onMounted(() => {
   line-height: 1.8;
   letter-spacing: 0.04em;
   color: var(--color-textSecondary);
+  transition: color 0.6s ease;
+}
+
+.hero-subtitle-cursor {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 200;
+  color: var(--color-primary);
+  opacity: 0;
+  margin-left: 2px;
   transition: color 0.6s ease;
 }
 
