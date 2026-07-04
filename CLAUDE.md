@@ -67,6 +67,8 @@ export default { name: 'MyPostArticle' }
 <template><article class="prose"><!-- content --></article></template>
 ```
 
+**Slug uniqueness (CRITICAL):** Each article's `slug` must be unique across the entire project. Duplicate slugs will cause routing conflicts and corrupt Supabase stats/comments data (slug is the primary key in `article_stats` and a foreign key in `comments` and `article_reactions`). Before adding a new article, grep existing slugs: `grep -r "slug:" src/articles/`. Once published, do not change a slug unless you also run the corresponding SQL migration.
+
 **Discovering articles:** `src/composables/useArticles.ts` uses `import.meta.glob('@/articles/**/*.vue', { eager: true })` to auto-discover all article files at build time. No manual registration required.
 
 ### Color Scheme System
