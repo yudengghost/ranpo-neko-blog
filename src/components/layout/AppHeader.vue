@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { gsap } from 'gsap'
 import ColorSwitcher from '@/components/ui/ColorSwitcher.vue'
@@ -18,6 +18,8 @@ const navRef = ref<HTMLElement>()
 // ---- Spring physics for nav links ----
 interface SpringLink {
   el: HTMLElement
+  cx: number
+  cy: number
   ox: number
   oy: number
   vx: number
@@ -30,6 +32,7 @@ let springLinks: SpringLink[] = []
 let rafId = 0
 let mouseX = -500
 let mouseY = -500
+const activeTweens = new Set<gsap.core.Tween>()
 
 const STIFFNESS = 0.12
 const DAMPING = 0.25
@@ -38,58 +41,74 @@ const SCALE_DAMPING = 0.3
 const MAX_PULL = 18
 const SCALE_AMOUNT = 1.06
 const ATTRACT_RADIUS = 80
+const PULL_STRENGTH = 0.15
+const CLAMP_VELOCITY_DAMP = 0.3
+const CLICK_SCALE = 0.8
+const CLICK_VELOCITY = -0.14
+
+function updateCenters() {
+  for (const link of springLinks) {
+    const r = link.el.getBoundingClientRect()
+    link.cx = r.left + r.width / 2
+    link.cy = r.top + r.height / 2
+  }
+}
 
 function springStep() {
-  for (const link of springLinks) {
-    const rect = link.el.getBoundingClientRect()
-    const cx = rect.left + rect.width / 2
-    const cy = rect.top + rect.height / 2
+  let anyMoving = false
 
-    // Attraction toward mouse
-    const dx = mouseX - cx
-    const dy = mouseY - cy
+  for (const link of springLinks) {
+    const dx = mouseX - link.cx
+    const dy = mouseY - link.cy
     const dist = Math.sqrt(dx * dx + dy * dy)
     const influence = Math.max(0, 1 - dist / ATTRACT_RADIUS)
 
-    // Target offset pulled toward cursor
-    const tx = dx * influence * 0.15
-    const ty = dy * influence * 0.15
+    const tx = dx * influence * PULL_STRENGTH
+    const ty = dy * influence * PULL_STRENGTH
 
-    // Spring force
     const fx = (tx - link.ox) * STIFFNESS
     const fy = (ty - link.oy) * STIFFNESS
 
-    // Integrate velocity
     link.vx += fx
     link.vy += fy
     link.vx *= 1 - DAMPING
     link.vy *= 1 - DAMPING
 
-    // Integrate position
     link.ox += link.vx
     link.oy += link.vy
 
-    // Clamp pull distance
     const pull = Math.sqrt(link.ox * link.ox + link.oy * link.oy)
     if (pull > MAX_PULL) {
       const ratio = MAX_PULL / pull
       link.ox *= ratio
       link.oy *= ratio
-      link.vx *= 0.3
-      link.vy *= 0.3
+      link.vx *= CLAMP_VELOCITY_DAMP
+      link.vy *= CLAMP_VELOCITY_DAMP
     }
 
-    // Scale spring
     const targetScale = 1 + (SCALE_AMOUNT - 1) * influence
     const scaleForce = (targetScale - link.scale) * SCALE_STIFFNESS
     link.scaleV += scaleForce
     link.scaleV *= 1 - SCALE_DAMPING
     link.scale += link.scaleV
 
-    // Apply transform
     link.el.style.transform = `translate3d(${link.ox}px, ${link.oy}px, 0) scale(${link.scale})`
+
+    if (
+      Math.abs(link.vx) > 0.001 || Math.abs(link.vy) > 0.001 ||
+      Math.abs(link.ox) > 0.01 || Math.abs(link.oy) > 0.01 ||
+      Math.abs(link.scaleV) > 0.001 || Math.abs(link.scale - 1) > 0.001
+    ) {
+      anyMoving = true
+    }
   }
 
+  if (anyMoving) rafId = requestAnimationFrame(springStep)
+}
+
+function startSpringLoop() {
+  if (rafId) return
+  updateCenters()
   rafId = requestAnimationFrame(springStep)
 }
 
@@ -98,6 +117,8 @@ function initSprings() {
   const links = navRef.value.querySelectorAll<HTMLElement>('.nav-link, .header-logo')
   springLinks = Array.from(links).map((el) => ({
     el,
+    cx: 0,
+    cy: 0,
     ox: 0,
     oy: 0,
     vx: 0,
@@ -105,12 +126,13 @@ function initSprings() {
     scale: 1,
     scaleV: 0,
   }))
-  rafId = requestAnimationFrame(springStep)
+  updateCenters()
 }
 
 function onMouseMove(e: MouseEvent) {
   mouseX = e.clientX
   mouseY = e.clientY
+  if (!rafId) startSpringLoop()
 }
 
 function onMouseLeave() {
@@ -118,50 +140,60 @@ function onMouseLeave() {
   mouseY = -9999
 }
 
+// Click-outside only fires when dropdown is open (watcher manages registration)
 function onDocClick(e: MouseEvent) {
   if (catDropdownRef.value && !catDropdownRef.value.contains(e.target as Node)) {
     catDropdownOpen.value = false
   }
 }
 
+watch(catDropdownOpen, (open) => {
+  if (open) {
+    document.addEventListener('click', onDocClick)
+  } else {
+    document.removeEventListener('click', onDocClick)
+  }
+})
+
 function handleClick(e: MouseEvent) {
   const target = e.currentTarget as HTMLElement
   const springLink = springLinks.find((s) => s.el === target)
   if (!springLink) return
 
-  // Inject scale impulse — press down, negative velocity creates overshoot bounce
-  springLink.scale = 0.8
-  springLink.scaleV = -0.14
+  springLink.scale = CLICK_SCALE
+  springLink.scaleV = CLICK_VELOCITY
 
-  // Create geometric click indicator (diamond)
   const dot = document.createElement('span')
   dot.className = 'click-dot'
   target.appendChild(dot)
 
   const rect = target.getBoundingClientRect()
-  const x = e.clientX - rect.left
-  const y = e.clientY - rect.top
-  dot.style.left = `${x}px`
-  dot.style.top = `${y}px`
+  dot.style.left = `${e.clientX - rect.left}px`
+  dot.style.top = `${e.clientY - rect.top}px`
 
-  gsap.to(dot, {
+  const tween = gsap.to(dot, {
     scale: 3,
     opacity: 0,
     duration: 0.55,
     ease: 'power3.out',
-    onComplete: () => dot.remove(),
+    onComplete: () => {
+      dot.remove()
+      activeTweens.delete(tween)
+    },
   })
+  activeTweens.add(tween)
 }
 
 onMounted(() => {
   initSprings()
   window.addEventListener('mousemove', onMouseMove, { passive: true })
   document.addEventListener('mouseleave', onMouseLeave)
-  document.addEventListener('click', onDocClick)
 })
 
 onUnmounted(() => {
   cancelAnimationFrame(rafId)
+  activeTweens.forEach((t) => t.kill())
+  activeTweens.clear()
   window.removeEventListener('mousemove', onMouseMove)
   document.removeEventListener('mouseleave', onMouseLeave)
   document.removeEventListener('click', onDocClick)
