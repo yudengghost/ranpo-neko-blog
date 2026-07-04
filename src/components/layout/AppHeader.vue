@@ -169,13 +169,12 @@ onUnmounted(() => {
       <nav ref="navRef" class="header-nav" :class="{ open: mobileOpen }">
         <RouterLink to="/" class="nav-link" @mousedown="handleClick" @click="mobileOpen = false">Home</RouterLink>
 
-        <!-- Categories dropdown -->
-        <div
-          class="nav-dropdown"
-          @mouseenter="catDropdownOpen = true"
-          @mouseleave="catDropdownOpen = false"
-        >
-          <span class="nav-link" @mousedown="handleClick">Categories</span>
+        <!-- Categories dropdown — click to toggle -->
+        <div class="nav-dropdown">
+          <span class="nav-link cat-trigger" @mousedown="handleClick" @click="catDropdownOpen = !catDropdownOpen">
+            Categories
+            <span class="cat-arrow" :class="{ open: catDropdownOpen }">&#9662;</span>
+          </span>
           <div class="dropdown-panel" v-show="catDropdownOpen">
             <RouterLink
               v-for="cat in categories"
@@ -308,6 +307,25 @@ onUnmounted(() => {
 .nav-link.router-link-exact-active {
   color: var(--color-text);
   font-weight: 400;
+}
+
+/* Categories trigger arrow */
+.cat-trigger {
+  cursor: pointer;
+  user-select: none;
+}
+
+.cat-arrow {
+  display: inline-block;
+  margin-left: 4px;
+  font-size: 0.6rem;
+  vertical-align: middle;
+  transition: transform 0.25s ease;
+  color: var(--color-textMuted);
+}
+
+.cat-arrow.open {
+  transform: rotate(180deg);
 }
 
 /* Click indicator — expanding diamond */

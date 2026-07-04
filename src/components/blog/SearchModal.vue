@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useArticles } from '@/composables/useArticles'
 
@@ -9,23 +9,43 @@ const emit = defineEmits<{ close: [] }>()
 const { getAll } = useArticles()
 const articles = getAll()
 const query = ref('')
+const page = ref(1)
+const PER_PAGE = 5
 
-const results = computed(() => {
+const allResults = computed(() => {
   if (!query.value.trim()) return []
   const q = query.value.toLowerCase()
-  return articles
-    .filter(
-      (a) =>
-        a.title.toLowerCase().includes(q) ||
-        a.excerpt.toLowerCase().includes(q) ||
-        a.tags.some((t) => t.toLowerCase().includes(q)),
-    )
-    .slice(0, 8)
+  return articles.filter(
+    (a) =>
+      a.title.toLowerCase().includes(q) ||
+      a.excerpt.toLowerCase().includes(q) ||
+      a.tags.some((t) => t.toLowerCase().includes(q)),
+  )
+})
+
+const totalPages = computed(() => Math.ceil(allResults.value.length / PER_PAGE))
+
+const results = computed(() => {
+  const start = (page.value - 1) * PER_PAGE
+  return allResults.value.slice(start, start + PER_PAGE)
+})
+
+watch(query, () => {
+  page.value = 1
 })
 
 function onClose() {
   query.value = ''
+  page.value = 1
   emit('close')
+}
+
+function prevPage() {
+  if (page.value > 1) page.value--
+}
+
+function nextPage() {
+  if (page.value < totalPages.value) page.value++
 }
 </script>
 
@@ -36,7 +56,6 @@ function onClose() {
         <div class="modal-header">
           <span class="search-icon">&#8981;</span>
           <input
-            ref="inputRef"
             v-model="query"
             type="text"
             class="search-input"
@@ -47,8 +66,9 @@ function onClose() {
         </div>
 
         <div class="modal-results" v-if="query.trim()">
-          <p class="results-count" v-if="results.length > 0">
-            {{ results.length }} result{{ results.length !== 1 ? 's' : '' }}
+          <p class="results-count" v-if="allResults.length > 0">
+            {{ allResults.length }} result{{ allResults.length !== 1 ? 's' : '' }} &middot;
+            Page {{ page }} of {{ totalPages }}
           </p>
 
           <RouterLink
@@ -63,7 +83,14 @@ function onClose() {
             <span class="result-excerpt">{{ article.excerpt }}</span>
           </RouterLink>
 
-          <p v-if="query.trim() && results.length === 0" class="no-results">
+          <!-- Pagination -->
+          <div class="pagination" v-if="totalPages > 1">
+            <button class="page-btn" :disabled="page <= 1" @click="prevPage">&larr; Prev</button>
+            <span class="page-info">{{ page }} / {{ totalPages }}</span>
+            <button class="page-btn" :disabled="page >= totalPages" @click="nextPage">Next &rarr;</button>
+          </div>
+
+          <p v-if="allResults.length === 0" class="no-results">
             No articles found for "{{ query }}"
           </p>
         </div>
@@ -81,9 +108,9 @@ function onClose() {
   position: fixed;
   inset: 0;
   z-index: 200;
-  background: color-mix(in srgb, var(--color-bg) 75%, transparent);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -93,7 +120,7 @@ function onClose() {
 .modal-panel {
   width: 560px;
   max-width: 92vw;
-  max-height: 60vh;
+  max-height: 72vh;
   display: flex;
   flex-direction: column;
   background: var(--color-surface);
@@ -213,6 +240,45 @@ function onClose() {
   font-family: 'Work Sans', sans-serif;
   font-size: 0.85rem;
   font-weight: 300;
+  color: var(--color-textMuted);
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px 20px;
+  border-top: 1px solid var(--color-borderLight);
+}
+
+.page-btn {
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 300;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.page-btn:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.page-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.page-info {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
   color: var(--color-textMuted);
 }
 
