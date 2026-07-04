@@ -51,73 +51,62 @@ function nextPage() {
 
 <template>
   <Transition name="modal">
-    <div v-if="open" class="modal-overlay" @click.self="onClose">
-      <div class="modal-panel">
-        <div class="modal-header">
-          <span class="search-icon">&#8981;</span>
-          <input
-            v-model="query"
-            type="text"
-            class="search-input"
-            placeholder="Search articles..."
-            autofocus
-          />
-          <button class="modal-close" @click="onClose">&times;</button>
+    <div v-if="open" class="modal-panel">
+      <div class="modal-header">
+        <span class="search-icon">&#8981;</span>
+        <input
+          v-model="query"
+          type="text"
+          class="search-input"
+          placeholder="Search articles..."
+          autofocus
+        />
+        <button class="modal-close" @click="onClose">&times;</button>
+      </div>
+
+      <div class="modal-results" v-if="query.trim()">
+        <p class="results-count" v-if="allResults.length > 0">
+          {{ allResults.length }} result{{ allResults.length !== 1 ? 's' : '' }} &middot;
+          Page {{ page }} of {{ totalPages }}
+        </p>
+
+        <RouterLink
+          v-for="article in results"
+          :key="article.slug"
+          :to="`/article/${article.slug}`"
+          class="result-item"
+          @click="onClose"
+        >
+          <span class="result-category">{{ article.category }}</span>
+          <span class="result-title">{{ article.title }}</span>
+          <span class="result-excerpt">{{ article.excerpt }}</span>
+        </RouterLink>
+
+        <div class="pagination" v-if="totalPages > 1">
+          <button class="page-btn" :disabled="page <= 1" @click="prevPage">&larr; Prev</button>
+          <span class="page-info">{{ page }} / {{ totalPages }}</span>
+          <button class="page-btn" :disabled="page >= totalPages" @click="nextPage">Next &rarr;</button>
         </div>
 
-        <div class="modal-results" v-if="query.trim()">
-          <p class="results-count" v-if="allResults.length > 0">
-            {{ allResults.length }} result{{ allResults.length !== 1 ? 's' : '' }} &middot;
-            Page {{ page }} of {{ totalPages }}
-          </p>
+        <p v-if="allResults.length === 0" class="no-results">
+          No articles found for "{{ query }}"
+        </p>
+      </div>
 
-          <RouterLink
-            v-for="article in results"
-            :key="article.slug"
-            :to="`/article/${article.slug}`"
-            class="result-item"
-            @click="onClose"
-          >
-            <span class="result-category">{{ article.category }}</span>
-            <span class="result-title">{{ article.title }}</span>
-            <span class="result-excerpt">{{ article.excerpt }}</span>
-          </RouterLink>
-
-          <!-- Pagination -->
-          <div class="pagination" v-if="totalPages > 1">
-            <button class="page-btn" :disabled="page <= 1" @click="prevPage">&larr; Prev</button>
-            <span class="page-info">{{ page }} / {{ totalPages }}</span>
-            <button class="page-btn" :disabled="page >= totalPages" @click="nextPage">Next &rarr;</button>
-          </div>
-
-          <p v-if="allResults.length === 0" class="no-results">
-            No articles found for "{{ query }}"
-          </p>
-        </div>
-
-        <div v-else class="modal-hint">
-          <p>Type to search by title, excerpt, or tag.</p>
-        </div>
+      <div v-else class="modal-hint">
+        <p>Type to search by title, excerpt, or tag.</p>
       </div>
     </div>
   </Transition>
 </template>
 
 <style scoped>
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 200;
-  background: rgba(0, 0, 0, 0.12);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding-top: 20vh;
-}
-
 .modal-panel {
+  position: fixed;
+  top: 15vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
   width: 560px;
   max-width: 92vw;
   max-height: 72vh;
@@ -127,6 +116,7 @@ function nextPage() {
   border: 1px solid var(--color-border);
   border-radius: 16px;
   overflow: hidden;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
   transition: background-color 0.6s ease, border-color 0.6s ease;
 }
 
@@ -283,24 +273,18 @@ function nextPage() {
 }
 
 /* Modal transition */
-.modal-enter-active,
+.modal-enter-active {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
 .modal-leave-active {
-  transition: opacity 0.25s ease;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
-.modal-enter-active .modal-panel,
-.modal-leave-active .modal-panel {
-  transition: transform 0.25s ease, opacity 0.25s ease;
+.modal-enter-from {
+  opacity: 0;
+  transform: translateX(-50%) translateY(-16px) scale(0.97);
 }
-.modal-enter-from,
 .modal-leave-to {
   opacity: 0;
-}
-.modal-enter-from .modal-panel {
-  transform: translateY(-16px) scale(0.97);
-  opacity: 0;
-}
-.modal-leave-to .modal-panel {
-  transform: translateY(-16px) scale(0.97);
-  opacity: 0;
+  transform: translateX(-50%) translateY(-16px) scale(0.97);
 }
 </style>
