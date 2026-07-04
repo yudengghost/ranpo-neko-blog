@@ -3,8 +3,15 @@ import PixiBackground from '@/components/ui/PixiBackground.vue'
 import AppHeader from '@/components/layout/AppHeader.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
 import { useTheme } from '@/composables/useTheme'
+import { useStats } from '@/composables/useStats'
 
 useTheme()
+
+const SESSION_FLAG = 'blog-visit-recorded'
+if (!sessionStorage.getItem(SESSION_FLAG)) {
+  sessionStorage.setItem(SESSION_FLAG, '1')
+  useStats().recordTotalVisit()
+}
 </script>
 
 <template>

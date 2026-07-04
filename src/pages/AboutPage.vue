@@ -2,6 +2,10 @@
 import { onMounted } from 'vue'
 import { gsap } from 'gsap'
 import { siteConfig } from '@/config'
+import { useStats } from '@/composables/useStats'
+
+const { getTotalVisits } = useStats()
+const totalVisits = getTotalVisits()
 
 onMounted(() => {
   gsap.from('.about-title', { y: 50, opacity: 0, duration: 1, ease: 'power3.out' })
@@ -46,6 +50,13 @@ onMounted(() => {
           <span class="link-icon">&#8599;</span>
           GitHub
         </a>
+      </div>
+
+      <div class="about-stats">
+        <div class="stats-item">
+          <span class="stats-number">{{ totalVisits }}</span>
+          <span class="stats-label">Total Visits</span>
+        </div>
       </div>
     </div>
 
@@ -145,6 +156,40 @@ onMounted(() => {
 
 .link-icon {
   font-size: 1rem;
+}
+
+.about-stats {
+  margin-top: 48px;
+  padding-top: 28px;
+  border-top: 1px solid var(--color-borderLight);
+  display: flex;
+  gap: 40px;
+  transition: border-color 0.6s ease;
+}
+
+.stats-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.stats-number {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--color-primary);
+  transition: color 0.6s ease;
+}
+
+.stats-label {
+  font-family: 'Work Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-textMuted);
 }
 
 /* Decorative shapes */

@@ -3,17 +3,21 @@ import { computed, onMounted } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
 import { gsap } from 'gsap'
 import { useArticles } from '@/composables/useArticles'
+import { useStats } from '@/composables/useStats'
 import ArticleRenderer from '@/components/blog/ArticleRenderer.vue'
+import ArticleReactions from '@/components/blog/ArticleReactions.vue'
 import CommentSection from '@/components/blog/CommentSection.vue'
 
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
 
 const { getBySlug } = useArticles()
+const { recordArticleView } = useStats()
 const entry = computed(() => getBySlug(slug.value))
 const meta = computed(() => entry.value?.meta)
 
 onMounted(() => {
+  recordArticleView(slug.value)
   gsap.from('.article-header', { y: 40, opacity: 0, duration: 0.8, ease: 'power3.out' })
   gsap.from('.article-body', {
     y: 30,
@@ -60,6 +64,9 @@ function formatDate(iso: string): string {
     <section class="article-body">
       <ArticleRenderer :slug="slug" />
     </section>
+
+    <!-- Reactions -->
+    <ArticleReactions :slug="slug" />
 
     <!-- Divider -->
     <div class="article-divider"></div>
