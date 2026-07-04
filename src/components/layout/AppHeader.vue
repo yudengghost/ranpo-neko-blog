@@ -103,7 +103,11 @@ function springStep() {
     }
   }
 
-  if (anyMoving) rafId = requestAnimationFrame(springStep)
+  if (anyMoving) {
+    rafId = requestAnimationFrame(springStep)
+  } else {
+    rafId = 0
+  }
 }
 
 function startSpringLoop() {
@@ -127,6 +131,7 @@ function initSprings() {
     scaleV: 0,
   }))
   updateCenters()
+  startSpringLoop()
 }
 
 function onMouseMove(e: MouseEvent) {
