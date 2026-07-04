@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { RouterLink } from 'vue-router'
+import { gsap } from 'gsap'
 import ColorSwitcher from '@/components/ui/ColorSwitcher.vue'
 import { siteConfig } from '@/config'
 import { useArticles } from '@/composables/useArticles'
@@ -113,6 +114,35 @@ function onMouseLeave() {
   mouseY = -9999
 }
 
+function handleClick(e: MouseEvent) {
+  const target = e.currentTarget as HTMLElement
+  const springLink = springLinks.find((s) => s.el === target)
+  if (!springLink) return
+
+  // Inject scale impulse — press down, negative velocity creates overshoot bounce
+  springLink.scale = 0.8
+  springLink.scaleV = -0.14
+
+  // Create geometric click indicator (diamond)
+  const dot = document.createElement('span')
+  dot.className = 'click-dot'
+  target.appendChild(dot)
+
+  const rect = target.getBoundingClientRect()
+  const x = e.clientX - rect.left
+  const y = e.clientY - rect.top
+  dot.style.left = `${x}px`
+  dot.style.top = `${y}px`
+
+  gsap.to(dot, {
+    scale: 3,
+    opacity: 0,
+    duration: 0.55,
+    ease: 'power3.out',
+    onComplete: () => dot.remove(),
+  })
+}
+
 onMounted(() => {
   initSprings()
   window.addEventListener('mousemove', onMouseMove, { passive: true })
@@ -129,22 +159,23 @@ onUnmounted(() => {
 <template>
   <header class="app-header">
     <div class="header-inner">
-      <RouterLink to="/" class="header-logo">
+      <RouterLink to="/" class="header-logo" @mousedown="handleClick">
         <span class="logo-text">{{ siteConfig.name }}</span>
       </RouterLink>
 
       <nav ref="navRef" class="header-nav" :class="{ open: mobileOpen }">
-        <RouterLink to="/" class="nav-link" @click="mobileOpen = false">Home</RouterLink>
+        <RouterLink to="/" class="nav-link" @mousedown="handleClick" @click="mobileOpen = false">Home</RouterLink>
         <RouterLink
           v-for="cat in categories"
           :key="cat.slug"
           :to="`/category/${cat.slug}`"
           class="nav-link"
+          @mousedown="handleClick"
           @click="mobileOpen = false"
         >
           {{ cat.name }}
         </RouterLink>
-        <RouterLink to="/about" class="nav-link" @click="mobileOpen = false">About</RouterLink>
+        <RouterLink to="/about" class="nav-link" @mousedown="handleClick" @click="mobileOpen = false">About</RouterLink>
       </nav>
 
       <div class="header-actions">
@@ -256,6 +287,21 @@ onUnmounted(() => {
 .nav-link.router-link-exact-active {
   color: var(--color-text);
   font-weight: 400;
+}
+
+/* Click indicator — expanding diamond */
+.click-dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  margin-left: -4px;
+  margin-top: -4px;
+  background: var(--color-primary);
+  transform: rotate(45deg) scale(1);
+  border-radius: 1px;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 1;
 }
 
 /* ===== Actions ===== */
