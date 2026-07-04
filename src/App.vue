@@ -7,13 +7,10 @@ import { useStats } from '@/composables/useStats'
 
 useTheme()
 
-const { ensureLoaded, recordTotalVisit } = useStats()
-ensureLoaded()
-
 const SESSION_FLAG = 'blog-visit-recorded'
 if (!sessionStorage.getItem(SESSION_FLAG)) {
   sessionStorage.setItem(SESSION_FLAG, '1')
-  recordTotalVisit()
+  useStats().recordTotalVisit()
 }
 </script>
 

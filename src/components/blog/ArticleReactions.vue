@@ -1,19 +1,23 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useStats } from '@/composables/useStats'
 
 const props = defineProps<{ slug: string }>()
 
-const { stats, getUserReaction, toggleReaction } = useStats()
+const { getArticleStats, getUserReaction, toggleReaction } = useStats()
 
-const userReaction = ref<'like' | 'dislike' | null>(getUserReaction(props.slug))
+const stats = ref({ views: 0, likes: 0, dislikes: 0 })
+const userReaction = ref<'like' | 'dislike' | null>(null)
 
-watch(() => props.slug, (s) => {
-  userReaction.value = getUserReaction(s)
+onMounted(async () => {
+  const [s, r] = await Promise.all([getArticleStats(props.slug), getUserReaction(props.slug)])
+  stats.value = s
+  userReaction.value = r
 })
 
-function onReact(type: 'like' | 'dislike') {
-  userReaction.value = toggleReaction(props.slug, type)
+async function onReact(type: 'like' | 'dislike') {
+  userReaction.value = await toggleReaction(props.slug, type)
+  stats.value = await getArticleStats(props.slug)
 }
 </script>
 
@@ -27,7 +31,7 @@ function onReact(type: 'like' | 'dislike') {
         aria-label="Like"
       >
         <span class="reaction-icon">&#9650;</span>
-        <span class="reaction-count">{{ stats.articles[slug]?.likes || 0 }}</span>
+        <span class="reaction-count">{{ stats.likes }}</span>
       </button>
       <button
         class="reaction-btn"
@@ -36,10 +40,10 @@ function onReact(type: 'like' | 'dislike') {
         aria-label="Dislike"
       >
         <span class="reaction-icon icon-down">&#9660;</span>
-        <span class="reaction-count">{{ stats.articles[slug]?.dislikes || 0 }}</span>
+        <span class="reaction-count">{{ stats.dislikes }}</span>
       </button>
     </div>
-    <p class="reactions-views">{{ stats.articles[slug]?.views || 0 }} view{{ (stats.articles[slug]?.views || 0) !== 1 ? 's' : '' }}</p>
+    <p class="reactions-views">{{ stats.views }} view{{ stats.views !== 1 ? 's' : '' }}</p>
   </div>
 </template>
 

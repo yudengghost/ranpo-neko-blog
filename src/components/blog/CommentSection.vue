@@ -4,7 +4,7 @@ import { useComments } from '@/composables/useComments'
 
 const props = defineProps<{ articleSlug: string }>()
 
-const { comments, count, addComment, submitViaGitHub } = useComments(props.articleSlug)
+const { comments, count, addComment, isLoading } = useComments(props.articleSlug)
 
 const nickname = ref('')
 const email = ref('')
@@ -12,20 +12,16 @@ const content = ref('')
 const isSubmitting = ref(false)
 const submitted = ref(false)
 
-function handleSubmit() {
+async function handleSubmit() {
   if (!nickname.value.trim() || !email.value.trim() || !content.value.trim()) return
 
   isSubmitting.value = true
-
-  // Store locally
-  addComment(nickname.value.trim(), email.value.trim(), content.value.trim())
-
-  // Open GitHub issue for cross-user persistence
-  submitViaGitHub(nickname.value.trim(), email.value.trim(), content.value.trim())
+  const result = await addComment(nickname.value.trim(), email.value.trim(), content.value.trim())
+  isSubmitting.value = false
+  if (!result) return
 
   submitted.value = true
   content.value = ''
-  isSubmitting.value = false
 }
 
 function formatDate(iso: string): string {
@@ -99,7 +95,7 @@ function formatDate(iso: string): string {
       <button class="form-submit" @click="handleSubmit" :disabled="isSubmitting">
         Submit Comment
       </button>
-      <p class="form-note">Comments are stored locally and submitted via GitHub Issues for cross-user visibility.</p>
+      <p class="form-note">Comments are stored persistently and visible to all visitors.</p>
     </div>
 
     <!-- Submitted state -->

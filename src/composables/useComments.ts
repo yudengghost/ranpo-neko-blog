@@ -1,78 +1,70 @@
 import { ref, computed } from 'vue'
 import type { Comment } from '@/types'
+import { getSupabase } from '@/lib/supabase'
 
+// localStorage fallback
 const STORAGE_PREFIX = 'blog-comments-'
-const GITHUB_REPO_OWNER = 'yudengghost'
-const GITHUB_REPO_NAME = 'ranpo-neko-blog'
 
-function storageKey(articleSlug: string): string {
-  return STORAGE_PREFIX + articleSlug
+function storageKey(articleSlug: string): string { return STORAGE_PREFIX + articleSlug }
+
+function lsLoad(articleSlug: string): Comment[] {
+  try { const raw = localStorage.getItem(storageKey(articleSlug)); return raw ? JSON.parse(raw) : [] } catch { return [] }
 }
 
-function generateId(): string {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2, 9)
-}
-
-function loadFromStorage(articleSlug: string): Comment[] {
-  try {
-    const raw = localStorage.getItem(storageKey(articleSlug))
-    return raw ? JSON.parse(raw) : []
-  } catch {
-    return []
-  }
-}
-
-function saveToStorage(articleSlug: string, comments: Comment[]): void {
-  try {
-    localStorage.setItem(storageKey(articleSlug), JSON.stringify(comments))
-  } catch {}
+function lsSave(articleSlug: string, comments: Comment[]) {
+  try { localStorage.setItem(storageKey(articleSlug), JSON.stringify(comments)) } catch {}
 }
 
 export function useComments(articleSlug: string) {
-  const localComments = ref<Comment[]>(loadFromStorage(articleSlug))
+  const supabase = getSupabase()
+  const localComments = ref<Comment[]>([])
   const isLoading = ref(false)
 
   const comments = computed(() => [...localComments.value])
-
   const count = computed(() => localComments.value.length)
 
-  const addComment = (nickname: string, email: string, content: string): Comment => {
-    const comment: Comment = {
-      id: generateId(),
-      articleSlug,
-      nickname,
+  const fetchComments = async () => {
+    isLoading.value = true
+    if (supabase) {
+      const { data } = await supabase
+        .from('comments')
+        .select('*')
+        .eq('article_slug', articleSlug)
+        .order('created_at', { ascending: false })
+      localComments.value = (data || []) as Comment[]
+    } else {
+      localComments.value = lsLoad(articleSlug)
+    }
+    isLoading.value = false
+  }
+
+  fetchComments()
+
+  const addComment = async (nickname: string, email: string, content: string): Promise<Comment | null> => {
+    const comment = {
+      article_slug: articleSlug,
+      nickname: nickname.trim(),
       email: email.trim(),
       content: content.trim(),
+    }
+
+    if (supabase) {
+      const { data, error } = await supabase.from('comments').insert(comment).select().single()
+      if (error || !data) return null
+      localComments.value = [data as Comment, ...localComments.value]
+      return data as Comment
+    }
+
+    const local: Comment = {
+      ...comment,
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 9),
+      articleSlug,
       createdAt: new Date().toISOString(),
     }
-    localComments.value = [comment, ...localComments.value]
-    saveToStorage(articleSlug, localComments.value)
-    return comment
+    localComments.value = [local, ...localComments.value]
+    lsSave(articleSlug, localComments.value)
+    return local
   }
 
-  const submitViaGitHub = (nickname: string, email: string, content: string) => {
-    const body = [
-      `**Nickname:** ${nickname}`,
-      `**Email:** ${email}`,
-      ``,
-      content,
-      ``,
-      `> Submitted from blog on ${new Date().toISOString()}`,
-    ].join('\n')
-
-    const title = encodeURIComponent(`Comment: ${articleSlug}`)
-    const encodedBody = encodeURIComponent(body)
-    const labels = encodeURIComponent('comment,blog')
-    const url = `https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/issues/new?title=${title}&body=${encodedBody}&labels=${labels}`
-
-    window.open(url, '_blank')
-  }
-
-  return {
-    comments,
-    count,
-    isLoading,
-    addComment,
-    submitViaGitHub,
-  }
+  return { comments, count, isLoading, addComment, fetchComments }
 }

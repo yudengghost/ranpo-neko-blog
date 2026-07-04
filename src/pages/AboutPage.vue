@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { gsap } from 'gsap'
 import { siteConfig } from '@/config'
 import { useStats } from '@/composables/useStats'
 
-const { stats } = useStats()
+const { getTotalVisits } = useStats()
+const totalVisits = ref(0)
 
-onMounted(() => {
+onMounted(async () => {
+  totalVisits.value = await getTotalVisits()
+
   gsap.from('.about-title', { y: 50, opacity: 0, duration: 1, ease: 'power3.out' })
   gsap.from('.about-line', {
     scaleX: 0,
@@ -53,7 +56,7 @@ onMounted(() => {
 
       <div class="about-stats">
         <div class="stats-item">
-          <span class="stats-number">{{ stats.totalVisits }}</span>
+          <span class="stats-number">{{ totalVisits }}</span>
           <span class="stats-label">Total Visits</span>
         </div>
       </div>
