@@ -490,6 +490,7 @@ onUnmounted(() => {
     background: var(--color-bg);
     border-bottom: 1px solid var(--color-border);
     flex-direction: column;
+    align-items: stretch;
     gap: 0;
     padding: 16px 0;
     transform: translateY(-100%);
