@@ -11,6 +11,7 @@ const { getCategories } = useArticles()
 const categories = getCategories()
 const mobileOpen = ref(false)
 const catDropdownOpen = ref(false)
+const catDropdownRef = ref<HTMLElement>()
 const searchOpen = ref(false)
 const navRef = ref<HTMLElement>()
 
@@ -117,6 +118,12 @@ function onMouseLeave() {
   mouseY = -9999
 }
 
+function onDocClick(e: MouseEvent) {
+  if (catDropdownRef.value && !catDropdownRef.value.contains(e.target as Node)) {
+    catDropdownOpen.value = false
+  }
+}
+
 function handleClick(e: MouseEvent) {
   const target = e.currentTarget as HTMLElement
   const springLink = springLinks.find((s) => s.el === target)
@@ -150,12 +157,14 @@ onMounted(() => {
   initSprings()
   window.addEventListener('mousemove', onMouseMove, { passive: true })
   document.addEventListener('mouseleave', onMouseLeave)
+  document.addEventListener('click', onDocClick)
 })
 
 onUnmounted(() => {
   cancelAnimationFrame(rafId)
   window.removeEventListener('mousemove', onMouseMove)
   document.removeEventListener('mouseleave', onMouseLeave)
+  document.removeEventListener('click', onDocClick)
 })
 </script>
 
@@ -170,7 +179,7 @@ onUnmounted(() => {
         <RouterLink to="/" class="nav-link" @mousedown="handleClick" @click="mobileOpen = false">Home</RouterLink>
 
         <!-- Categories dropdown — click to toggle -->
-        <div class="nav-dropdown">
+        <div ref="catDropdownRef" class="nav-dropdown">
           <span class="nav-link cat-trigger" @mousedown="handleClick" @click="catDropdownOpen = !catDropdownOpen">
             Categories
             <span class="cat-arrow" :class="{ open: catDropdownOpen }">&#9662;</span>
