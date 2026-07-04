@@ -11,6 +11,7 @@ export const meta: ArticleMeta = {
   publishedAt: '2026-06-10',
   readingTime: 4,
   featured: false,
+  coverImage: '/images/geometric-abstract.jpg',
 }
 
 export default { name: 'GeometryInVisualDesignArticle' }

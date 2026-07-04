@@ -20,7 +20,7 @@ const categoryInfo = computed(() => getCategories().find((c) => c.slug === categ
       <p class="category-count">{{ articles.length }} article{{ articles.length !== 1 ? 's' : '' }}</p>
     </header>
 
-    <div v-if="articles.length > 0" class="articles-grid">
+    <div v-if="articles.length > 0" class="articles-list">
       <ArticleCard v-for="article in articles" :key="article.slug" :article="article" />
     </div>
 
@@ -74,10 +74,10 @@ const categoryInfo = computed(() => getCategories().find((c) => c.slug === categ
   color: var(--color-textMuted);
 }
 
-.articles-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 28px;
+.articles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 .category-empty {
@@ -94,9 +94,4 @@ const categoryInfo = computed(() => getCategories().find((c) => c.slug === categ
   color: var(--color-primary);
 }
 
-@media (max-width: 768px) {
-  .articles-grid {
-    grid-template-columns: 1fr;
-  }
-}
 </style>

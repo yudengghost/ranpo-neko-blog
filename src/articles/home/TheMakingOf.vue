@@ -11,6 +11,7 @@ export const meta: ArticleMeta = {
   publishedAt: '2026-07-02',
   readingTime: 4,
   featured: true,
+  coverImage: '/images/bauhaus-blue.jpg',
 }
 
 export default { name: 'TheMakingOfArticle' }

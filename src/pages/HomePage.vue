@@ -5,7 +5,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useArticles } from '@/composables/useArticles'
 import { siteConfig } from '@/config'
 import ArticleCard from '@/components/blog/ArticleCard.vue'
-import type { ArticleMeta } from '@/types'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -14,14 +13,12 @@ const articles = getHomeArticles()
 const featuredRef = ref<HTMLElement>()
 
 onMounted(() => {
-  // Hero entrance animation
   const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
   tl.from('.hero-title', { y: 100, opacity: 0, duration: 1.4 })
     .from('.hero-line', { scaleX: 0, transformOrigin: 'left center', duration: 1.2 }, '-=0.8')
     .from('.hero-subtitle', { y: 40, opacity: 0, duration: 0.8 }, '-=0.6')
     .from('.hero-scroll-hint', { opacity: 0, y: 10, duration: 0.6 }, '-=0.2')
 
-  // Scroll reveal for cards
   if (featuredRef.value) {
     const cards = featuredRef.value.querySelectorAll('.article-card')
     cards.forEach((card, i) => {
@@ -46,15 +43,12 @@ onMounted(() => {
   <div class="home-page">
     <!-- Hero Section -->
     <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-overlay"></div>
       <div class="hero-content">
         <h1 class="hero-title">{{ siteConfig.title }}</h1>
         <div class="hero-line"></div>
         <p class="hero-subtitle">{{ siteConfig.subtitle }}</p>
-      </div>
-      <div class="hero-decoration">
-        <div class="hero-ring hero-ring-1"></div>
-        <div class="hero-ring hero-ring-2"></div>
-        <div class="hero-ring hero-ring-3"></div>
       </div>
       <div class="hero-scroll-hint">
         <span class="scroll-line"></span>
@@ -69,7 +63,7 @@ onMounted(() => {
         <div class="section-line"></div>
       </div>
 
-      <div v-if="articles.length > 0" class="articles-grid">
+      <div v-if="articles.length > 0" class="articles-list">
         <ArticleCard v-for="article in articles" :key="article.slug" :article="article" />
       </div>
 
@@ -99,6 +93,27 @@ onMounted(() => {
   overflow: hidden;
 }
 
+.hero-bg {
+  position: absolute;
+  inset: -40px;
+  background-image: url('/images/hero-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-bg) 30%, transparent) 0%,
+    color-mix(in srgb, var(--color-bg) 60%, transparent) 50%,
+    var(--color-bg) 100%
+  );
+  transition: background 0.6s ease;
+}
+
 .hero-content {
   position: relative;
   z-index: 2;
@@ -114,6 +129,7 @@ onMounted(() => {
   letter-spacing: -0.02em;
   color: var(--color-text);
   margin-bottom: 32px;
+  text-shadow: 0 2px 40px var(--color-bg);
   transition: color 0.6s ease;
 }
 
@@ -134,41 +150,6 @@ onMounted(() => {
   letter-spacing: 0.04em;
   color: var(--color-textSecondary);
   transition: color 0.6s ease;
-}
-
-/* Hero decorative rings */
-.hero-decoration {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.hero-ring {
-  position: absolute;
-  border-radius: 50%;
-  border: 1px solid var(--color-border);
-  transition: border-color 0.6s ease;
-}
-
-.hero-ring-1 {
-  width: min(60vw, 500px);
-  height: min(60vw, 500px);
-  opacity: 0.3;
-}
-
-.hero-ring-2 {
-  width: min(75vw, 650px);
-  height: min(75vw, 650px);
-  opacity: 0.2;
-}
-
-.hero-ring-3 {
-  width: min(90vw, 800px);
-  height: min(90vw, 800px);
-  opacity: 0.1;
 }
 
 /* Scroll hint */
@@ -227,10 +208,10 @@ onMounted(() => {
   transition: background-color 0.6s ease;
 }
 
-.articles-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 28px;
+.articles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 /* Empty state */
@@ -261,10 +242,6 @@ onMounted(() => {
 }
 
 @media (max-width: 768px) {
-  .articles-grid {
-    grid-template-columns: 1fr;
-  }
-
   .hero {
     min-height: calc(100vh - 100px);
   }

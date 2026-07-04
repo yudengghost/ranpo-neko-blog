@@ -11,6 +11,7 @@ export const meta: ArticleMeta = {
   publishedAt: '2026-06-20',
   readingTime: 5,
   featured: false,
+  coverImage: '/images/code-screen.jpg',
 }
 
 export default { name: 'PixiJSGaspCreativeCodingArticle' }

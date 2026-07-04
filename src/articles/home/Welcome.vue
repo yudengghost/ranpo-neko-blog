@@ -11,6 +11,7 @@ export const meta: ArticleMeta = {
   publishedAt: '2026-07-01',
   readingTime: 2,
   featured: true,
+  coverImage: '/images/vintage-desk.jpg',
 }
 
 export default { name: 'WelcomeArticle' }
