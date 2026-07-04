@@ -3,12 +3,15 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { gsap } from 'gsap'
 import ColorSwitcher from '@/components/ui/ColorSwitcher.vue'
+import SearchModal from '@/components/blog/SearchModal.vue'
 import { siteConfig } from '@/config'
 import { useArticles } from '@/composables/useArticles'
 
 const { getCategories } = useArticles()
 const categories = getCategories()
 const mobileOpen = ref(false)
+const catDropdownOpen = ref(false)
+const searchOpen = ref(false)
 const navRef = ref<HTMLElement>()
 
 // ---- Spring physics for nav links ----
@@ -33,7 +36,7 @@ const SCALE_STIFFNESS = 0.15
 const SCALE_DAMPING = 0.3
 const MAX_PULL = 18
 const SCALE_AMOUNT = 1.06
-const ATTRACT_RADIUS = 200
+const ATTRACT_RADIUS = 80
 
 function springStep() {
   for (const link of springLinks) {
@@ -165,16 +168,33 @@ onUnmounted(() => {
 
       <nav ref="navRef" class="header-nav" :class="{ open: mobileOpen }">
         <RouterLink to="/" class="nav-link" @mousedown="handleClick" @click="mobileOpen = false">Home</RouterLink>
-        <RouterLink
-          v-for="cat in categories"
-          :key="cat.slug"
-          :to="`/category/${cat.slug}`"
-          class="nav-link"
-          @mousedown="handleClick"
-          @click="mobileOpen = false"
+
+        <!-- Categories dropdown -->
+        <div
+          class="nav-dropdown"
+          @mouseenter="catDropdownOpen = true"
+          @mouseleave="catDropdownOpen = false"
         >
-          {{ cat.name }}
-        </RouterLink>
+          <span class="nav-link" @mousedown="handleClick">Categories</span>
+          <div class="dropdown-panel" v-show="catDropdownOpen">
+            <RouterLink
+              v-for="cat in categories"
+              :key="cat.slug"
+              :to="`/category/${cat.slug}`"
+              class="dropdown-link"
+              @mousedown="handleClick"
+              @click="mobileOpen = false"
+            >
+              {{ cat.name }}
+              <span class="dropdown-count">{{ cat.articleCount }}</span>
+            </RouterLink>
+            <div v-if="categories.length === 0" class="dropdown-empty">
+              No categories yet
+            </div>
+          </div>
+        </div>
+
+        <span class="nav-link" @mousedown="handleClick" @click="searchOpen = true">Search</span>
         <RouterLink to="/about" class="nav-link" @mousedown="handleClick" @click="mobileOpen = false">About</RouterLink>
       </nav>
 
@@ -190,6 +210,7 @@ onUnmounted(() => {
         </button>
       </div>
     </div>
+    <SearchModal :open="searchOpen" @close="searchOpen = false" />
   </header>
 </template>
 
@@ -302,6 +323,61 @@ onUnmounted(() => {
   pointer-events: none;
   z-index: 10;
   opacity: 1;
+}
+
+/* ===== Categories Dropdown ===== */
+.nav-dropdown {
+  position: relative;
+}
+
+.dropdown-panel {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 8px;
+  min-width: 160px;
+  box-shadow: 0 12px 36px var(--color-glow);
+  z-index: 150;
+  transition: background-color 0.6s ease, border-color 0.6s ease;
+}
+
+.dropdown-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 300;
+  letter-spacing: 0.03em;
+  color: var(--color-text);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.15s ease;
+}
+
+.dropdown-link:hover {
+  background: var(--color-surfaceHover);
+}
+
+.dropdown-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--color-textMuted);
+}
+
+.dropdown-empty {
+  padding: 10px 14px;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 300;
+  color: var(--color-textMuted);
 }
 
 /* ===== Actions ===== */

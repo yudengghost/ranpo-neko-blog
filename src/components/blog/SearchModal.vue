@@ -1,116 +1,114 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, nextTick } from 'vue'
+import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useArticles } from '@/composables/useArticles'
 
+defineProps<{ open: boolean }>()
 const emit = defineEmits<{ close: [] }>()
 
 const { getAll } = useArticles()
-const allArticles = getAll()
+const articles = getAll()
 const query = ref('')
-const inputRef = ref<HTMLInputElement>()
 
 const results = computed(() => {
-  const q = query.value.trim().toLowerCase()
-  if (!q) return []
-  return allArticles.filter(
-    (a) =>
-      a.title.toLowerCase().includes(q) ||
-      a.excerpt.toLowerCase().includes(q) ||
-      a.tags.some((t) => t.toLowerCase().includes(q)) ||
-      a.category.toLowerCase().includes(q),
-  )
+  if (!query.value.trim()) return []
+  const q = query.value.toLowerCase()
+  return articles
+    .filter(
+      (a) =>
+        a.title.toLowerCase().includes(q) ||
+        a.excerpt.toLowerCase().includes(q) ||
+        a.tags.some((t) => t.toLowerCase().includes(q)),
+    )
+    .slice(0, 8)
 })
 
-onMounted(() => {
-  nextTick(() => inputRef.value?.focus())
-})
-
-function onBackdrop(e: MouseEvent) {
-  if ((e.target as HTMLElement).classList.contains('search-backdrop')) {
-    emit('close')
-  }
-}
-
-function onKeydown(e: KeyboardEvent) {
-  if (e.key === 'Escape') emit('close')
+function onClose() {
+  query.value = ''
+  emit('close')
 }
 </script>
 
 <template>
-  <Teleport to="body">
-    <div class="search-backdrop" @click="onBackdrop" @keydown="onKeydown">
-      <div class="search-modal">
-        <div class="search-bar">
+  <Transition name="modal">
+    <div v-if="open" class="modal-overlay" @click.self="onClose">
+      <div class="modal-panel">
+        <div class="modal-header">
           <span class="search-icon">&#8981;</span>
           <input
             ref="inputRef"
             v-model="query"
             type="text"
-            placeholder="Search articles..."
             class="search-input"
+            placeholder="Search articles..."
+            autofocus
           />
-          <button class="search-close" @click="emit('close')">&times;</button>
+          <button class="modal-close" @click="onClose">&times;</button>
         </div>
 
-        <div class="search-results" v-if="query.trim()">
+        <div class="modal-results" v-if="query.trim()">
           <p class="results-count" v-if="results.length > 0">
-            {{ results.length }} article{{ results.length !== 1 ? 's' : '' }} found
+            {{ results.length }} result{{ results.length !== 1 ? 's' : '' }}
           </p>
-          <p class="results-empty" v-else>No articles found.</p>
 
           <RouterLink
             v-for="article in results"
             :key="article.slug"
             :to="`/article/${article.slug}`"
-            class="search-result-item"
-            @click="emit('close')"
+            class="result-item"
+            @click="onClose"
           >
             <span class="result-category">{{ article.category }}</span>
             <span class="result-title">{{ article.title }}</span>
             <span class="result-excerpt">{{ article.excerpt }}</span>
           </RouterLink>
+
+          <p v-if="query.trim() && results.length === 0" class="no-results">
+            No articles found for "{{ query }}"
+          </p>
         </div>
 
-        <div class="search-hint" v-else>
-          <p>Type to search through articles, tags, and categories.</p>
+        <div v-else class="modal-hint">
+          <p>Type to search by title, excerpt, or tag.</p>
         </div>
       </div>
     </div>
-  </Teleport>
+  </Transition>
 </template>
 
 <style scoped>
-.search-backdrop {
+.modal-overlay {
   position: fixed;
   inset: 0;
-  z-index: 300;
-  background: color-mix(in srgb, var(--color-bg) 70%, transparent);
+  z-index: 200;
+  background: color-mix(in srgb, var(--color-bg) 75%, transparent);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   display: flex;
+  align-items: flex-start;
   justify-content: center;
-  padding-top: 14vh;
+  padding-top: 20vh;
 }
 
-.search-modal {
-  width: 100%;
-  max-width: 600px;
-  margin: 0 20px;
-  max-height: 70vh;
+.modal-panel {
+  width: 560px;
+  max-width: 92vw;
+  max-height: 60vh;
   display: flex;
   flex-direction: column;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: background-color 0.6s ease, border-color 0.6s ease;
 }
 
-.search-bar {
+.modal-header {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 14px 18px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 14px;
-  transition: background-color 0.6s ease, border-color 0.6s ease;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--color-borderLight);
 }
 
 .search-icon {
@@ -125,68 +123,57 @@ function onKeydown(e: KeyboardEvent) {
   outline: none;
   background: transparent;
   font-family: 'Work Sans', sans-serif;
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   font-weight: 300;
   color: var(--color-text);
-  caret-color: var(--color-primary);
 }
 
 .search-input::placeholder {
   color: var(--color-textMuted);
 }
 
-.search-close {
+.modal-close {
   background: none;
   border: none;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   color: var(--color-textMuted);
   cursor: pointer;
   padding: 0 4px;
   line-height: 1;
-  transition: color 0.2s ease;
+  flex-shrink: 0;
 }
 
-.search-close:hover {
-  color: var(--color-text);
-}
-
-.search-results {
-  margin-top: 12px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-borderLight);
-  border-radius: 14px;
-  overflow: hidden;
+.modal-results {
   overflow-y: auto;
-  max-height: 50vh;
-  transition: background-color 0.6s ease, border-color 0.6s ease;
+  flex: 1;
 }
 
-.results-count,
-.results-empty {
-  padding: 16px 20px 8px;
+.results-count {
   font-family: 'Work Sans', sans-serif;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 300;
   color: var(--color-textMuted);
+  padding: 12px 20px 4px;
 }
 
-.search-result-item {
+.result-item {
   display: flex;
   flex-direction: column;
   gap: 2px;
   padding: 14px 20px;
   text-decoration: none;
+  border-bottom: 1px solid var(--color-borderLight);
   transition: background-color 0.2s ease;
 }
 
-.search-result-item:hover {
+.result-item:hover {
   background: var(--color-surfaceHover);
 }
 
 .result-category {
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.65rem;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--color-primary);
 }
@@ -202,18 +189,52 @@ function onKeydown(e: KeyboardEvent) {
   font-family: 'Work Sans', sans-serif;
   font-size: 0.8rem;
   font-weight: 300;
-  color: var(--color-textMuted);
+  color: var(--color-textSecondary);
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
-.search-hint {
-  margin-top: 12px;
+.no-results {
+  padding: 32px 20px;
   text-align: center;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 300;
+  color: var(--color-textMuted);
+}
+
+.modal-hint {
+  padding: 32px 20px;
+  text-align: center;
+}
+
+.modal-hint p {
   font-family: 'Work Sans', sans-serif;
   font-size: 0.85rem;
   font-weight: 300;
   color: var(--color-textMuted);
+}
+
+/* Modal transition */
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.25s ease;
+}
+.modal-enter-active .modal-panel,
+.modal-leave-active .modal-panel {
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+.modal-enter-from .modal-panel {
+  transform: translateY(-16px) scale(0.97);
+  opacity: 0;
+}
+.modal-leave-to .modal-panel {
+  transform: translateY(-16px) scale(0.97);
+  opacity: 0;
 }
 </style>
