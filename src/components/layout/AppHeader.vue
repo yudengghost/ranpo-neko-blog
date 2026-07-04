@@ -490,7 +490,6 @@ onUnmounted(() => {
     background: var(--color-bg);
     border-bottom: 1px solid var(--color-border);
     flex-direction: column;
-    align-items: stretch;
     gap: 0;
     padding: 16px 0;
     transform: translateY(-100%);
@@ -514,16 +513,8 @@ onUnmounted(() => {
     display: none;
   }
 
-  .cat-arrow {
-    transform: rotate(-90deg);
-  }
-  .cat-arrow.open {
-    transform: rotate(0deg);
-  }
-
   .dropdown-panel {
-    top: 0;
-    left: 100%;
+    left: 0;
     transform: none;
   }
 }
