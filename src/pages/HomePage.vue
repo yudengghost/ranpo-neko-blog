@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useArticles } from '@/composables/useArticles'
@@ -21,100 +21,109 @@ const subtitlePhrases = [
   '于克制之中见丰富',
 ]
 
+const delay = (ms: number) => new Promise<void>((r) => setTimeout(r, ms))
+
+let ctx: gsap.Context | null = null
+let cancelled = false
+
 onMounted(() => {
-  const CHAR_SPEED = 0.05
-  const PAUSE_AFTER_TYPE = 2.5
-  const PAUSE_AFTER_DELETE = 0.3
+  cancelled = false
+  ctx = gsap.context(() => {
+    const CHAR_DURATION = 0.05
+    const PAUSE_AFTER_TYPE_MS = 2500
+    const PAUSE_AFTER_DELETE_MS = 300
 
-  // Start cursor blink (runs forever)
-  const startCursor = () => {
-    gsap.set('.hero-subtitle-cursor', { opacity: 1 })
-    gsap.to('.hero-subtitle-cursor', {
-      opacity: 0,
-      duration: 0.55,
-      repeat: -1,
-      yoyo: true,
-      ease: 'steps(1)',
-    })
-  }
+    // Cursor blink
+    const cursorTween = gsap.fromTo(
+      '.hero-subtitle-cursor',
+      { opacity: 0 },
+      {
+        opacity: 1,
+        duration: 0.55,
+        repeat: -1,
+        yoyo: true,
+        ease: 'steps(1)',
+      },
+    )
 
-  // Type a phrase: animate obj.i from 0 → text.length
-  const typeText = (text: string): Promise<void> =>
-    new Promise((resolve) => {
-      const obj = { i: 0 }
-      gsap.to(obj, {
-        i: text.length,
-        duration: text.length * CHAR_SPEED,
-        ease: 'none',
-        onUpdate() {
-          if (subtitleRef.value) subtitleRef.value.textContent = text.slice(0, Math.floor(obj.i))
-        },
-        onComplete() {
-          if (subtitleRef.value) subtitleRef.value.textContent = text
-          resolve()
-        },
+    // Animate textContent from startLen to endLen using text as source
+    const animateText = (
+      text: string,
+      startLen: number,
+      endLen: number,
+      speedMul = 1,
+    ): Promise<void> =>
+      new Promise((resolve) => {
+        const obj = { i: startLen }
+        const len = Math.abs(endLen - startLen)
+        gsap.to(obj, {
+          i: endLen,
+          duration: len * CHAR_DURATION * speedMul,
+          ease: 'none',
+          onUpdate() {
+            if (subtitleRef.value) {
+              subtitleRef.value.textContent = text.slice(0, Math.floor(obj.i))
+            }
+          },
+          onComplete() {
+            if (subtitleRef.value) subtitleRef.value.textContent = text.slice(0, endLen)
+            resolve()
+          },
+        })
       })
-    })
 
-  // Delete current text: animate remaining length → 0
-  const deleteText = (): Promise<void> =>
-    new Promise((resolve) => {
+    const typeText = (text: string) => animateText(text, 0, text.length)
+    const deleteText = () => {
       const current = subtitleRef.value?.textContent || ''
-      const len = current.length
-      if (len === 0) return resolve()
-      const obj = { i: len }
-      gsap.to(obj, {
-        i: 0,
-        duration: len * CHAR_SPEED * 0.6,
-        ease: 'none',
-        onUpdate() {
-          if (subtitleRef.value) subtitleRef.value.textContent = current.slice(0, Math.floor(obj.i))
-        },
-        onComplete() {
-          if (subtitleRef.value) subtitleRef.value.textContent = ''
-          resolve()
-        },
-      })
-    })
-
-  // Loop through phrases
-  async function runLoop() {
-    let idx = 0
-    startCursor()
-    await new Promise((r) => setTimeout(r, 200))
-    while (true) {
-      await typeText(subtitlePhrases[idx]!)
-      await new Promise((r) => setTimeout(r, PAUSE_AFTER_TYPE * 1000))
-      await deleteText()
-      await new Promise((r) => setTimeout(r, PAUSE_AFTER_DELETE * 1000))
-      idx = (idx + 1) % subtitlePhrases.length
+      return animateText(current, current.length, 0, 0.6)
     }
-  }
 
-  // Main hero timeline
-  const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
-  tl.from('.hero-title', { y: 100, opacity: 0, duration: 1.4 })
-    .from('.hero-line', { scaleX: 0, transformOrigin: 'left center', duration: 1.2 }, '-=0.8')
-    .add(() => { runLoop() }, '-=0.6')
-    .from('.hero-scroll-hint', { opacity: 0, y: 10, duration: 0.6 }, '-=0.2')
+    async function runLoop() {
+      let idx = 0
+      await delay(200)
+      if (cancelled) return
+      while (!cancelled) {
+        await typeText(subtitlePhrases[idx] ?? subtitlePhrases[0]!)
+        await delay(PAUSE_AFTER_TYPE_MS)
+        if (cancelled) return
+        await deleteText()
+        await delay(PAUSE_AFTER_DELETE_MS)
+        if (cancelled) return
+        idx = (idx + 1) % subtitlePhrases.length
+      }
+    }
 
-  if (featuredRef.value) {
-    const cards = featuredRef.value.querySelectorAll('.article-card')
-    cards.forEach((card, i) => {
-      gsap.from(card, {
-        scrollTrigger: {
-          trigger: card,
-          start: 'top bottom-=100',
-          toggleActions: 'play none none none',
-        },
-        y: 60,
-        opacity: 0,
-        duration: 0.8,
-        delay: i * 0.12,
-        ease: 'power2.out',
+    // Main hero timeline
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
+    tl.from('.hero-title', { y: 100, opacity: 0, duration: 1.4 })
+      .from('.hero-line', { scaleX: 0, transformOrigin: 'left center', duration: 1.2 }, '-=0.8')
+      .add(() => { runLoop() }, '-=0.6')
+      .from('.hero-scroll-hint', { opacity: 0, y: 10, duration: 0.6 }, '-=0.2')
+
+    if (featuredRef.value) {
+      const cards = featuredRef.value.querySelectorAll('.article-card')
+      cards.forEach((card, i) => {
+        gsap.from(card, {
+          scrollTrigger: {
+            trigger: card,
+            start: 'top bottom-=100',
+            toggleActions: 'play none none none',
+          },
+          y: 60,
+          opacity: 0,
+          duration: 0.8,
+          delay: i * 0.12,
+          ease: 'power2.out',
+        })
       })
-    })
-  }
+    }
+  })
+})
+
+onUnmounted(() => {
+  cancelled = true
+  ctx?.revert()
+  ctx = null
 })
 </script>
 
