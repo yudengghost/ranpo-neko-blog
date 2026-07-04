@@ -512,5 +512,18 @@ onUnmounted(() => {
   .nav-link::after {
     display: none;
   }
+
+  .cat-arrow {
+    transform: rotate(-90deg);
+  }
+  .cat-arrow.open {
+    transform: rotate(0deg);
+  }
+
+  .dropdown-panel {
+    top: 0;
+    left: 100%;
+    transform: none;
+  }
 }
 </style>
