@@ -1,8 +1,20 @@
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import type { ArticleMeta } from '@/types'
 import { RouterLink } from 'vue-router'
+import { useStats } from '@/composables/useStats'
 
-defineProps<{ article: ArticleMeta }>()
+const props = defineProps<{ article: ArticleMeta }>()
+
+const { getArticleStats } = useStats()
+const views = ref(0)
+const likes = ref(0)
+
+onMounted(async () => {
+  const s = await getArticleStats(props.article.slug)
+  views.value = s.views
+  likes.value = s.likes
+})
 </script>
 
 <template>
@@ -32,6 +44,10 @@ defineProps<{ article: ArticleMeta }>()
         }}</time>
         <span class="meta-dot">&middot;</span>
         <span>{{ article.readingTime }} min read</span>
+        <span class="meta-dot">&middot;</span>
+        <span>{{ views }} reads</span>
+        <span class="meta-dot">&middot;</span>
+        <span>&#9650; {{ likes }}</span>
       </div>
     </div>
   </RouterLink>
