@@ -1,0 +1,65 @@
+name: Update Stats from Issues
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  update-stats:
+    if: contains(github.event.issue.labels.*.name, 'stats-update')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Parse and update stats
+        run: |
+          ISSUE_BODY=$(echo '${{ github.event.issue.body }}' | sed 's/\r//g')
+
+          # Extract action type and payload from issue body
+          # Expected format: key=value lines
+          ACTION=$(echo "$ISSUE_BODY" | grep '^action=' | cut -d= -f2)
+          SLUG=$(echo "$ISSUE_BODY" | grep '^slug=' | cut -d= -f2)
+          TYPE=$(echo "$ISSUE_BODY" | grep '^type=' | cut -d= -f2 || echo '')
+
+          python3 << PYEOF
+          import json, os
+
+          with open('public/data/stats.json') as f:
+              stats = json.load(f)
+
+          action = os.environ['ACTION']
+          slug = os.environ['SLUG']
+          rtype = os.environ['TYPE']
+
+          if action == 'visit':
+              stats['totalVisits'] += 1
+              if slug:
+                  stats['articles'].setdefault(slug, {'views': 0, 'likes': 0, 'dislikes': 0})
+                  stats['articles'][slug]['views'] += 1
+          elif action == 'react':
+              if rtype in ('like', 'dislike'):
+                  stats['articles'].setdefault(slug, {'views': 0, 'likes': 0, 'dislikes': 0})
+                  stats['articles'][slug][rtype + 's'] += 1
+          elif action == 'unreact':
+              if rtype in ('like', 'dislike'):
+                  stats['articles'].setdefault(slug, {'views': 0, 'likes': 0, 'dislikes': 0})
+                  stats['articles'][slug][rtype + 's'] = max(0, stats['articles'][slug][rtype + 's'] - 1)
+
+          with open('public/data/stats.json', 'w') as f:
+              json.dump(stats, f, indent=2)
+              f.write('\n')
+          PYEOF
+
+      - name: Commit and close issue
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/data/stats.json
+          git diff --staged --quiet || git commit -m "chore: update stats from #${{ github.event.issue.number }}"
+          git push
+          gh issue close ${{ github.event.issue.number }} -c "Stats updated — refresh to see changes."
+        env:
+          GH_TOKEN: ${{ github.token }}

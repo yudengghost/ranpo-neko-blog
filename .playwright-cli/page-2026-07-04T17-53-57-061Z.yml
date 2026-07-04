@@ -1,0 +1,69 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - link "RanpoNeko" [ref=e6] [cursor=pointer]:
+          - /url: "#/"
+          - generic [ref=e7]: RanpoNeko
+        - navigation [ref=e8]:
+          - link "Home" [ref=e9] [cursor=pointer]:
+            - /url: "#/"
+          - generic [ref=e10]:
+            - generic [ref=e11] [cursor=pointer]:
+              - text: Categories
+              - generic [ref=e12]: ▾
+            - generic [ref=e76]:
+              - link "Tech 1" [ref=e77] [cursor=pointer]:
+                - /url: "#/category/tech"
+                - text: Tech
+                - generic [ref=e78]: "1"
+              - link "Art 1" [ref=e79] [cursor=pointer]:
+                - /url: "#/category/art"
+                - text: Art
+                - generic [ref=e80]: "1"
+          - generic [ref=e13]: Search
+          - link "About" [ref=e14] [cursor=pointer]:
+            - /url: "#/about"
+        - 'button "Current theme: 薄荷奶油" [ref=e17] [cursor=pointer]'
+    - main [ref=e19]:
+      - generic [ref=e20]:
+        - generic [ref=e21]:
+          - generic [ref=e24]:
+            - heading "RanpoNeko Blog" [level=1] [ref=e25]
+            - paragraph [ref=e27]: 漫步于几何线条之间的创意日志
+          - generic [ref=e30]: Scroll
+        - generic [ref=e32]:
+          - heading "Featured" [level=2] [ref=e34]
+          - generic [ref=e36]:
+            - link "The Making of This Blog home The Making of This Blog A behind-the-scenes look at the technology stack, design decisions, and architecture of this geometric blog. 2026年7月2日 · 4 min read" [ref=e37] [cursor=pointer]:
+              - /url: "#/article/the-making-of"
+              - img "The Making of This Blog" [ref=e39]
+              - generic [ref=e40]:
+                - generic [ref=e41]: home
+                - heading "The Making of This Blog" [level=3] [ref=e42]
+                - paragraph [ref=e43]: A behind-the-scenes look at the technology stack, design decisions, and architecture of this geometric blog.
+                - generic [ref=e44]:
+                  - time [ref=e45]: 2026年7月2日
+                  - generic [ref=e46]: ·
+                  - generic [ref=e47]: 4 min read
+            - link "Welcome to RanpoNeko Blog home Welcome to RanpoNeko Blog A personal blog blending geometric aesthetics with creative writing, built with Vue, PixiJS & GSAP. 2026年7月1日 · 2 min read" [ref=e48] [cursor=pointer]:
+              - /url: "#/article/welcome"
+              - img "Welcome to RanpoNeko Blog" [ref=e50]
+              - generic [ref=e51]:
+                - generic [ref=e52]: home
+                - heading "Welcome to RanpoNeko Blog" [level=3] [ref=e53]
+                - paragraph [ref=e54]: A personal blog blending geometric aesthetics with creative writing, built with Vue, PixiJS & GSAP.
+                - generic [ref=e55]:
+                  - time [ref=e56]: 2026年7月1日
+                  - generic [ref=e57]: ·
+                  - generic [ref=e58]: 2 min read
+    - contentinfo [ref=e59]:
+      - generic [ref=e60]:
+        - paragraph [ref=e62]: © 2026 RanpoNeko — Built with Vue, PixiJS & GSAP
+        - link "GitHub" [ref=e63] [cursor=pointer]:
+          - /url: https://github.com/yudengghost
+  - generic [ref=e64]:
+    - generic "Toggle devtools panel" [ref=e65] [cursor=pointer]:
+      - img [ref=e66]
+    - generic "Toggle Component Inspector" [ref=e71] [cursor=pointer]:
+      - img [ref=e72]

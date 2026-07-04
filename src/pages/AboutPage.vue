@@ -4,8 +4,7 @@ import { gsap } from 'gsap'
 import { siteConfig } from '@/config'
 import { useStats } from '@/composables/useStats'
 
-const { getTotalVisits } = useStats()
-const totalVisits = getTotalVisits()
+const { stats } = useStats()
 
 onMounted(() => {
   gsap.from('.about-title', { y: 50, opacity: 0, duration: 1, ease: 'power3.out' })
@@ -54,7 +53,7 @@ onMounted(() => {
 
       <div class="about-stats">
         <div class="stats-item">
-          <span class="stats-number">{{ totalVisits }}</span>
+          <span class="stats-number">{{ stats.totalVisits }}</span>
           <span class="stats-label">Total Visits</span>
         </div>
       </div>

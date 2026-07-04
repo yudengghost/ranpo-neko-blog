@@ -1,0 +1,343 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - navigation [ref=e5]:
+        - link "RanpoNeko" [ref=e6] [cursor=pointer]:
+          - /url: "#/"
+          - img [ref=e8]
+          - generic [ref=e10]: RanpoNeko
+        - generic [ref=e11]:
+          - link "首页" [ref=e12] [cursor=pointer]:
+            - /url: "#/"
+            - img [ref=e13]
+            - text: 首页
+          - link "分类" [ref=e15] [cursor=pointer]:
+            - /url: "#/categories"
+            - img [ref=e16]
+            - text: 分类
+          - link "标签" [ref=e18] [cursor=pointer]:
+            - /url: "#/tags"
+            - img [ref=e19]
+            - text: 标签
+          - link "关于" [ref=e21] [cursor=pointer]:
+            - /url: "#/about"
+            - img [ref=e22]
+            - text: 关于
+        - link [ref=e25] [cursor=pointer]:
+          - /url: https://github.com/yudengghost
+          - img [ref=e26]
+    - main [ref=e28]:
+      - generic [ref=e29]:
+        - generic [ref=e31]:
+          - img "RanpoNeko" [ref=e33]
+          - heading "乱步猫的博客" [level=1] [ref=e34]
+          - paragraph [ref=e35]: 在代码与艺术的交叉路口散步
+        - generic [ref=e37]:
+          - generic [ref=e38]:
+            - link "代码中的几何之美 技术 代码中的几何之美 当数学的精确与代码的优雅相遇，几何学在编程世界中展现出令人惊叹的美感... 2026-06-10 6 min" [ref=e40] [cursor=pointer]:
+              - /url: "#/article/geometric-beauty-in-code"
+              - generic [ref=e41]:
+                - img "代码中的几何之美" [ref=e42]
+                - generic [ref=e44]:
+                  - generic [ref=e45]:
+                    - img [ref=e46]
+                    - generic [ref=e48]: 技术
+                  - heading "代码中的几何之美" [level=2] [ref=e49]
+                  - paragraph [ref=e50]: 当数学的精确与代码的优雅相遇，几何学在编程世界中展现出令人惊叹的美感...
+                  - generic [ref=e51]:
+                    - generic [ref=e52]:
+                      - img [ref=e53]
+                      - text: 2026-06-10
+                    - generic [ref=e55]:
+                      - img [ref=e56]
+                      - text: 6 min
+            - generic [ref=e58]:
+              - link "霓虹城市的低语 霓虹城市的低语 2026-06-08" [ref=e60] [cursor=pointer]:
+                - /url: "#/article/whispers-of-neon-city"
+                - generic [ref=e61]:
+                  - img "霓虹城市的低语"
+                  - generic [ref=e63]:
+                    - heading "霓虹城市的低语" [level=3] [ref=e64]
+                    - paragraph [ref=e65]: 2026-06-08
+              - link "CSS Grid 完全掌握：从入门到艺术创作 CSS Grid 完全掌握：从入门到艺术创作 2026-05-28" [ref=e67] [cursor=pointer]:
+                - /url: "#/article/css-grid-mastery"
+                - generic [ref=e68]:
+                  - img "CSS Grid 完全掌握：从入门到艺术创作" [ref=e69]
+                  - generic [ref=e71]:
+                    - heading "CSS Grid 完全掌握：从入门到艺术创作" [level=3] [ref=e72]
+                    - paragraph [ref=e73]: 2026-05-28
+          - generic [ref=e74]:
+            - generic [ref=e75]:
+              - heading "最新文章" [level=2] [ref=e77]
+              - generic [ref=e78]:
+                - article [ref=e79]:
+                  - link "代码中的几何之美 技术" [ref=e80] [cursor=pointer]:
+                    - /url: "#/article/geometric-beauty-in-code"
+                    - generic [ref=e81]:
+                      - img "代码中的几何之美" [ref=e82]
+                      - generic [ref=e85]:
+                        - img [ref=e86]
+                        - generic [ref=e88]: 技术
+                  - generic [ref=e89]:
+                    - link "代码中的几何之美" [ref=e90] [cursor=pointer]:
+                      - /url: "#/article/geometric-beauty-in-code"
+                      - heading "代码中的几何之美" [level=3] [ref=e91]
+                    - paragraph [ref=e92]: 当数学的精确与代码的优雅相遇，几何学在编程世界中展现出令人惊叹的美感...
+                    - generic [ref=e93]:
+                      - generic [ref=e94]:
+                        - generic [ref=e95]:
+                          - img [ref=e96]
+                          - text: 2026-06-10
+                        - generic [ref=e98]:
+                          - img [ref=e99]
+                          - text: 6 min
+                      - generic [ref=e101]:
+                        - img [ref=e102]
+                        - text: "2"
+                - article [ref=e104]:
+                  - link "霓虹城市的低语 艺术" [ref=e105] [cursor=pointer]:
+                    - /url: "#/article/whispers-of-neon-city"
+                    - generic [ref=e106]:
+                      - img "霓虹城市的低语"
+                      - generic [ref=e109]:
+                        - img [ref=e110]
+                        - generic [ref=e112]: 艺术
+                  - generic [ref=e113]:
+                    - link "霓虹城市的低语" [ref=e114] [cursor=pointer]:
+                      - /url: "#/article/whispers-of-neon-city"
+                      - heading "霓虹城市的低语" [level=3] [ref=e115]
+                    - paragraph [ref=e116]: 在钢铁与玻璃构建的都市丛林中，每一盏霓虹灯都在讲述着自己的故事...
+                    - generic [ref=e117]:
+                      - generic [ref=e118]:
+                        - generic [ref=e119]:
+                          - img [ref=e120]
+                          - text: 2026-06-08
+                        - generic [ref=e122]:
+                          - img [ref=e123]
+                          - text: 5 min
+                      - generic [ref=e125]:
+                        - img [ref=e126]
+                        - text: "1"
+                - article [ref=e128]:
+                  - link "Vue 3 Composable 设计模式深入解析 技术" [ref=e129] [cursor=pointer]:
+                    - /url: "#/article/vue3-composable-patterns"
+                    - generic [ref=e130]:
+                      - img "Vue 3 Composable 设计模式深入解析"
+                      - generic [ref=e133]:
+                        - img [ref=e134]
+                        - generic [ref=e136]: 技术
+                  - generic [ref=e137]:
+                    - link "Vue 3 Composable 设计模式深入解析" [ref=e138] [cursor=pointer]:
+                      - /url: "#/article/vue3-composable-patterns"
+                      - heading "Vue 3 Composable 设计模式深入解析" [level=3] [ref=e139]
+                    - paragraph [ref=e140]: 探索 Vue 3 Composition API 中的高级组合式函数模式，提升代码复用性...
+                    - generic [ref=e141]:
+                      - generic [ref=e142]:
+                        - generic [ref=e143]:
+                          - img [ref=e144]
+                          - text: 2026-06-05
+                        - generic [ref=e146]:
+                          - img [ref=e147]
+                          - text: 8 min
+                      - generic [ref=e149]:
+                        - img [ref=e150]
+                        - text: "2"
+                - article [ref=e152]:
+                  - link "枯山水：日本禅宗园林中的编程哲学 生活" [ref=e153] [cursor=pointer]:
+                    - /url: "#/article/zen-of-japanese-garden"
+                    - generic [ref=e154]:
+                      - img "枯山水：日本禅宗园林中的编程哲学"
+                      - generic [ref=e157]:
+                        - img [ref=e158]
+                        - generic [ref=e160]: 生活
+                  - generic [ref=e161]:
+                    - link "枯山水：日本禅宗园林中的编程哲学" [ref=e162] [cursor=pointer]:
+                      - /url: "#/article/zen-of-japanese-garden"
+                      - heading "枯山水：日本禅宗园林中的编程哲学" [level=3] [ref=e163]
+                    - paragraph [ref=e164]: 从枯山水的极简美学中，我领悟到了代码架构的深刻道理...
+                    - generic [ref=e165]:
+                      - generic [ref=e166]:
+                        - generic [ref=e167]:
+                          - img [ref=e168]
+                          - text: 2026-06-02
+                        - generic [ref=e170]:
+                          - img [ref=e171]
+                          - text: 5 min
+                      - generic [ref=e173]:
+                        - img [ref=e174]
+                        - text: "0"
+                - article [ref=e176]:
+                  - link "CSS Grid 完全掌握：从入门到艺术创作 技术" [ref=e177] [cursor=pointer]:
+                    - /url: "#/article/css-grid-mastery"
+                    - generic [ref=e178]:
+                      - img "CSS Grid 完全掌握：从入门到艺术创作" [ref=e179]
+                      - generic [ref=e182]:
+                        - img [ref=e183]
+                        - generic [ref=e185]: 技术
+                  - generic [ref=e186]:
+                    - link "CSS Grid 完全掌握：从入门到艺术创作" [ref=e187] [cursor=pointer]:
+                      - /url: "#/article/css-grid-mastery"
+                      - heading "CSS Grid 完全掌握：从入门到艺术创作" [level=3] [ref=e188]
+                    - paragraph [ref=e189]: CSS Grid 不仅是布局工具，更是一种艺术创作的媒介...
+                    - generic [ref=e190]:
+                      - generic [ref=e191]:
+                        - generic [ref=e192]:
+                          - img [ref=e193]
+                          - text: 2026-05-28
+                        - generic [ref=e195]:
+                          - img [ref=e196]
+                          - text: 7 min
+                      - generic [ref=e198]:
+                        - img [ref=e199]
+                        - text: "1"
+                - article [ref=e201]:
+                  - link "午夜编码仪式 生活" [ref=e202] [cursor=pointer]:
+                    - /url: "#/article/midnight-coding-ritual"
+                    - generic [ref=e203]:
+                      - img "午夜编码仪式"
+                      - generic [ref=e206]:
+                        - img [ref=e207]
+                        - generic [ref=e209]: 生活
+                  - generic [ref=e210]:
+                    - link "午夜编码仪式" [ref=e211] [cursor=pointer]:
+                      - /url: "#/article/midnight-coding-ritual"
+                      - heading "午夜编码仪式" [level=3] [ref=e212]
+                    - paragraph [ref=e213]: 当世界沉睡，只有键盘敲击声与屏幕的光亮，这是一种专属创造者的仪式...
+                    - generic [ref=e214]:
+                      - generic [ref=e215]:
+                        - generic [ref=e216]:
+                          - img [ref=e217]
+                          - text: 2026-05-25
+                        - generic [ref=e219]:
+                          - img [ref=e220]
+                          - text: 4 min
+                      - generic [ref=e222]:
+                        - img [ref=e223]
+                        - text: "0"
+                - article [ref=e225]:
+                  - link "TypeScript 类型体操：让你的类型系统跳舞 技术" [ref=e226] [cursor=pointer]:
+                    - /url: "#/article/typescript-type-gymnastics"
+                    - generic [ref=e227]:
+                      - img "TypeScript 类型体操：让你的类型系统跳舞"
+                      - generic [ref=e230]:
+                        - img [ref=e231]
+                        - generic [ref=e233]: 技术
+                  - generic [ref=e234]:
+                    - link "TypeScript 类型体操：让你的类型系统跳舞" [ref=e235] [cursor=pointer]:
+                      - /url: "#/article/typescript-type-gymnastics"
+                      - heading "TypeScript 类型体操：让你的类型系统跳舞" [level=3] [ref=e236]
+                    - paragraph [ref=e237]: 深入 TypeScript 类型系统的奇妙世界，体验编译时的魔法...
+                    - generic [ref=e238]:
+                      - generic [ref=e239]:
+                        - generic [ref=e240]:
+                          - img [ref=e241]
+                          - text: 2026-05-20
+                        - generic [ref=e243]:
+                          - img [ref=e244]
+                          - text: 9 min
+                      - generic [ref=e246]:
+                        - img [ref=e247]
+                        - text: "0"
+                - article [ref=e249]:
+                  - link "猫、键盘与代码：一段不可分离的三角关系 生活" [ref=e250] [cursor=pointer]:
+                    - /url: "#/article/cat-and-keyboard"
+                    - generic [ref=e251]:
+                      - img "猫、键盘与代码：一段不可分离的三角关系"
+                      - generic [ref=e254]:
+                        - img [ref=e255]
+                        - generic [ref=e257]: 生活
+                  - generic [ref=e258]:
+                    - link "猫、键盘与代码：一段不可分离的三角关系" [ref=e259] [cursor=pointer]:
+                      - /url: "#/article/cat-and-keyboard"
+                      - heading "猫、键盘与代码：一段不可分离的三角关系" [level=3] [ref=e260]
+                    - paragraph [ref=e261]: 每一个程序员的办公桌上，都有一只试图帮你写代码的猫...
+                    - generic [ref=e262]:
+                      - generic [ref=e263]:
+                        - generic [ref=e264]:
+                          - img [ref=e265]
+                          - text: 2026-05-18
+                        - generic [ref=e267]:
+                          - img [ref=e268]
+                          - text: 4 min
+                      - generic [ref=e270]:
+                        - img [ref=e271]
+                        - text: "2"
+            - complementary [ref=e274]:
+              - generic [ref=e275]:
+                - heading "分类" [level=3] [ref=e276]:
+                  - img [ref=e277]
+                  - text: 分类
+                - generic [ref=e279]:
+                  - link "技术 4" [ref=e280] [cursor=pointer]:
+                    - /url: "#/categories/tech"
+                    - generic [ref=e281]:
+                      - img [ref=e283]
+                      - text: 技术
+                    - generic [ref=e285]: "4"
+                  - link "艺术 1" [ref=e286] [cursor=pointer]:
+                    - /url: "#/categories/art"
+                    - generic [ref=e287]:
+                      - img [ref=e289]
+                      - text: 艺术
+                    - generic [ref=e291]: "1"
+                  - link "生活 3" [ref=e292] [cursor=pointer]:
+                    - /url: "#/categories/life"
+                    - generic [ref=e293]:
+                      - img [ref=e295]
+                      - text: 生活
+                    - generic [ref=e297]: "3"
+              - generic [ref=e298]:
+                - heading "标签" [level=3] [ref=e299]:
+                  - img [ref=e300]
+                  - text: 标签
+                - generic [ref=e302]:
+                  - link "# TypeScript" [ref=e303] [cursor=pointer]:
+                    - /url: "#/tags/typescript"
+                  - link "# 前端开发" [ref=e304] [cursor=pointer]:
+                    - /url: "#/tags/frontend"
+                  - link "# 编程" [ref=e305] [cursor=pointer]:
+                    - /url: "#/tags/coding"
+                  - link "# Vue.js" [ref=e306] [cursor=pointer]:
+                    - /url: "#/tags/vue"
+                  - link "# CSS" [ref=e307] [cursor=pointer]:
+                    - /url: "#/tags/css"
+                  - link "# 设计" [ref=e308] [cursor=pointer]:
+                    - /url: "#/tags/design"
+                  - link "# 几何" [ref=e309] [cursor=pointer]:
+                    - /url: "#/tags/geometry"
+                  - link "# 艺术" [ref=e310] [cursor=pointer]:
+                    - /url: "#/tags/art"
+                  - link "# 数学" [ref=e311] [cursor=pointer]:
+                    - /url: "#/tags/math"
+                  - link "# 城市" [ref=e312] [cursor=pointer]:
+                    - /url: "#/tags/city"
+    - contentinfo [ref=e313]:
+      - generic [ref=e315]:
+        - generic [ref=e316]:
+          - generic [ref=e317]:
+            - generic [ref=e318]:
+              - img [ref=e320]
+              - generic [ref=e322]: RanpoNeko
+            - paragraph [ref=e323]: 一个关于编程、艺术与生活的个人博客。在几何的秩序中寻找美感，在代码的严谨中发现诗意。
+          - generic [ref=e324]:
+            - heading "导航" [level=4] [ref=e325]
+            - generic [ref=e326]:
+              - link "首页" [ref=e327] [cursor=pointer]:
+                - /url: "#/"
+              - link "分类" [ref=e328] [cursor=pointer]:
+                - /url: "#/categories"
+              - link "标签" [ref=e329] [cursor=pointer]:
+                - /url: "#/tags"
+              - link "关于" [ref=e330] [cursor=pointer]:
+                - /url: "#/about"
+          - generic [ref=e331]:
+            - heading "连接" [level=4] [ref=e332]
+            - link [ref=e334] [cursor=pointer]:
+              - /url: https://github.com/yudengghost
+              - img [ref=e335]
+        - paragraph [ref=e338]: 用 ❤️ 和 Vue 构建 | 乱步猫博客 © 2026
+  - generic [ref=e339]:
+    - generic "Toggle devtools panel" [ref=e340] [cursor=pointer]:
+      - img [ref=e341]
+    - generic "Toggle Component Inspector" [ref=e346] [cursor=pointer]:
+      - img [ref=e347]

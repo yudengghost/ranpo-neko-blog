@@ -1,0 +1,56 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - link "RanpoNeko" [ref=e6] [cursor=pointer]:
+          - /url: "#/"
+        - navigation [ref=e7]:
+          - link "Home" [ref=e8] [cursor=pointer]:
+            - /url: "#/"
+          - link "Tech" [ref=e9] [cursor=pointer]:
+            - /url: "#/category/tech"
+          - link "Art" [ref=e10] [cursor=pointer]:
+            - /url: "#/category/art"
+          - link "About" [ref=e11] [cursor=pointer]:
+            - /url: "#/about"
+        - 'button "Current theme: 薄荷奶油" [ref=e14] [cursor=pointer]'
+    - main [ref=e16]:
+      - generic [ref=e17]:
+        - generic [ref=e18]:
+          - generic [ref=e19]:
+            - heading "RanpoNeko Blog" [level=1] [ref=e20]
+            - paragraph [ref=e21]: 漫步于几何线条之间的创意日志
+          - generic [ref=e24]: Scroll
+        - generic [ref=e25]:
+          - heading "Featured" [level=2] [ref=e27]
+          - generic [ref=e29]:
+            - link "home The Making of This Blog A behind-the-scenes look at the technology stack, design decisions, and architecture of this geometric blog. 2026年7月2日 · 4 min read" [ref=e30] [cursor=pointer]:
+              - /url: "#/article/the-making-of"
+              - generic [ref=e31]:
+                - generic [ref=e32]: home
+                - heading "The Making of This Blog" [level=3] [ref=e33]
+                - paragraph [ref=e34]: A behind-the-scenes look at the technology stack, design decisions, and architecture of this geometric blog.
+                - generic [ref=e35]:
+                  - time [ref=e36]: 2026年7月2日
+                  - generic [ref=e37]: ·
+                  - generic [ref=e38]: 4 min read
+            - link "home Welcome to RanpoNeko Blog A personal blog blending geometric aesthetics with creative writing, built with Vue, PixiJS & GSAP. 2026年7月1日 · 2 min read" [ref=e39] [cursor=pointer]:
+              - /url: "#/article/welcome"
+              - generic [ref=e40]:
+                - generic [ref=e41]: home
+                - heading "Welcome to RanpoNeko Blog" [level=3] [ref=e42]
+                - paragraph [ref=e43]: A personal blog blending geometric aesthetics with creative writing, built with Vue, PixiJS & GSAP.
+                - generic [ref=e44]:
+                  - time [ref=e45]: 2026年7月1日
+                  - generic [ref=e46]: ·
+                  - generic [ref=e47]: 2 min read
+    - contentinfo [ref=e48]:
+      - generic [ref=e49]:
+        - paragraph [ref=e51]: © 2026 RanpoNeko — Built with Vue, PixiJS & GSAP
+        - link "GitHub" [ref=e52] [cursor=pointer]:
+          - /url: https://github.com/yudengghost
+  - generic [ref=e53]:
+    - generic "Toggle devtools panel" [ref=e54] [cursor=pointer]:
+      - img [ref=e55]
+    - generic "Toggle Component Inspector" [ref=e60] [cursor=pointer]:
+      - img [ref=e61]

@@ -1,17 +1,19 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useStats } from '@/composables/useStats'
 
 const props = defineProps<{ slug: string }>()
 
-const { getArticleStats, getUserReaction, toggleReaction } = useStats()
+const { stats, getUserReaction, toggleReaction } = useStats()
 
-const stats = ref(getArticleStats(props.slug))
-const userReaction = ref(getUserReaction(props.slug))
+const userReaction = ref<'like' | 'dislike' | null>(getUserReaction(props.slug))
+
+watch(() => props.slug, (s) => {
+  userReaction.value = getUserReaction(s)
+})
 
 function onReact(type: 'like' | 'dislike') {
   userReaction.value = toggleReaction(props.slug, type)
-  stats.value = getArticleStats(props.slug)
 }
 </script>
 
@@ -25,7 +27,7 @@ function onReact(type: 'like' | 'dislike') {
         aria-label="Like"
       >
         <span class="reaction-icon">&#9650;</span>
-        <span class="reaction-count">{{ stats.likes }}</span>
+        <span class="reaction-count">{{ stats.articles[slug]?.likes || 0 }}</span>
       </button>
       <button
         class="reaction-btn"
@@ -34,10 +36,10 @@ function onReact(type: 'like' | 'dislike') {
         aria-label="Dislike"
       >
         <span class="reaction-icon icon-down">&#9660;</span>
-        <span class="reaction-count">{{ stats.dislikes }}</span>
+        <span class="reaction-count">{{ stats.articles[slug]?.dislikes || 0 }}</span>
       </button>
     </div>
-    <p class="reactions-views">{{ stats.views }} view{{ stats.views !== 1 ? 's' : '' }}</p>
+    <p class="reactions-views">{{ stats.articles[slug]?.views || 0 }} view{{ (stats.articles[slug]?.views || 0) !== 1 ? 's' : '' }}</p>
   </div>
 </template>
 

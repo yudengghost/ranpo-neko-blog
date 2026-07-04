@@ -1,0 +1,59 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - navigation [ref=e5]:
+        - link "RanpoNeko" [ref=e6] [cursor=pointer]:
+          - /url: "#/"
+          - img [ref=e8]
+          - generic [ref=e10]: RanpoNeko
+        - generic [ref=e11]:
+          - link "首页" [ref=e12] [cursor=pointer]:
+            - /url: "#/"
+            - img [ref=e13]
+            - text: 首页
+          - link "分类" [ref=e15] [cursor=pointer]:
+            - /url: "#/categories"
+            - img [ref=e16]
+            - text: 分类
+          - link "标签" [ref=e18] [cursor=pointer]:
+            - /url: "#/tags"
+            - img [ref=e19]
+            - text: 标签
+          - link "关于" [ref=e21] [cursor=pointer]:
+            - /url: "#/about"
+            - img [ref=e22]
+            - text: 关于
+        - link [ref=e25] [cursor=pointer]:
+          - /url: https://github.com/yudengghost
+          - img [ref=e26]
+    - main [ref=e28]
+    - contentinfo [ref=e313]:
+      - generic [ref=e315]:
+        - generic [ref=e316]:
+          - generic [ref=e317]:
+            - generic [ref=e318]:
+              - img [ref=e320]
+              - generic [ref=e322]: RanpoNeko
+            - paragraph [ref=e323]: 一个关于编程、艺术与生活的个人博客。在几何的秩序中寻找美感，在代码的严谨中发现诗意。
+          - generic [ref=e324]:
+            - heading "导航" [level=4] [ref=e325]
+            - generic [ref=e326]:
+              - link "首页" [ref=e327] [cursor=pointer]:
+                - /url: "#/"
+              - link "分类" [ref=e328] [cursor=pointer]:
+                - /url: "#/categories"
+              - link "标签" [ref=e329] [cursor=pointer]:
+                - /url: "#/tags"
+              - link "关于" [ref=e330] [cursor=pointer]:
+                - /url: "#/about"
+          - generic [ref=e331]:
+            - heading "连接" [level=4] [ref=e332]
+            - link [ref=e334] [cursor=pointer]:
+              - /url: https://github.com/yudengghost
+              - img [ref=e335]
+        - paragraph [ref=e338]: 用 ❤️ 和 Vue 构建 | 乱步猫博客 © 2026
+  - generic [ref=e339]:
+    - generic "Toggle devtools panel" [ref=e340] [cursor=pointer]:
+      - img [ref=e341]
+    - generic "Toggle Component Inspector" [ref=e346] [cursor=pointer]:
+      - img [ref=e347]

@@ -12,12 +12,12 @@ const route = useRoute()
 const slug = computed(() => route.params.slug as string)
 
 const { getBySlug } = useArticles()
-const { recordArticleView } = useStats()
+const { ensureLoaded, recordArticleView } = useStats()
 const entry = computed(() => getBySlug(slug.value))
 const meta = computed(() => entry.value?.meta)
 
 onMounted(() => {
-  recordArticleView(slug.value)
+  ensureLoaded().then(() => recordArticleView(slug.value))
   gsap.from('.article-header', { y: 40, opacity: 0, duration: 0.8, ease: 'power3.out' })
   gsap.from('.article-body', {
     y: 30,

@@ -1,0 +1,94 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - link "RanpoNeko" [ref=e6] [cursor=pointer]:
+          - /url: "#/"
+          - generic [ref=e7]: RanpoNeko
+        - navigation [ref=e8]:
+          - link "Home" [ref=e9] [cursor=pointer]:
+            - /url: "#/"
+          - generic [ref=e11] [cursor=pointer]:
+            - text: Categories
+            - generic [ref=e12]: ▾
+          - generic [ref=e13]: Search
+          - link "About" [ref=e14] [cursor=pointer]:
+            - /url: "#/about"
+        - 'button "Current theme: 薄荷奶油" [ref=e17] [cursor=pointer]'
+    - main [ref=e19]:
+      - generic [ref=e20]:
+        - img "东方留白 —— 当几何设计遇见东方美学" [ref=e22]
+        - generic [ref=e24]:
+          - link "← Back" [ref=e25] [cursor=pointer]:
+            - /url: "#/"
+          - generic [ref=e26]: art
+          - heading "东方留白 —— 当几何设计遇见东方美学" [level=1] [ref=e27]
+          - generic [ref=e28]:
+            - time [ref=e29]: 2026年7月5日
+            - generic [ref=e30]: ·
+            - generic [ref=e31]: 6 min read
+          - generic [ref=e32]:
+            - generic [ref=e33]: 东方美学
+            - generic [ref=e34]: 几何设计
+            - generic [ref=e35]: 留白
+            - generic [ref=e36]: 禅意
+            - generic [ref=e37]: 极简主义
+            - generic [ref=e38]: design
+        - article [ref=e41]:
+          - paragraph [ref=e42]: 在西方极简主义席卷全球设计界之前，东方早已将"少即是多"刻入文化基因。水墨画中的大片留白、枯山水中的砂纹几何、书法中的一笔千钧——这些古老的东方美学原则，与当代几何设计语言有着惊人的共鸣。这不是巧合，而是一种跨越时空的审美回归。
+          - heading "留白的几何学" [level=2] [ref=e43]
+          - paragraph [ref=e44]:
+            - text: 南宋画家马远的《寒江独钓图》，一叶扁舟独占画面一隅，其余皆为空白。这"空白"并非虚无——它是水、是天、是一切未言明却可感知的存在。在现代设计语境中，这种留白被翻译为
+            - strong [ref=e45]: Negative Space
+            - text: （负空间）。
+          - paragraph [ref=e46]: 几何设计讲究线条与块面的精确关系。一条 1px 的细线、一个 80px 的网格间距、一组基于黄金比例的分割——它们构成的是秩序。而留白，恰恰是秩序得以呼吸的介质。没有足够的留白，几何线条不过是拥挤的噪音；有了留白，每一条线都能被看见、被感知、被赋予意义。
+          - figure "枯山水的砂纹与石组，是最早的几何极简设计。" [ref=e47]:
+            - img "Japanese zen garden with traditional house" [ref=e48]
+            - generic [ref=e49]: 枯山水的砂纹与石组，是最早的几何极简设计。
+          - heading "枯山水中的几何哲学" [level=2] [ref=e50]
+          - paragraph [ref=e51]: 京都龙安寺的方丈庭园，十五块石头被分成五组，安置在白色砂砾之上。无论从哪个角度，你都只能同时看到十四块。砂纹以石头为中心辐射出同心圆，宛如水面涟漪——这是用最纯粹的形式（点、线、面）来描摹自然。
+          - paragraph [ref=e52]:
+            - text: 这种表达方式与 Bauhaus 的基础课程何其相似：Kandinsky 在《点线面》中论述的正是同样的几何元素。区别在于，枯山水比 Bauhaus 早了五百年，且目的不同——枯山水的几何不是为了分析形式，而是为了
+            - strong [ref=e53]: 抵达禅意
+            - text: 。
+          - paragraph [ref=e54]: 今天的 UI 设计师在构建 Design System 时，本质上也在做类似的事：将复杂的世界归纳为有限的 Token（色彩、间距、圆角、阴影），然后用这些 Token 搭建出千变万化的界面。这是几何的工业化，也是几何的诗意化——取决于你如何对待它。
+          - heading "书法：一笔定乾坤" [level=2] [ref=e55]
+          - paragraph [ref=e56]: 中国书法中的"永字八法"，用一个字涵盖了八种基本笔画。每种笔画的起笔、行笔、收笔都有严格的几何规律。然而当王羲之写下《兰亭序》时，每一个"之"字都各不相同——它们在规则之内找到了自由。
+          - paragraph [ref=e57]:
+            - text: 这让我想起 Frontend 开发中的
+            - strong [ref=e58]: Design Token
+            - text: 与
+            - strong [ref=e59]: Component Variant
+            - text: 的关系。设计系统定义了 Button 的基础形态（padding、border-radius、font-size），但 Button 可以是 primary、secondary、ghost、danger……基础规则不变，变化在规则的缝隙中生长。
+          - heading "不对称中的平衡" [level=2] [ref=e60]
+          - paragraph [ref=e61]: 西方古典设计强调对称——建筑立面左右镜像，花园呈几何对称，字体也追求严格的比例关系。东方美学则不然。日本茶室的"躙口"（入口）偏于一隅，壁龛中的挂轴不居中，花入（花瓶）与香合的摆放遵循的是"七五三"而非等分。
+          - paragraph [ref=e62]: 这种不对称的平衡在现代 Web 设计中格外重要。Hero Section 中标题偏左、装饰元素在右下方、视觉重心看似偏离实则通过留白拉回——这就是东方不对称美学的数字转译。
+          - heading "从水墨到暗色模式" [level=2] [ref=e63]
+          - paragraph [ref=e64]: 水墨画只有黑白灰，却能表现万物。墨分五色——焦、浓、重、淡、清——每个层次都有独立的表达力。这与现代 UI 的暗色模式（Dark Mode）设计中使用的灰度层级如出一辙：不是用纯黑和纯白，而是精心挑选 8-12 个灰度阶层，构建出有质感、有深度的暗色界面。
+          - paragraph [ref=e65]: 这个博客的六套配色方案，每一套都在做同样的事：用一个主色、一个辅色、若干个中性灰度，构建一个完整的色彩宇宙。换一套配色，就如同换了一卷画轴——骨架不变，气韵已改。
+          - heading "结语：古老的新鲜" [level=2] [ref=e66]
+          - paragraph [ref=e67]: 东方美学不是博物馆里的标本。它的核心原则——留白、克制、不对称平衡、在约束中寻找自由——恰恰是当代设计的最高追求。我们不是在复古，而是在用今天的技术（PixiJS 的几何线条、GSAP 的流畅动效、CSS 的精确布局）重新诠释那些跨越千年的美学直觉。
+          - blockquote [ref=e68]:
+            - text: "\"大音希声，大象无形。\""
+            - generic [ref=e69]: —— 《道德经》
+        - generic [ref=e71]:
+          - heading "Comments" [level=3] [ref=e72]
+          - paragraph [ref=e74]: No comments yet. Be the first to share your thoughts!
+          - generic [ref=e75]:
+            - heading "Leave a Comment" [level=4] [ref=e76]
+            - generic [ref=e77]:
+              - textbox "Nickname *" [ref=e78]
+              - textbox "Email *" [ref=e79]
+            - textbox "Write your comment... *" [ref=e80]
+            - button "Submit Comment" [ref=e81] [cursor=pointer]
+            - paragraph [ref=e82]: Comments are stored locally and submitted via GitHub Issues for cross-user visibility.
+    - contentinfo [ref=e83]:
+      - generic [ref=e84]:
+        - paragraph [ref=e86]: © 2026 RanpoNeko — Built with Vue, PixiJS & GSAP
+        - link "GitHub" [ref=e87] [cursor=pointer]:
+          - /url: https://github.com/yudengghost
+  - generic [ref=e88]:
+    - generic "Toggle devtools panel" [ref=e89] [cursor=pointer]:
+      - img [ref=e90]
+    - generic "Toggle Component Inspector" [ref=e95] [cursor=pointer]:
+      - img [ref=e96]

@@ -1,0 +1,145 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - navigation [ref=e5]:
+        - link "RanpoNeko" [ref=e6] [cursor=pointer]:
+          - /url: "#/"
+          - img [ref=e8]
+          - generic [ref=e10]: RanpoNeko
+        - generic [ref=e11]:
+          - link "首页" [ref=e12] [cursor=pointer]:
+            - /url: "#/"
+            - img [ref=e13]
+            - text: 首页
+          - link "分类" [ref=e15] [cursor=pointer]:
+            - /url: "#/categories"
+            - img [ref=e16]
+            - text: 分类
+          - link "标签" [ref=e18] [cursor=pointer]:
+            - /url: "#/tags"
+            - img [ref=e19]
+            - text: 标签
+          - link "关于" [ref=e21] [cursor=pointer]:
+            - /url: "#/about"
+            - img [ref=e22]
+            - text: 关于
+        - link [ref=e25] [cursor=pointer]:
+          - /url: https://github.com/yudengghost
+          - img [ref=e26]
+    - main [ref=e28]:
+      - img "代码中的几何之美" [ref=e352]
+      - generic [ref=e355]:
+        - generic [ref=e356]:
+          - generic [ref=e357]:
+            - link "返回首页" [ref=e358] [cursor=pointer]:
+              - /url: "#/"
+              - img [ref=e359]
+              - text: 返回首页
+            - heading "代码中的几何之美" [level=1] [ref=e361]
+            - generic [ref=e362]:
+              - generic [ref=e363]:
+                - img [ref=e364]
+                - generic [ref=e366]: 技术
+              - generic [ref=e367]:
+                - img [ref=e368]
+                - text: 2026-06-10
+              - generic [ref=e370]:
+                - img [ref=e371]
+                - text: 6 分钟阅读
+              - generic [ref=e373]:
+                - img [ref=e374]
+                - text: 2 条评论
+            - generic [ref=e376]:
+              - generic [ref=e377]: "# geometry"
+              - generic [ref=e378]: "# art"
+              - generic [ref=e379]: "# math"
+            - generic [ref=e381]:
+              - paragraph
+              - heading "引言" [level=2] [ref=e382]
+              - paragraph
+              - paragraph [ref=e383]: 几何与代码，看似两个截然不同的领域，却在现代数字艺术中碰撞出璀璨的火花。
+              - paragraph
+              - heading "数学与美学的交汇" [level=2] [ref=e384]
+              - paragraph
+              - paragraph [ref=e385]: 几何学赋予了代码视觉上的秩序感。从简单的线条到复杂的曼德勃罗集合，数学为数字艺术提供了无限可能。
+              - paragraph
+              - heading "分形的魅力" [level=3] [ref=e386]
+              - paragraph
+              - paragraph [ref=e387]: 分形几何揭示了自然界中隐藏的秩序——从雪花到海岸线，从树叶脉络到星系分布。在代码中重现这些模式，是对自然最深情的致敬。
+              - paragraph
+              - heading "实践：用代码绘制几何艺术" [level=2] [ref=e388]
+              - paragraph
+              - paragraph
+              - code [ref=e390]: "// 生成螺旋图案 function drawSpiral(cx, cy, radius, turns) { for (let angle = 0; angle < turns * Math.PI * 2; angle += 0.1) { const r = (radius * angle) / (turns * Math.PI * 2) const x = cx + r * Math.cos(angle) const y = cy + r * Math.sin(angle) // 绘制点... } }"
+              - paragraph
+              - paragraph
+              - heading "结语" [level=2] [ref=e391]
+              - paragraph
+              - paragraph [ref=e392]: 代码不只是功能的载体，它也是创造的画布。在每一行代码中，都潜藏着几何的诗意。
+          - generic [ref=e393]:
+            - heading "评论 (2)" [level=3] [ref=e395]:
+              - img [ref=e396]
+              - text: 评论 (2)
+            - generic [ref=e398]:
+              - generic [ref=e399]:
+                - img "几何爱好者" [ref=e400]
+                - generic [ref=e401]:
+                  - generic [ref=e402]:
+                    - generic [ref=e403]: 几何爱好者
+                    - generic [ref=e404]: 2026/6/11
+                  - paragraph [ref=e405]: 这篇写得真好！我最近也在研究用 p5.js 创作几何艺术，代码和数学的结合真的很有魅力。
+              - generic [ref=e406]:
+                - img "RanpoNeko" [ref=e407]
+                - generic [ref=e408]:
+                  - generic [ref=e409]:
+                    - generic [ref=e410]: RanpoNeko
+                    - generic [ref=e411]: 2026/6/11
+                  - paragraph [ref=e412]: 谢谢！p5.js 是个很棒的库，期待看到你的作品～
+        - generic [ref=e415]:
+          - heading "相关文章" [level=3] [ref=e416]:
+            - img [ref=e417]
+            - text: 相关文章
+          - generic [ref=e419]:
+            - link "Vue 3 Composable 设计模式深入解析 Vue 3 Composable 设计模式深入解析" [ref=e420] [cursor=pointer]:
+              - /url: "#/article/vue3-composable-patterns"
+              - img "Vue 3 Composable 设计模式深入解析" [ref=e422]
+              - heading "Vue 3 Composable 设计模式深入解析" [level=4] [ref=e423]
+            - link "CSS Grid 完全掌握：从入门到艺术创作 CSS Grid 完全掌握：从入门到艺术创作" [ref=e424] [cursor=pointer]:
+              - /url: "#/article/css-grid-mastery"
+              - img "CSS Grid 完全掌握：从入门到艺术创作" [ref=e426]
+              - heading "CSS Grid 完全掌握：从入门到艺术创作" [level=4] [ref=e427]
+            - link "TypeScript 类型体操：让你的类型系统跳舞 TypeScript 类型体操：让你的类型系统跳舞" [ref=e428] [cursor=pointer]:
+              - /url: "#/article/typescript-type-gymnastics"
+              - generic [ref=e429]:
+                - img "TypeScript 类型体操：让你的类型系统跳舞"
+              - heading "TypeScript 类型体操：让你的类型系统跳舞" [level=4] [ref=e430]
+    - contentinfo [ref=e313]:
+      - generic [ref=e315]:
+        - generic [ref=e316]:
+          - generic [ref=e317]:
+            - generic [ref=e318]:
+              - img [ref=e320]
+              - generic [ref=e322]: RanpoNeko
+            - paragraph [ref=e323]: 一个关于编程、艺术与生活的个人博客。在几何的秩序中寻找美感，在代码的严谨中发现诗意。
+          - generic [ref=e324]:
+            - heading "导航" [level=4] [ref=e325]
+            - generic [ref=e326]:
+              - link "首页" [ref=e327] [cursor=pointer]:
+                - /url: "#/"
+              - link "分类" [ref=e328] [cursor=pointer]:
+                - /url: "#/categories"
+              - link "标签" [ref=e329] [cursor=pointer]:
+                - /url: "#/tags"
+              - link "关于" [ref=e330] [cursor=pointer]:
+                - /url: "#/about"
+          - generic [ref=e331]:
+            - heading "连接" [level=4] [ref=e332]
+            - link [ref=e334] [cursor=pointer]:
+              - /url: https://github.com/yudengghost
+              - img [ref=e335]
+        - paragraph [ref=e338]: 用 ❤️ 和 Vue 构建 | 乱步猫博客 © 2026
+  - generic [ref=e339]:
+    - generic "Toggle devtools panel" [ref=e340] [cursor=pointer]:
+      - img [ref=e341]
+    - generic "Toggle Component Inspector" [ref=e346] [cursor=pointer]:
+      - img [ref=e347]

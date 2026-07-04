@@ -1,0 +1,81 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - link "RanpoNeko" [ref=e6] [cursor=pointer]:
+          - /url: "#/"
+          - generic [ref=e7]: RanpoNeko
+        - navigation [ref=e8]:
+          - link "Home" [ref=e9] [cursor=pointer]:
+            - /url: "#/"
+          - generic [ref=e11] [cursor=pointer]:
+            - text: Categories
+            - generic [ref=e12]: ▾
+          - generic [ref=e13]: Search
+          - link "About" [ref=e14] [cursor=pointer]:
+            - /url: "#/about"
+        - 'button "Current theme: 薄荷奶油" [ref=e17] [cursor=pointer]'
+    - main [ref=e19]:
+      - generic [ref=e20]:
+        - img "Welcome to RanpoNeko Blog" [ref=e22]
+        - generic [ref=e24]:
+          - link "← Back" [ref=e25] [cursor=pointer]:
+            - /url: "#/"
+          - generic [ref=e26]: home
+          - heading "Welcome to RanpoNeko Blog" [level=1] [ref=e27]
+          - generic [ref=e28]:
+            - time [ref=e29]: 2026年7月1日
+            - generic [ref=e30]: ·
+            - generic [ref=e31]: 2 min read
+          - generic [ref=e32]:
+            - generic [ref=e33]: welcome
+            - generic [ref=e34]: introduction
+        - article [ref=e37]:
+          - paragraph [ref=e38]:
+            - text: This blog is a space where
+            - emphasis [ref=e39]: design meets technology
+            - text: . Every pixel, every line, and every animation is crafted with intention. The geometric patterns in the background, the fine-line British typography, and the smooth page transitions all work together to create a distinctive reading experience.
+          - heading "The Philosophy" [level=2] [ref=e40]
+          - paragraph [ref=e41]: Great design is not about decoration — it is about creating an environment where content can breathe. The geometric line art that dances across the background is not just visual noise; it represents the underlying structure and order that good design provides. Like the golden ratio in nature, these patterns remind us that beauty often follows mathematical principles.
+          - paragraph [ref=e42]:
+            - text: The
+            - strong [ref=e43]: Playfair Display
+            - text: typeface, with its delicate serifs and elegant italics, was inspired by 18th century British letterforms. Paired with the clean geometry of
+            - strong [ref=e44]: Work Sans
+            - text: ", it creates a typographic harmony that feels both classic and contemporary."
+          - heading "What You Will Find Here" [level=2] [ref=e45]
+          - paragraph [ref=e46]: This blog explores the intersection of frontend engineering and visual design. Topics range from creative coding with technologies like PixiJS and GSAP, to broader reflections on design philosophy and the craft of building beautiful things for the web.
+          - blockquote [ref=e47]:
+            - text: "\"The details are not the details. They make the design.\""
+            - generic [ref=e48]: — Charles Eames
+          - paragraph [ref=e49]: Feel free to explore the articles, switch between the six curated color schemes using the palette button in the header, and leave your thoughts in the comments section of each article.
+        - generic [ref=e50]:
+          - generic [ref=e51]:
+            - button "Like" [ref=e52] [cursor=pointer]:
+              - generic [ref=e53]: ▲
+              - generic [ref=e54]: "0"
+            - button "Dislike" [ref=e55] [cursor=pointer]:
+              - generic [ref=e56]: ▼
+              - generic [ref=e57]: "0"
+          - paragraph [ref=e58]: 0 views
+        - generic [ref=e60]:
+          - heading "Comments" [level=3] [ref=e61]
+          - paragraph [ref=e63]: No comments yet. Be the first to share your thoughts!
+          - generic [ref=e64]:
+            - heading "Leave a Comment" [level=4] [ref=e65]
+            - generic [ref=e66]:
+              - textbox "Nickname *" [ref=e67]
+              - textbox "Email *" [ref=e68]
+            - textbox "Write your comment... *" [ref=e69]
+            - button "Submit Comment" [ref=e70] [cursor=pointer]
+            - paragraph [ref=e71]: Comments are stored locally and submitted via GitHub Issues for cross-user visibility.
+    - contentinfo [ref=e72]:
+      - generic [ref=e73]:
+        - paragraph [ref=e75]: © 2026 RanpoNeko — Built with Vue, PixiJS & GSAP
+        - link "GitHub" [ref=e76] [cursor=pointer]:
+          - /url: https://github.com/yudengghost
+  - generic [ref=e77]:
+    - generic "Toggle devtools panel" [ref=e78] [cursor=pointer]:
+      - img [ref=e79]
+    - generic "Toggle Component Inspector" [ref=e84] [cursor=pointer]:
+      - img [ref=e85]
