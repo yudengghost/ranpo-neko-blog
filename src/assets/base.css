@@ -206,3 +206,21 @@ code, pre {
   --color-glow: rgba(142, 180, 196, 0.15);
   --color-glowSecondary: rgba(196, 168, 126, 0.1);
 }
+
+[data-theme='noir'] {
+  --color-bg: #0F1117;
+  --color-bgAlt: #161922;
+  --color-surface: #1C1F2B;
+  --color-surfaceHover: #232738;
+  --color-text: #E4E6EF;
+  --color-textSecondary: #9BA0B8;
+  --color-textMuted: #686D80;
+  --color-primary: #8BA4C4;
+  --color-primaryHover: #A8BED8;
+  --color-accent: #C4A47E;
+  --color-accentHover: #D4B892;
+  --color-border: #2A2D3A;
+  --color-borderLight: #222536;
+  --color-glow: rgba(139, 164, 196, 0.12);
+  --color-glowSecondary: rgba(196, 164, 126, 0.08);
+}

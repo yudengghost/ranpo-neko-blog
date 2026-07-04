@@ -28,7 +28,7 @@ export interface CategoryInfo {
   articleCount: number
 }
 
-export type ColorSchemeId = 'mint' | 'rose' | 'lavender' | 'sand' | 'sage' | 'ocean'
+export type ColorSchemeId = 'mint' | 'rose' | 'lavender' | 'sand' | 'sage' | 'ocean' | 'noir'
 
 export interface ColorSchemeDef {
   id: ColorSchemeId

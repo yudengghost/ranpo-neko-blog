@@ -133,6 +133,28 @@ export const colorSchemes: Record<ColorSchemeId, ColorSchemeDef> = {
       glowSecondary: 'rgba(196, 168, 126, 0.1)',
     },
   },
+  noir: {
+    id: 'noir',
+    name: 'Noir Ink',
+    nameZh: '墨夜',
+    colors: {
+      bg: '#0F1117',
+      bgAlt: '#161922',
+      surface: '#1C1F2B',
+      surfaceHover: '#232738',
+      text: '#E4E6EF',
+      textSecondary: '#9BA0B8',
+      textMuted: '#686D80',
+      primary: '#8BA4C4',
+      primaryHover: '#A8BED8',
+      accent: '#C4A47E',
+      accentHover: '#D4B892',
+      border: '#2A2D3A',
+      borderLight: '#222536',
+      glow: 'rgba(139, 164, 196, 0.12)',
+      glowSecondary: 'rgba(196, 164, 126, 0.08)',
+    },
+  },
 }
 
-export const schemeList: ColorSchemeId[] = ['mint', 'rose', 'lavender', 'sand', 'sage', 'ocean']
+export const schemeList: ColorSchemeId[] = ['mint', 'rose', 'lavender', 'sand', 'sage', 'ocean', 'noir']
