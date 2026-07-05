@@ -1,0 +1,223 @@
+/* ═══════════════════════════════════════════════════
+   .prose-pixel — Retro Pixel / 8-Bit Arcade Style
+   Requires .prose as base. Use: class="prose prose-pixel"
+   Suitable for pixel art, retro gaming, chiptune, and
+   old-school computing articles
+   ─────────────────────────────────────────────── */
+
+.prose-pixel {
+  position: relative;
+  padding: 48px 40px;
+  border: 4px solid;
+  border-image: repeating-linear-gradient(
+      90deg,
+      var(--color-primary) 0px,
+      var(--color-primary) 4px,
+      transparent 4px,
+      transparent 8px
+    )
+    4;
+  /* CRT scanline overlay */
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.03) 2px,
+      rgba(0, 0, 0, 0.03) 4px
+    ),
+    var(--color-bg);
+}
+
+/* ── Top pixel rule ── */
+.prose-pixel::before {
+  content: '▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀';
+  display: block;
+  text-align: center;
+  margin-bottom: 32px;
+  font-family: 'Zpix', monospace;
+  font-size: 0.7rem;
+  color: var(--color-primary);
+  letter-spacing: 0;
+  opacity: 0.6;
+}
+
+/* ── Headings in pixel font ── */
+.prose-pixel h2 {
+  font-family: 'Zpix', 'JetBrains Mono', monospace;
+  font-size: 1.15rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text);
+  padding-bottom: 6px;
+  border-bottom: 4px double var(--color-primary);
+  margin-top: 44px;
+  margin-bottom: 18px;
+}
+
+.prose-pixel h3 {
+  font-family: 'Zpix', 'JetBrains Mono', monospace;
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: var(--color-primary);
+  margin-top: 32px;
+  margin-bottom: 12px;
+}
+
+/* ── Drop cap — blocky pixel style ── */
+.prose-pixel .lead::first-letter {
+  font-family: 'Zpix', 'JetBrains Mono', monospace;
+  font-size: 3.2em;
+  font-weight: 400;
+  float: left;
+  line-height: 0.78;
+  padding-right: 10px;
+  padding-top: 2px;
+  color: var(--color-primary);
+  text-shadow: 3px 3px 0 color-mix(in srgb, var(--color-primary) 25%, transparent);
+}
+
+/* ── Arcade-style blockquote ── */
+.prose-pixel blockquote {
+  border-left: none;
+  border: 2px dashed var(--color-primary);
+  padding: 20px 24px;
+  margin: 32px 0;
+  color: var(--color-text);
+  font-style: normal;
+  background: color-mix(in srgb, var(--color-primary) 6%, transparent);
+  position: relative;
+}
+.prose-pixel blockquote::before {
+  content: '▶';
+  position: absolute;
+  left: -1px;
+  top: -14px;
+  font-size: 0.7rem;
+  color: var(--color-primary);
+  background: var(--color-bg);
+  padding: 2px 6px;
+  font-style: normal;
+}
+.prose-pixel blockquote::after {
+  content: none;
+}
+.prose-pixel blockquote cite {
+  display: block;
+  margin-top: 10px;
+  font-family: 'Zpix', 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--color-textMuted);
+  font-style: normal;
+}
+
+/* ── 8-bit pixel divider ── */
+.prose-pixel hr {
+  border: none;
+  height: 8px;
+  margin: 40px 0;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--color-primary) 0px,
+    var(--color-primary) 6px,
+    transparent 6px,
+    transparent 12px
+  );
+  opacity: 0.4;
+}
+
+/* ── Figure with pixel frame ── */
+.prose-pixel figure {
+  margin: 36px 0;
+  padding: 6px;
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  outline: 2px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
+  outline-offset: 2px;
+}
+.prose-pixel figure img {
+  display: block;
+  width: 100%;
+  image-rendering: auto;
+}
+.prose-pixel figcaption {
+  text-align: center;
+  font-family: 'Zpix', 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--color-textMuted);
+  margin-top: 10px;
+  padding: 0 6px;
+  letter-spacing: 0.04em;
+}
+
+/* ── Bottom pixel finial ── */
+.prose-pixel::after {
+  content: '█▓▒░ FIN ░▒▓█';
+  display: block;
+  text-align: center;
+  margin-top: 44px;
+  font-family: 'Zpix', 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--color-primary);
+  opacity: 0.5;
+  letter-spacing: 0.15em;
+}
+
+/* ── Strong text — retro highlight ── */
+.prose-pixel strong {
+  font-weight: 400;
+  font-family: 'Zpix', 'JetBrains Mono', monospace;
+  font-size: 0.95em;
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  padding: 1px 4px;
+}
+
+/* ── Inline code — terminal style ── */
+.prose-pixel code {
+  font-family: 'Zpix', 'JetBrains Mono', monospace;
+  font-size: 0.82em;
+  padding: 2px 6px;
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
+  border-radius: 0;
+  color: var(--color-primary);
+}
+
+/* ── Byline ── */
+.prose-pixel .byline {
+  text-align: center;
+  font-family: 'Zpix', 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--color-textMuted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+}
+
+/* ── Tags — cartridge labels ── */
+.prose-pixel .tag {
+  display: inline-block;
+  font-family: 'Zpix', 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  border: 2px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
+  padding: 2px 10px;
+  margin-right: 6px;
+  margin-bottom: 6px;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .prose-pixel {
+    padding: 28px 18px;
+  }
+  .prose-pixel .lead::first-letter {
+    font-size: 2.4em;
+  }
+  .prose-pixel h2 {
+    font-size: 1rem;
+  }
+}

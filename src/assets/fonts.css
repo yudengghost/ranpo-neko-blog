@@ -75,3 +75,12 @@
   font-display: swap;
   src: url('/fonts/jetbrains-mono-400.woff2') format('woff2');
 }
+
+/* ── Zpix / 最像素 (pixel font, supports zh-CN/zh-TW/ja) ── */
+@font-face {
+  font-family: 'Zpix';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/zpix.ttf') format('truetype');
+}

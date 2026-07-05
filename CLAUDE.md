@@ -138,6 +138,21 @@ Header nav: **Home** | **Categories** (click dropdown, lists all dynamic categor
 
 Images in `public/images/` are referenced as `/images/...` in code (no `public/` prefix in URL). Article cover images from Pexels are free to use (CC0).
 
+**Directory convention:** Article images MUST be organized as `public/images/{category}/{article-slug}/` — one folder per article, named after its slug. This keeps per-article assets colocated and prevents filename collisions across articles.
+
+```
+public/images/
+├── hero-bg.jpg                    # Site-wide assets (no folder)
+├── home/
+│   └── welcome/
+│       └── vintage-desk.jpg       # /images/home/welcome/vintage-desk.jpg
+├── study/
+│   └── svg-driven-design/
+│       ├── claude-code.png        # /images/study/svg-driven-design/claude-code.png
+│       └── code-screen.jpg
+└── ...
+```
+
 ## Key Files
 
 | File | Role |
