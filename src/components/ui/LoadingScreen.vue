@@ -15,10 +15,9 @@ const nameRef = ref<HTMLDivElement>()
 let app: Application | null = null
 let ctx: gsap.Context | null = null
 
-const DIAMOND_R = 60
+const DIAMOND_R = 80
 const LINE_WIDTH = 2
-const DRAW_DURATION = 0.3
-const STAGGER = 0.15
+const TOTAL_EDGES = 4
 const HOLD_TIME = 0.7
 const SHATTER_DURATION = 0.6
 
@@ -56,21 +55,36 @@ onMounted(async () => {
   const right = { x: cx + DIAMOND_R, y: cy }
   const bottom = { x: cx, y: cy + DIAMOND_R }
   const left = { x: cx - DIAMOND_R, y: cy }
-  const sides = [
-    [top, right],
-    [right, bottom],
-    [bottom, left],
-    [left, top],
-  ]
+  const vertices = [top, right, bottom, left]
+  const sides = vertices.map((v, i) => [v, vertices[(i + 1) % TOTAL_EDGES]!] as const)
 
-  // Create 4 Graphics for the 4 sides
-  const sideLines = sides.map(([s, e]) => {
-    const g = new Graphics()
-    g.moveTo(s!.x, s!.y).lineTo(e!.x, e!.y)
-    g.stroke({ width: LINE_WIDTH, color, alpha: 1 })
-    app!.stage.addChild(g)
-    return g
-  })
+  // Single Graphics for the diamond — drawn progressively
+  const diamondGfx = new Graphics()
+  app.stage.addChild(diamondGfx)
+
+  // Draw diamond path
+  function drawDiamond(progress: number) {
+    diamondGfx.clear()
+    const totalProgress = Math.min(progress * TOTAL_EDGES, TOTAL_EDGES)
+    const currentEdge = Math.floor(totalProgress)
+    const edgeFrac = totalProgress - currentEdge
+
+    const start = vertices[0]!
+    diamondGfx.moveTo(start.x, start.y)
+
+    for (let i = 0; i < currentEdge; i++) {
+      const next = vertices[(i + 1) % TOTAL_EDGES]!
+      diamondGfx.lineTo(next.x, next.y)
+    }
+
+    if (currentEdge < TOTAL_EDGES && edgeFrac > 0) {
+      const s = vertices[currentEdge]!
+      const e = vertices[(currentEdge + 1) % TOTAL_EDGES]!
+      diamondGfx.lineTo(s.x + (e.x - s.x) * edgeFrac, s.y + (e.y - s.y) * edgeFrac)
+    }
+
+    diamondGfx.stroke({ width: LINE_WIDTH, color, alpha: 1 })
+  }
 
   // Particles container for shatter phase
   const particles: Particle[] = []
@@ -83,28 +97,29 @@ onMounted(async () => {
     }
   }
 
-  // Initial render to ensure canvas is drawn before animation starts
+  // Initial render to show empty canvas
   app.render()
 
   // Wrap all GSAP animations in context for auto-cleanup on unmount
   ctx = gsap.context(() => {
-    // === Animation timeline ===
     const tl = gsap.timeline({
-    onUpdate() { if (app) app.render() },
-    onComplete() {
-      if (containerRef.value) {
-        gsap.to(containerRef.value, { opacity: 0, duration: 0.35, ease: 'power2.in' })
-      }
-      setTimeout(() => emit('done'), 350)
-    },
-  })
+      onUpdate() { if (app) app.render() },
+      onComplete() {
+        if (containerRef.value) {
+          gsap.to(containerRef.value, { opacity: 0, duration: 0.35, ease: 'power2.in' })
+        }
+        setTimeout(() => emit('done'), 350)
+      },
+    })
 
-  // Phase 1: 4 sides fade in sequentially
-  for (let i = 0; i < 4; i++) {
-    const g = sideLines[i]!
-    g.alpha = 0
-    tl.to(g, { alpha: 1, duration: DRAW_DURATION, ease: 'power2.out' }, i * STAGGER)
-  }
+    // Phase 1: single-stroke diamond drawing
+    const drawObj = { progress: 0 }
+    tl.to(drawObj, {
+      progress: 1,
+      duration: 1.0,
+      ease: 'power3.inOut',
+      onUpdate() { drawDiamond(drawObj.progress) },
+    })
 
   // Phase 2: Site name fades in
   if (nameRef.value) {
@@ -127,7 +142,8 @@ onMounted(async () => {
       const t = i / perimeterPoints
       const sideIdx = Math.floor(t * 4) % 4
       const localT = (t * 4) % 1
-      const [s, e] = sides[sideIdx]! as [typeof top, typeof top]
+      const s = vertices[sideIdx]!
+      const e = vertices[(sideIdx + 1) % TOTAL_EDGES]!
       const px = s.x + (e.x - s.x) * localT
       const py = s.y + (e.y - s.y) * localT
       const angle = Math.atan2(py - cy, px - cx)
@@ -141,9 +157,8 @@ onMounted(async () => {
       })
     }
 
-    // Hide diamond lines
-    sideLines.forEach((g) => { g.alpha = 0 })
-    app!.stage.removeChild(...sideLines)
+    // Hide and remove diamond
+    diamondGfx.destroy()
 
     // Create particle graphics
     const particleGfx = new Graphics()
