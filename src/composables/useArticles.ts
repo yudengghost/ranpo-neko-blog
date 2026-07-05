@@ -36,26 +36,28 @@ allArticles.sort(
   (a, b) => new Date(b.meta.publishedAt).getTime() - new Date(a.meta.publishedAt).getTime(),
 )
 
+const publishedArticles = allArticles.filter((a) => !a.meta.status || a.meta.status === 'published')
+
 export function useArticles() {
-  const getAll = (): ArticleMeta[] => allArticles.map((a) => a.meta)
+  const getAll = (): ArticleMeta[] => publishedArticles.map((a) => a.meta)
 
   const getBySlug = (slug: string): ArticleEntry | undefined =>
     allArticles.find((a) => a.meta.slug === slug)
 
   const getHomeArticles = (): ArticleMeta[] =>
-    allArticles.filter((a) => a.meta.category === 'home').map((a) => a.meta)
+    publishedArticles.filter((a) => a.meta.category === 'home').map((a) => a.meta)
 
   const getFeatured = (): ArticleMeta[] =>
-    allArticles.filter((a) => a.meta.featured).map((a) => a.meta)
+    publishedArticles.filter((a) => a.meta.featured).map((a) => a.meta)
 
   const getByCategory = (catSlug: string): ArticleMeta[] =>
-    allArticles.filter(
+    publishedArticles.filter(
       (a) => a.meta.category === catSlug || a.meta.category.startsWith(catSlug + '/'),
     ).map((a) => a.meta)
 
   const getCategories = (): CategoryInfo[] => {
     const catMap = new Map<string, number>()
-    for (const a of allArticles) {
+    for (const a of publishedArticles) {
       if (a.meta.category === 'home') continue
       // Also count direct articles in this category
       catMap.set(a.meta.category, (catMap.get(a.meta.category) || 0) + 1)

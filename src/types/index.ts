@@ -1,3 +1,5 @@
+export type ArticleStatus = 'published' | 'draft' | 'archived'
+
 export interface ArticleMeta {
   slug: string
   title: string
@@ -9,6 +11,7 @@ export interface ArticleMeta {
   updatedAt?: string
   readingTime: number
   featured: boolean
+  status?: ArticleStatus
 }
 
 export interface Comment {

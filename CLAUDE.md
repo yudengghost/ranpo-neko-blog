@@ -64,7 +64,7 @@ import type { ArticleMeta } from '@/types'
 export const meta: ArticleMeta = {
   slug: 'my-post', title: '...', excerpt: '...',
   category: 'tech', tags: [...], publishedAt: '...',
-  readingTime: N, featured: false, coverImage: '/images/...',
+  readingTime: N, featured: false, status: 'published', coverImage: '/images/...',
 }
 export default { name: 'MyPostArticle' }
 </script>
@@ -72,6 +72,8 @@ export default { name: 'MyPostArticle' }
 ```
 
 **Slug uniqueness (CRITICAL):** Each article's `slug` must be unique across the entire project. Duplicate slugs will cause routing conflicts and corrupt Supabase stats/comments data (slug is the primary key in `article_stats` and a foreign key in `comments` and `article_reactions`). Before adding a new article, grep existing slugs: `grep -r "slug:" src/articles/`. Once published, do not change a slug unless you also run the corresponding SQL migration.
+
+**Article status:** Set `status: 'draft'` or `status: 'archived'` to hide an article from all listings (home, categories, search). Non-published articles are still accessible via direct URL (`#/article/:slug`) for previewing. Omit the `status` field or set it to `'published'` for normal visibility. Supabase data (views, likes, comments) is preserved regardless of status.
 
 **Discovering articles:** `src/composables/useArticles.ts` uses `import.meta.glob('@/articles/**/*.vue', { eager: true })` to auto-discover all article files at build time. No manual registration required.
 
