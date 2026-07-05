@@ -45,12 +45,16 @@ function drawArcRing(ring: Graphics, sweep: number, phase: 1 | 2) {
   }
   ring.arc(0, 0, CLICK_RADIUS, arcStart, arcEnd, true)
   ring.stroke({ width: 1.5, color, alpha: 0.75 })
+  if (app) app.render()
 }
 
 function onMouseMove(e: MouseEvent) {
   cursorX = e.clientX
   cursorY = e.clientY
-  if (cursorGfx) cursorGfx.position.set(cursorX, cursorY)
+  if (cursorGfx) {
+    cursorGfx.position.set(cursorX, cursorY)
+    if (app) app.render()
+  }
 }
 
 function onMouseDown(e: MouseEvent) {
