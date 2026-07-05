@@ -1,38 +1,45 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin'
 
-gsap.registerPlugin(ScrollTrigger)
+gsap.registerPlugin(ScrollToPlugin)
 
 const circleRef = ref<SVGCircleElement>()
 const visible = ref(false)
-const circumference = 2 * Math.PI * 16 // r=16
+const circumference = 2 * Math.PI * 16
 
 function scrollToTop() {
-  gsap.to(window, { scrollTo: 0, duration: 0.8, ease: 'power3.inOut' })
+  gsap.to(window, { scrollTo: { y: 0 }, duration: 0.8, ease: 'power3.inOut' })
 }
 
-let st: ScrollTrigger | null = null
+let ticking = false
+
+function updateProgress() {
+  const scrollTop = window.scrollY || document.documentElement.scrollTop
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight
+  const p = docHeight > 0 ? Math.min(scrollTop / docHeight, 1) : 0
+  visible.value = p > 0.03
+  if (circleRef.value) {
+    circleRef.value.style.strokeDashoffset = String(circumference * (1 - p))
+  }
+  ticking = false
+}
+
+function onScroll() {
+  if (!ticking) {
+    requestAnimationFrame(updateProgress)
+    ticking = true
+  }
+}
 
 onMounted(() => {
-  st = ScrollTrigger.create({
-    trigger: document.body,
-    start: 'top top',
-    end: 'bottom bottom',
-    scrub: 0.3,
-    onUpdate(self) {
-      const p = self.progress
-      visible.value = p > 0.05
-      if (circleRef.value) {
-        circleRef.value.style.strokeDashoffset = String(circumference * (1 - p))
-      }
-    },
-  })
+  window.addEventListener('scroll', onScroll, { passive: true })
+  updateProgress()
 })
 
 onUnmounted(() => {
-  st?.kill()
+  window.removeEventListener('scroll', onScroll)
 })
 </script>
 
