@@ -36,32 +36,35 @@ function playClickAnim(x: number, y: number) {
   ring.position.set(x, y)
   app.stage.addChild(ring)
 
-  // Small starting dot at 12 o'clock
   const obj = { sweep: 0 }
 
-  function redraw() {
-    ring.clear()
-    if (obj.sweep < 0.005) return
-    // CCW from 12 o'clock: angle decreases, arc from startAngle down
-    const endAngle = startAngle - Math.PI * 2 * obj.sweep
-    ring.arc(0, 0, radius, startAngle, endAngle, true)
-    ring.stroke({ width: 1.5, color, alpha: 0.75 })
-  }
-
-  // Phase 1: line grows CCW around the circle (0 → 1)
+  // Phase 1: line grows CCW from 12 o'clock around the circle (0 → 1)
   const tl = gsap.timeline()
   tl.to(obj, {
     sweep: 1,
     duration: 0.55,
     ease: 'power2.inOut',
-    onUpdate: redraw,
+    onUpdate() {
+      ring.clear()
+      if (obj.sweep < 0.005) return
+      const endAngle = startAngle - Math.PI * 2 * obj.sweep
+      ring.arc(0, 0, radius, startAngle, endAngle, true)
+      ring.stroke({ width: 1.5, color, alpha: 0.75 })
+    },
   })
-  // Phase 2: line reverses and shrinks back (1 → 0)
+  // Phase 2: line shrinks from 12 o'clock going CW (1 → 0)
   tl.to(obj, {
     sweep: 0,
     duration: 0.35,
-    ease: 'power3.in',
-    onUpdate: redraw,
+    ease: 'power2.in',
+    onUpdate() {
+      ring.clear()
+      if (obj.sweep < 0.005) return
+      // Start point moves CW as sweep decreases: eat the line from the front
+      const moveStart = startAngle - Math.PI * 2 * (1 - obj.sweep)
+      ring.arc(0, 0, radius, moveStart, startAngle - Math.PI * 2, true)
+      ring.stroke({ width: 1.5, color, alpha: 0.75 })
+    },
     onComplete() {
       ring.destroy()
     },
