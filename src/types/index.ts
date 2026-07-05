@@ -46,6 +46,7 @@ export interface ColorSchemeDef {
     primaryHover: string
     accent: string
     accentHover: string
+    cursorColor: string
     border: string
     borderLight: string
     glow: string
