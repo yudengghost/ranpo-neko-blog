@@ -25,8 +25,8 @@ body {
   cursor: none;
 }
 
-body * {
-  cursor: none;
+*, *::before, *::after {
+  cursor: none !important;
 }
 
 /* ===== Typography ===== */
