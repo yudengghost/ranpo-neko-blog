@@ -16,7 +16,7 @@ let app: Application | null = null
 let ctx: gsap.Context | null = null
 
 const DIAMOND_R = 60
-const LINE_WIDTH = 1.5
+const LINE_WIDTH = 2
 const DRAW_DURATION = 0.3
 const STAGGER = 0.15
 const HOLD_TIME = 0.7
@@ -49,7 +49,7 @@ onMounted(async () => {
 
   const cx = app.screen.width / 2
   const cy = app.screen.height / 2
-  const color = hexToNumber(colors.value.primary)
+  const color = hexToNumber(colors.value.cursorColor)
 
   // === Diamond vertices ===
   const top = { x: cx, y: cy - DIAMOND_R }
@@ -83,6 +83,9 @@ onMounted(async () => {
     }
   }
 
+  // Initial render to ensure canvas is drawn before animation starts
+  app.render()
+
   // Wrap all GSAP animations in context for auto-cleanup on unmount
   ctx = gsap.context(() => {
     // === Animation timeline ===
@@ -100,9 +103,7 @@ onMounted(async () => {
   for (let i = 0; i < 4; i++) {
     const g = sideLines[i]!
     g.alpha = 0
-    const pos = i * STAGGER
-    tl.add(() => { g.alpha = 1 }, pos)
-    tl.from(g, { alpha: 0, duration: DRAW_DURATION, ease: 'power2.out' }, pos)
+    tl.to(g, { alpha: 1, duration: DRAW_DURATION, ease: 'power2.out' }, i * STAGGER)
   }
 
   // Phase 2: Site name fades in
