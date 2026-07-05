@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import PixiBackground from '@/components/ui/PixiBackground.vue'
+import CustomCursor from '@/components/ui/CustomCursor.vue'
 import AppHeader from '@/components/layout/AppHeader.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
 import { useTheme } from '@/composables/useTheme'
@@ -17,6 +18,7 @@ if (!sessionStorage.getItem(SESSION_FLAG)) {
 <template>
   <div class="app-shell">
     <PixiBackground />
+    <CustomCursor />
     <AppHeader />
     <main class="app-main">
       <router-view v-slot="{ Component }">
