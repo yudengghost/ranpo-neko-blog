@@ -4,6 +4,8 @@ import { RouterLink } from 'vue-router'
 import { gsap } from 'gsap'
 import ColorSwitcher from '@/components/ui/ColorSwitcher.vue'
 import SearchModal from '@/components/blog/SearchModal.vue'
+import MailIcon from '@/components/ui/MailIcon.vue'
+import EmailModal from '@/components/blog/EmailModal.vue'
 import { siteConfig } from '@/config'
 import { useArticles } from '@/composables/useArticles'
 
@@ -13,6 +15,7 @@ const mobileOpen = ref(false)
 const catDropdownOpen = ref(false)
 const catDropdownRef = ref<HTMLElement>()
 const searchOpen = ref(false)
+const mailOpen = ref(false)
 const navRef = ref<HTMLElement>()
 
 // ---- Spring physics for nav links ----
@@ -248,6 +251,9 @@ onUnmounted(() => {
       </nav>
 
       <div class="header-actions">
+        <button class="mail-btn" @click="mailOpen = true" aria-label="站内信">
+          <MailIcon />
+        </button>
         <ColorSwitcher />
         <button
           class="mobile-toggle"
@@ -260,6 +266,7 @@ onUnmounted(() => {
       </div>
     </div>
     <SearchModal :open="searchOpen" @close="searchOpen = false" />
+    <EmailModal :open="mailOpen" @close="mailOpen = false" />
   </header>
 </template>
 
@@ -464,6 +471,23 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 16px;
+}
+
+.mail-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: background-color 0.2s ease;
+}
+.mail-btn:hover {
+  background: var(--color-surfaceHover);
 }
 
 .mobile-toggle {

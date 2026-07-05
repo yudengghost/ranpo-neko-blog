@@ -63,6 +63,15 @@ export interface NavItem {
   path: string
 }
 
+export interface EmailMeta {
+  slug: string
+  subject: string
+  from: string
+  sentAt: string
+  excerpt: string
+  tags?: string[]
+}
+
 export interface SiteConfig {
   name: string
   title: string
