@@ -64,6 +64,7 @@ onMounted(async () => {
 
   // Draw diamond path
   function drawDiamond(progress: number) {
+    if (diamondGfx.destroyed) return
     diamondGfx.clear()
     const totalProgress = Math.min(progress * TOTAL_EDGES, TOTAL_EDGES)
     const currentEdge = Math.floor(totalProgress)
@@ -88,8 +89,10 @@ onMounted(async () => {
 
   // Particles container for shatter phase
   const particles: Particle[] = []
+  let particleGfx: Graphics | null = null
 
   function drawParticles(g: Graphics, pts: Particle[]) {
+    if (g.destroyed) return
     g.clear()
     for (const p of pts) {
       g.circle(p.x, p.y, p.size)
@@ -136,7 +139,6 @@ onMounted(async () => {
   // Phase 4: Shatter — break diamond into particles
   tl.call(() => {
     nameRef.value!.style.opacity = '0'
-    // Generate particle fragments from the diamond perimeter
     const perimeterPoints = 40
     for (let i = 0; i < perimeterPoints; i++) {
       const t = i / perimeterPoints
@@ -157,33 +159,34 @@ onMounted(async () => {
       })
     }
 
-    // Hide and remove diamond
     diamondGfx.destroy()
 
-    // Create particle graphics
-    const particleGfx = new Graphics()
+    particleGfx = new Graphics()
     app!.stage.addChild(particleGfx)
     drawParticles(particleGfx, particles)
+  })
 
-    // Animate particles outward
-    const obj = { t: 0 }
-    gsap.to(obj, {
-      t: 1,
-      duration: SHATTER_DURATION,
-      ease: 'power3.out',
-      onUpdate() {
-        for (const p of particles) {
-          p.x += p.vx * 0.016
-          p.y += p.vy * 0.016
-          p.alpha *= 0.985
-        }
-        drawParticles(particleGfx, particles)
-        app!.render()
-      },
-      onComplete() {
+  // Particle animation on the timeline (not a standalone tween)
+  const shatterObj = { val: 0 }
+  tl.to(shatterObj, {
+    val: 1,
+    duration: SHATTER_DURATION,
+    ease: 'power3.out',
+    onUpdate() {
+      for (const p of particles) {
+        p.x += p.vx * 0.016
+        p.y += p.vy * 0.016
+        p.alpha *= 0.985
+      }
+      if (particleGfx) drawParticles(particleGfx, particles)
+      if (app) app.render()
+    },
+    onComplete() {
+      if (particleGfx) {
         particleGfx.destroy()
-      },
-    })
+        particleGfx = null
+      }
+    },
   })
   }) // end gsap.context
 })
