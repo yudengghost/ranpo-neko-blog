@@ -132,14 +132,54 @@ onMounted(async () => {
   // Wrap all GSAP animations in context for auto-cleanup on unmount
   ctx = gsap.context(() => {
     const tl = gsap.timeline({
-      onUpdate() { if (app) app.render() },
-      onComplete() {
-        if (containerRef.value) {
-          gsap.to(containerRef.value, { opacity: 0, duration: 0.35, ease: 'power2.in' })
+    onUpdate() { if (app) app.render() },
+    onComplete() {
+      // Phase 5: Dissolve — grid of cells randomly fades to reveal content
+      const COLS = 24
+      const ROWS = 16
+      const cellW = app!.screen.width / COLS
+      const cellH = app!.screen.height / ROWS
+      const bgColor = hexToNumber(colors.value.bg)
+
+      const dissolveGfx = new Graphics()
+      const cells: { alpha: number; x: number; y: number }[] = []
+
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          cells.push({ alpha: 1, x: c * cellW, y: r * cellH })
         }
-        setTimeout(() => emit('done'), 350)
-      },
-    })
+      }
+
+      function drawDissolve(g: Graphics) {
+        g.clear()
+        for (const cell of cells) {
+          if (cell.alpha < 0.01) continue
+          g.rect(cell.x, cell.y, cellW + 1, cellH + 1)
+          g.fill({ color: bgColor, alpha: cell.alpha })
+        }
+      }
+
+      const dissolved = gsap.context(() => {
+        drawDissolve(dissolveGfx)
+        app!.stage.addChild(dissolveGfx)
+
+        // Random order for natural dissolve
+        const shuffled = cells.map((_, i) => i).sort(() => Math.random() - 0.5)
+        const tl2 = gsap.timeline({
+          onUpdate() { drawDissolve(dissolveGfx); if (app) app.render() },
+          onComplete() {
+            dissolveGfx.destroy()
+            emit('done')
+          },
+        })
+
+        for (const idx of shuffled) {
+          const cell = cells[idx]!
+          tl2.to(cell, { alpha: 0, duration: 0.3, ease: 'power2.in' }, Math.random() * 0.5)
+        }
+      })
+    },
+  })
 
     // Phase 1: single-stroke diamond drawing
     const drawObj = { progress: 0 }
