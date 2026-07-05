@@ -30,7 +30,12 @@ export function useSEO(options: {
     setName('description', options.description)
     setMeta('og:description', options.description)
   }
-  if (options.image) setMeta('og:image', options.image)
+  if (options.image) {
+    setMeta('og:image', options.image)
+  } else {
+    const el = document.querySelector('meta[property="og:image"]')
+    if (el) el.remove()
+  }
   setMeta('og:title', options.title)
   setMeta('og:type', options.type || 'website')
 }

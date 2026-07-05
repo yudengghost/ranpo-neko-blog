@@ -16,7 +16,7 @@ function scrollToTop() {
 let ticking = false
 
 function updateProgress() {
-  const scrollTop = window.scrollY || document.documentElement.scrollTop
+  const scrollTop = window.scrollY
   const docHeight = document.documentElement.scrollHeight - window.innerHeight
   const p = docHeight > 0 ? Math.min(scrollTop / docHeight, 1) : 0
   visible.value = p > 0.03
