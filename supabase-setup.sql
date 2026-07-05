@@ -42,6 +42,12 @@ CREATE POLICY "comments_select" ON comments
 CREATE POLICY "comments_insert" ON comments
   FOR INSERT WITH CHECK (true);
 
+-- Cascade article_slug changes to related tables
+ALTER TABLE comments
+  ADD CONSTRAINT fk_comments_article_slug
+  FOREIGN KEY (article_slug) REFERENCES article_stats(slug)
+  ON UPDATE CASCADE;
+
 -- ===== article_reactions =====
 CREATE TABLE IF NOT EXISTS article_reactions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -49,7 +55,10 @@ CREATE TABLE IF NOT EXISTS article_reactions (
   user_id TEXT NOT NULL,
   reaction TEXT NOT NULL CHECK (reaction IN ('like', 'dislike')),
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  UNIQUE (article_slug, user_id)
+  UNIQUE (article_slug, user_id),
+  CONSTRAINT fk_reactions_article_slug
+    FOREIGN KEY (article_slug) REFERENCES article_stats(slug)
+    ON UPDATE CASCADE
 );
 
 ALTER TABLE article_reactions ENABLE ROW LEVEL SECURITY;

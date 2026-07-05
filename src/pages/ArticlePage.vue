@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
 import { gsap } from 'gsap'
 import { useArticles } from '@/composables/useArticles'
 import { useStats } from '@/composables/useStats'
+import { useSEO } from '@/composables/useSEO'
 import ArticleRenderer from '@/components/blog/ArticleRenderer.vue'
 import ArticleReactions from '@/components/blog/ArticleReactions.vue'
 import CommentSection from '@/components/blog/CommentSection.vue'
@@ -15,6 +16,17 @@ const { getBySlug } = useArticles()
 const { recordArticleView } = useStats()
 const entry = computed(() => getBySlug(slug.value))
 const meta = computed(() => entry.value?.meta)
+
+watch(meta, (m) => {
+  if (m) {
+    useSEO({
+      title: `${m.title} | RanpoNeko Blog`,
+      description: m.excerpt,
+      image: m.coverImage,
+      type: 'article',
+    })
+  }
+}, { immediate: true })
 
 onMounted(() => {
   recordArticleView(slug.value)

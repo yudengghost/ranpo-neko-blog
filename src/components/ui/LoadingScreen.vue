@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
-import { Application, Graphics, Sprite, Texture, Container } from 'pixi.js'
+import { Application, Graphics } from 'pixi.js'
 import { gsap } from 'gsap'
 import { useTheme } from '@/composables/useTheme'
 import { hexToNumber } from '@/utils/color'
@@ -126,80 +126,6 @@ onMounted(async () => {
     }
   }
 
-  // Generate noise dissolve texture
-  function createDissolveTexture(): Texture {
-    const w = 256
-    const h = 512
-    const c = document.createElement('canvas')
-    c.width = w
-    c.height = h
-    const ctx2d = c.getContext('2d')!
-    const img = ctx2d.createImageData(w, h)
-    for (let y = 0; y < h; y++) {
-      for (let x = 0; x < w; x++) {
-        const idx = (y * w + x) * 4
-        // Base gradient: 0=black(dissolved) at top, 255=white(visible) at bottom
-        const base = (y / h) * 255
-        // Multi-octave noise for organic edge
-        const nx = x / w
-        const ny = y / h
-        const n1 = Math.sin(nx * 37.7 + ny * 13.3) * Math.cos(ny * 41.1 + nx * 7.9) * 0.6
-        const n2 = Math.sin(ny * 89.3 + nx * 23.7) * Math.cos(nx * 67.1 + ny * 17.3) * 0.3
-        const n3 = Math.sin(nx * 17.5 + ny * 53.9) * Math.cos(ny * 29.7 - nx * 11.3) * 0.15
-        const noise = (n1 + n2 + n3) * 40
-        const val = Math.max(0, Math.min(255, base + noise))
-        img.data[idx] = val
-        img.data[idx + 1] = val
-        img.data[idx + 2] = val
-        img.data[idx + 3] = 255
-      }
-    }
-    ctx2d.putImageData(img, 0, 0)
-    return Texture.from(c)
-  }
-
-  const dissolveTex = createDissolveTexture()
-
-  function startDissolve() {
-    const { innerWidth: sw, innerHeight: sh } = window
-    // Container holding the mask-overlaid content
-    const maskLayer = new Container()
-    // Full screen white fill — this gets masked to dissolve
-    const fill = new Graphics()
-    fill.rect(0, 0, sw, sh)
-    fill.fill({ color: hexToNumber(colors.value.cursorColor), alpha: 1 })
-    maskLayer.addChild(fill)
-
-    // Create mask sprite from noise texture, scaled to screen width, tall enough
-    const maskSprite = new Sprite(dissolveTex)
-    maskSprite.width = sw
-    maskSprite.height = sh * 2 // double height for sweeping room
-    maskSprite.anchor.set(0, 0)
-    // Start: mask fully above screen (all content visible)
-    maskSprite.y = -sh
-
-    fill.mask = maskSprite
-    maskLayer.addChild(maskSprite)
-    app!.stage.addChild(maskLayer)
-
-    // Animate mask downward: the dissolve edge sweeps from top to bottom
-    const dissolveDur = 1.2
-    gsap.to(maskSprite, {
-      y: sh,
-      duration: dissolveDur,
-      ease: 'power2.inOut',
-      onUpdate() {
-        if (app) app.render()
-        if (nameRef.value) nameRef.value.style.opacity = '0'
-        // Reveal main page underneath by removing loading screen background
-        if (containerRef.value) containerRef.value.style.background = 'transparent'
-      },
-      onComplete() {
-        emit('done')
-      },
-    })
-  }
-
   // Initial render to show empty canvas
   app.render()
 
@@ -208,7 +134,10 @@ onMounted(async () => {
     const tl = gsap.timeline({
       onUpdate() { if (app) app.render() },
       onComplete() {
-        if (containerRef.value) startDissolve()
+        if (containerRef.value) {
+          gsap.to(containerRef.value, { opacity: 0, duration: 0.35, ease: 'power2.in' })
+        }
+        setTimeout(() => emit('done'), 350)
       },
     })
 

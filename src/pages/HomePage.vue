@@ -3,20 +3,28 @@ import { onMounted, onUnmounted, ref } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useArticles } from '@/composables/useArticles'
+import { useSEO } from '@/composables/useSEO'
 import { siteConfig } from '@/config'
 import ArticleCard from '@/components/blog/ArticleCard.vue'
+import SkeletonCard from '@/components/ui/SkeletonCard.vue'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const { getHomeArticles } = useArticles()
 const articles = getHomeArticles()
 const featuredRef = ref<HTMLElement>()
+
+useSEO({
+  title: siteConfig.title,
+  description: siteConfig.description,
+  type: 'website',
+})
 const subtitleRef = ref<HTMLElement>()
 
 const subtitlePhrases = [
   siteConfig.subtitle,
-  '以几何线条编织灵感空间',
-  '在代码与设计的边界漫步',
+  '个人向杂谈',
+  '想玩好多好多菠萝干',
   '每一像素都有它的诗意',
   '于克制之中见丰富',
 ]
@@ -159,9 +167,8 @@ onUnmounted(() => {
           <ArticleCard v-for="article in articles" :key="article.slug" :article="article" />
         </div>
 
-        <div v-else class="articles-empty">
-          <p class="empty-text">Coming soon...</p>
-          <p class="empty-sub">Add articles to the <code>src/articles/home/</code> folder.</p>
+        <div v-else class="articles-skel">
+          <SkeletonCard v-for="i in 2" :key="i" />
         </div>
       </section>
     </div>
@@ -187,31 +194,25 @@ onUnmounted(() => {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  -webkit-mask-image: linear-gradient(
-    90deg,
-    transparent 0%,
-    black 15%,
-    black 85%,
-    transparent 100%
-  );
-  mask-image: linear-gradient(
-    90deg,
-    transparent 0%,
-    black 15%,
-    black 85%,
-    transparent 100%
-  );
+  -webkit-mask-image: linear-gradient(90deg,
+      transparent 0%,
+      black 15%,
+      black 85%,
+      transparent 100%);
+  mask-image: linear-gradient(90deg,
+      transparent 0%,
+      black 15%,
+      black 85%,
+      transparent 100%);
 }
 
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--color-bg) 20%, transparent) 0%,
-    color-mix(in srgb, var(--color-bg) 50%, transparent) 50%,
-    var(--color-bg) 100%
-  );
+  background: linear-gradient(180deg,
+      color-mix(in srgb, var(--color-bg) 20%, transparent) 0%,
+      color-mix(in srgb, var(--color-bg) 50%, transparent) 50%,
+      var(--color-bg) 100%);
   transition: background 0.6s ease;
 }
 
@@ -331,31 +332,11 @@ onUnmounted(() => {
   gap: 24px;
 }
 
-/* Empty state */
-.articles-empty {
-  text-align: center;
-  padding: 80px 20px;
-  border: 1px dashed var(--color-borderLight);
-  border-radius: 16px;
-  transition: border-color 0.6s ease;
-}
-
-.empty-text {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.4rem;
-  color: var(--color-textMuted);
-  margin-bottom: 8px;
-}
-
-.empty-sub {
-  font-family: 'Work Sans', sans-serif;
-  font-size: 0.85rem;
-  font-weight: 300;
-  color: var(--color-textMuted);
-}
-
-.empty-sub code {
-  color: var(--color-primary);
+/* Skeleton */
+.articles-skel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 @media (max-width: 768px) {

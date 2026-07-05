@@ -51,8 +51,7 @@ export function useStats() {
 
   const recordTotalVisit = async () => {
     if (supabase) {
-      const { error } = await supabase.rpc('increment_total_visits')
-      if (error) console.warn('[useStats] Failed to record total visit:', error.message)
+      await supabase.rpc('increment_total_visits')
     } else {
       try {
         const v = parseInt(localStorage.getItem('blog-total-visits') || '0', 10) || 0
@@ -68,10 +67,7 @@ export function useStats() {
     lsSaveSessionViews(sessionViews)
 
     if (supabase) {
-      const { error } = await supabase.rpc('increment_article_view', { article_slug: slug })
-      if (error) {
-        console.warn('[useStats] Failed to record article view:', error.message)
-      }
+      await supabase.rpc('increment_article_view', { article_slug: slug })
     } else {
       const stats = lsLoadAllStats()
       const current = stats[slug] || { views: 0, likes: 0, dislikes: 0 }

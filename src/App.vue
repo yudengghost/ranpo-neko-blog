@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import PixiBackground from '@/components/ui/PixiBackground.vue'
 import CustomCursor from '@/components/ui/CustomCursor.vue'
 import LoadingScreen from '@/components/ui/LoadingScreen.vue'
+import ScrollIndicator from '@/components/ui/ScrollIndicator.vue'
 import AppHeader from '@/components/layout/AppHeader.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
 import { useTheme } from '@/composables/useTheme'
@@ -34,6 +35,7 @@ if (!sessionStorage.getItem(SESSION_FLAG)) {
       </router-view>
     </main>
     <AppFooter />
+    <ScrollIndicator />
   </div>
 </template>
 
