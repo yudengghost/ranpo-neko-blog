@@ -43,14 +43,18 @@ npm run test:unit    # Vitest unit tests
 
 ### Article System
 
-Articles are Vue SFC files under `src/articles/{category}/`. The folder structure **is** the category tree:
+Articles are Vue SFC files under `src/articles/{category}/`. The folder structure **is** the category tree. Supports multi-level nesting:
 ```
 src/articles/
-├── home/          → Articles displayed on landing page
-├── tech/          → Category "tech"
-├── art/           → Category "art"
+├── home/              → Articles displayed on landing page
+├── tech/              → Category "tech"
+│   └── frontend/      → Category "tech/frontend"
+├── art/               → Category "art"
+│   ├── digital/       → Category "art/digital"
+│   └── traditional/   → Category "art/traditional"
 └── ...
 ```
+Parent categories automatically aggregate counts from sub-categories. Category page shows all articles in that category and its descendants.
 
 **Adding an article:** Create a `.vue` file with a `<script>` block that exports both `meta` and `export default`:
 

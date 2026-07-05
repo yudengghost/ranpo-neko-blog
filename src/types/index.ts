@@ -25,6 +25,7 @@ export interface CategoryInfo {
   slug: string
   name: string
   description?: string
+  depth: number
   articleCount: number
 }
 

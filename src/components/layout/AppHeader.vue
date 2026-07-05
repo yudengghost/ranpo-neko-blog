@@ -227,10 +227,14 @@ onUnmounted(() => {
               :key="cat.slug"
               :to="`/category/${cat.slug}`"
               class="dropdown-link"
+              :style="{ paddingLeft: 14 + cat.depth * 16 + 'px' }"
               @mousedown="handleClick"
               @click="mobileOpen = false"
             >
-              {{ cat.name }}
+              <span class="dropdown-name">
+                <span v-if="cat.depth > 0" class="dropdown-prefix">&#8627;</span>
+                {{ cat.name }}
+              </span>
               <span class="dropdown-count">{{ cat.articleCount }}</span>
             </RouterLink>
             <div v-if="categories.length === 0" class="dropdown-empty">
@@ -397,8 +401,8 @@ onUnmounted(() => {
 .dropdown-panel {
   position: absolute;
   top: calc(100% + 12px);
-  left: 0;
-  transform: none;
+  left: 50%;
+  transform: translateX(-50%);
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 12px;
@@ -428,6 +432,17 @@ onUnmounted(() => {
 
 .dropdown-link:hover {
   background: var(--color-surfaceHover);
+}
+
+.dropdown-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dropdown-prefix {
+  font-size: 0.7rem;
+  color: var(--color-textMuted);
 }
 
 .dropdown-count {
@@ -511,12 +526,6 @@ onUnmounted(() => {
 
   .nav-link::after {
     display: none;
-  }
-
-  .dropdown-panel {
-    left: auto;
-    right: 0;
-    top: 0;
   }
 }
 </style>

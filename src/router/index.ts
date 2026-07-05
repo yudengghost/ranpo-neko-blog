@@ -14,7 +14,7 @@ const router = createRouter({
       component: () => import('@/pages/ArticlePage.vue'),
     },
     {
-      path: '/category/:slug',
+      path: '/category/:slug(.*)',
       name: 'category',
       component: () => import('@/pages/CategoryPage.vue'),
     },
