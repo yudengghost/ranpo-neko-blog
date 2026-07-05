@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue'
-import { Application, Graphics, Container } from 'pixi.js'
+import { Application, Graphics } from 'pixi.js'
 import { gsap } from 'gsap'
 import { useTheme } from '@/composables/useTheme'
 
@@ -30,52 +30,40 @@ function drawCursor(alpha = 1) {
 function playClickAnim(x: number, y: number) {
   if (!app) return
   const color = hexToNumber(colors.value.primary)
-  const lineCount = 6
-  const maxRadius = 36
-
-  // Container for the burst lines
-  const burst = new Container()
-  burst.position.set(x, y)
+  const radius = 22
+  const startAngle = -Math.PI / 2 // 12 o'clock
   const ring = new Graphics()
+  ring.position.set(x, y)
+  app.stage.addChild(ring)
 
-  // Draw arcs that will grow into a full circle
-  for (let i = 0; i < lineCount; i++) {
-    const baseAngle = (i / lineCount) * Math.PI * 2
-    const r1 = 6
-    const r2 = 18
-    const x1 = Math.cos(baseAngle) * r1
-    const y1 = Math.sin(baseAngle) * r1
-    const x2 = Math.cos(baseAngle) * r2
-    const y2 = Math.sin(baseAngle) * r2
-    ring.moveTo(x1, y1)
-    ring.lineTo(x2, y2)
+  // Small starting dot at 12 o'clock
+  const obj = { sweep: 0 }
+
+  function redraw() {
+    ring.clear()
+    if (obj.sweep < 0.005) return
+    // CCW from 12 o'clock: angle decreases, arc from startAngle down
+    const endAngle = startAngle - Math.PI * 2 * obj.sweep
+    ring.arc(0, 0, radius, startAngle, endAngle, true)
+    ring.stroke({ width: 1.5, color, alpha: 0.75 })
   }
-  ring.stroke({ width: 1.2, color, alpha: 0.7 })
-  burst.addChild(ring)
 
-  app.stage.addChild(burst)
-
-  // Animate: lines grow out, rotate, then shrink back
-  gsap.to(burst.scale, {
-    x: 2.2,
-    y: 2.2,
-    duration: 0.4,
-    ease: 'power2.out',
-  })
-
-  gsap.to(burst, {
-    rotation: Math.PI / 3,
-    duration: 0.4,
-    ease: 'power2.out',
-  })
-
-  gsap.to(ring, {
-    alpha: 0,
+  // Phase 1: line grows CCW around the circle (0 → 1)
+  const tl = gsap.timeline()
+  tl.to(obj, {
+    sweep: 1,
     duration: 0.55,
-    delay: 0.15,
-    ease: 'power2.in',
+    ease: 'power2.inOut',
+    onUpdate: redraw,
+  })
+  // Phase 2: line reverses and shrinks back (1 → 0)
+  tl.to(obj, {
+    sweep: 0,
+    duration: 0.35,
+    ease: 'power3.in',
+    onUpdate: redraw,
     onComplete() {
-      burst.destroy({ children: true })
+      ring.destroy()
     },
   })
 }
