@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import PixiBackground from '@/components/ui/PixiBackground.vue'
 import LoadingScreen from '@/components/ui/LoadingScreen.vue'
+import PixiBackground from '@/components/ui/PixiBackground.vue'
 import CustomCursor from '@/components/ui/CustomCursor.vue'
 import AppHeader from '@/components/layout/AppHeader.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
@@ -10,18 +10,18 @@ import { useStats } from '@/composables/useStats'
 
 useTheme()
 
-const showLoader = ref(true)
-
 const SESSION_FLAG = 'blog-visit-recorded'
 if (!sessionStorage.getItem(SESSION_FLAG)) {
   sessionStorage.setItem(SESSION_FLAG, '1')
   useStats().recordTotalVisit()
 }
+
+const loaded = ref(false)
 </script>
 
 <template>
-  <LoadingScreen v-if="showLoader" @done="showLoader = false" />
-  <div class="app-shell" v-show="!showLoader">
+  <LoadingScreen @done="loaded = true" />
+  <div v-if="loaded" class="app-shell">
     <PixiBackground />
     <CustomCursor />
     <AppHeader />

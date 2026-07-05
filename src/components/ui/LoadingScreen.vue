@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
-import { Application, Graphics, Container } from 'pixi.js'
+import { Application, Graphics, Text, TextStyle, Container } from 'pixi.js'
 import { gsap } from 'gsap'
 import { useTheme } from '@/composables/useTheme'
 import { hexToNumber } from '@/utils/color'
@@ -8,147 +8,20 @@ import { hexToNumber } from '@/utils/color'
 const emit = defineEmits<{ done: [] }>()
 const { colors } = useTheme()
 const containerRef = ref<HTMLDivElement>()
+
 let app: Application | null = null
+let ctx: gsap.Context | null = null
 
-const TWO_PI = Math.PI * 2
-
-type PathPt = [number, number, number] // [x, y, width]
-type OrnDef = [number, number, number]  // [x, y, radius]
-
-function buildPath(scale: number): PathPt[] {
-  const s = scale
-  const result: PathPt[] = []
-
-  // Open: emerge from center upward, thin→thick
-  for (let t = 0; t <= 1; t += 0.06)
-    result.push([0, -18 * (1 - t), 0.5 + t * 1.5])
-
-  // Crescent arc sweeping right
-  const arcR = 85 * s
-  for (let t = 0; t <= 1; t += 0.035)
-    result.push([Math.cos(-Math.PI / 2 + t * Math.PI * 0.65) * arcR, Math.sin(-Math.PI / 2 + t * Math.PI * 0.65) * arcR - 8, 2.2])
-
-  // Hexagon — thick confident strokes
-  const hexR = 56 * s
-  const hexV: [number, number][] = []
-  for (let i = 0; i < 6; i++)
-    hexV.push([Math.cos(TWO_PI / 6 * i - Math.PI / 6) * hexR, Math.sin(TWO_PI / 6 * i - Math.PI / 6) * hexR])
-  for (let i = 0; i <= 6; i++)
-    result.push([hexV[i % 6]![0], hexV[i % 6]![1], 2.6])
-
-  // Delicate inner loop — thin, elegant
-  const lr = 28 * s
-  for (let t = 0; t <= 1; t += 0.045) {
-    const a = Math.PI * 0.7 + t * Math.PI * 1.6
-    const r = lr * (1 + Math.sin(t * Math.PI * 2) * 0.3)
-    result.push([Math.cos(a) * r + 12, Math.sin(a) * r, 0.45])
-  }
-
-  // Diamond — precise accent strokes
-  const dR = 22 * s
-  const dim = 40 * s
-  for (const pt of [[-dim, -dim + dR], [-dim + dR, -dim], [-dim + 2 * dR, -dim]]) {
-    result.push([pt[0]!, pt[1]!, 1.0])
-  }
-  result.push([-dim + dR, -dim + 2 * dR, 1.0])
-  result.push([-dim, -dim + dR, 1.0])
-
-  // Grand circle with oscillating width
-  const circleR = 72 * s
-  for (let t = 0; t <= 1; t += 0.022) {
-    const a = -Math.PI / 2 + t * TWO_PI
-    result.push([Math.cos(a) * circleR, Math.sin(a) * circleR, 1.8 + Math.sin(t * TWO_PI * 4) * 0.7])
-  }
-
-  // Return — smooth descent to center, thinning
-  for (let t = 0; t <= 1; t += 0.07) {
-    const a = -Math.PI / 2 + (1 - t) * TWO_PI * 0.3
-    const r = circleR * (1 - t)
-    result.push([Math.cos(a) * r, Math.sin(a) * r, 1.5 * (1 - t) + 0.2])
-  }
-  result.push([0, 0, 0.3])
-
-  return result
-}
-
-function ornDefs(): OrnDef[] {
-  return [
-    [0, -18, 3],           // top start
-    [0, 0, 5],             // center — large
-    [-85, -8, 2.5], [85, -8, 2.5], // crescent ends
-    [56, 0, 3], [0, -56, 3], [-56, 0, 3], [0, 56, 3], // hex key vertices
-    [0, -22, 2], [22, 0, 2], [0, 22, 2], [-22, 0, 2], // diamond corners
-    [0, -72, 3.5], [0, 72, 3.5], [72, 0, 3.5], [-72, 0, 3.5], // circle quarters
-    [0, 0, 6],             // final center — largest
-  ]
-}
-
-function buildDists(pts: PathPt[]): number[] {
-  const dists = [0]
-  for (let i = 1; i < pts.length; i++) {
-    const dx = pts[i]![0] - pts[i - 1]![0]
-    const dy = pts[i]![1] - pts[i - 1]![1]
-    dists.push(dists[i - 1]! + Math.sqrt(dx * dx + dy * dy))
-  }
-  return dists
-}
-
-function drawTrail(gfx: Graphics, pts: PathPt[], dists: number[], targetDist: number, color: number) {
-  gfx.clear()
-  if (targetDist <= 0.5) return
-
-  let endIdx = 0
-  const maxDist = dists[dists.length - 1]!
-  const clamped = Math.min(targetDist, maxDist)
-  while (endIdx < dists.length && dists[endIdx]! <= clamped) endIdx++
-  if (endIdx >= pts.length) endIdx = pts.length - 1
-
-  // Partial last segment fraction
-  let frac = 1
-  if (endIdx < pts.length && endIdx > 0) {
-    const segStart = dists[endIdx - 1]!
-    const segLen = dists[endIdx]! - segStart
-    frac = segLen > 0 ? Math.min(1, (clamped - segStart) / segLen) : 0
-  }
-
-  // Wide ambient glow
-  gfx.moveTo(pts[0]![0], pts[0]![1])
-  for (let i = 1; i < endIdx; i++) gfx.lineTo(pts[i]![0], pts[i]![1])
-  if (endIdx < pts.length && endIdx > 0 && frac > 0) {
-    gfx.lineTo(
-      pts[endIdx - 1]![0] + (pts[endIdx]![0] - pts[endIdx - 1]![0]) * frac,
-      pts[endIdx - 1]![1] + (pts[endIdx]![1] - pts[endIdx - 1]![1]) * frac,
-    )
-  }
-  gfx.stroke({ width: 5, color, alpha: 0.06, cap: 'round', join: 'round' })
-
-  // Mid glow
-  gfx.clear()
-  gfx.moveTo(pts[0]![0], pts[0]![1])
-  for (let i = 1; i < endIdx; i++) gfx.lineTo(pts[i]![0], pts[i]![1])
-  if (endIdx < pts.length && endIdx > 0 && frac > 0) {
-    gfx.lineTo(
-      pts[endIdx - 1]![0] + (pts[endIdx]![0] - pts[endIdx - 1]![0]) * frac,
-      pts[endIdx - 1]![1] + (pts[endIdx]![1] - pts[endIdx - 1]![1]) * frac,
-    )
-  }
-  gfx.stroke({ width: 2.2, color, alpha: 0.18, cap: 'round', join: 'round' })
-
-  // Main line
-  gfx.clear()
-  gfx.moveTo(pts[0]![0], pts[0]![1])
-  for (let i = 1; i < endIdx; i++) gfx.lineTo(pts[i]![0], pts[i]![1])
-  if (endIdx < pts.length && endIdx > 0 && frac > 0) {
-    gfx.lineTo(
-      pts[endIdx - 1]![0] + (pts[endIdx]![0] - pts[endIdx - 1]![0]) * frac,
-      pts[endIdx - 1]![1] + (pts[endIdx]![1] - pts[endIdx - 1]![1]) * frac,
-    )
-  }
-  gfx.stroke({ width: 1.3, color, alpha: 0.78, cap: 'round', join: 'round' })
-}
+const DIAMOND_SIZE = 70
+const COLORS = () => ({
+  primary: hexToNumber(colors.value.primary),
+  text: hexToNumber(colors.value.text),
+})
 
 onMounted(async () => {
   if (!containerRef.value) return
+
+  ctx = gsap.context(() => {})
 
   app = new Application()
   await app.init({
@@ -161,115 +34,190 @@ onMounted(async () => {
   })
   containerRef.value.appendChild(app.canvas)
 
-  const cx = window.innerWidth / 2
-  const cy = window.innerHeight / 2
-  const color = hexToNumber(colors.value.primary)
-  const scale = Math.max(0.5, Math.min(window.innerWidth, window.innerHeight) / 650)
+  const { innerWidth: W, innerHeight: H } = window
+  const cx = W / 2
+  const cy = H / 2
+  const c = COLORS()
+  const timeline = gsap.timeline()
 
-  const stage = new Container()
-  stage.position.set(cx, cy)
-  app.stage.addChild(stage)
+  // ── Phase A: Diamond construction ──────────────────────────────────
+  const diamond = new Graphics()
+  app.stage.addChild(diamond)
 
-  // Faint background grid
-  const bg = new Graphics()
-  for (let x = -cx; x <= cx; x += 50) { bg.moveTo(x, -cy); bg.lineTo(x, cy) }
-  for (let y = -cy; y <= cy; y += 50) { bg.moveTo(-cx, y); bg.lineTo(cx, y) }
-  bg.stroke({ width: 0.3, color, alpha: 0.025 })
-  stage.addChild(bg)
+  // 4 sides of the diamond
+  const top = { x: cx, y: cy - DIAMOND_SIZE }
+  const right = { x: cx + DIAMOND_SIZE, y: cy }
+  const bottom = { x: cx, y: cy + DIAMOND_SIZE }
+  const left = { x: cx - DIAMOND_SIZE, y: cy }
 
-  // Radial rings
-  const rings = new Graphics()
-  for (const r of [100, 180, 280]) { rings.circle(0, 0, r) }
-  rings.stroke({ width: 0.4, color, alpha: 0.035 })
-  stage.addChild(rings)
+  const sides = [
+    { from: top, to: right },
+    { from: right, to: bottom },
+    { from: bottom, to: left },
+    { from: left, to: top },
+  ]
 
-  // Ornaments — sparkle diamonds at key positions
-  const ornContainer = new Container()
-  stage.addChild(ornContainer)
+  const sideProxies = sides.map(() => ({ t: 0 }))
 
-  const ornDefList = ornDefs()
-  const ornGraphics: { gfx: Graphics; alpha: number }[] = []
-
-  for (const [ox, oy, or] of ornDefList) {
-    const g = new Graphics()
-    const h = or * 0.6
-    g.moveTo(0, -or); g.lineTo(h, 0); g.lineTo(0, or); g.lineTo(-h, 0)
-    g.closePath()
-    g.stroke({ width: 0.7, color, alpha: 0 })
-    g.position.set(ox, oy)
-    g.alpha = 0
-    ornContainer.addChild(g)
-    ornGraphics.push({ gfx: g, alpha: 0 })
-  }
-
-  // Precompute ornament distances along path
-  const pathPts = buildPath(scale)
-  const dists = buildDists(pathPts)
-  const ornDists: number[] = []
-  for (const [ox, oy] of ornDefList) {
-    let bestIdx = 0
-    let minD = Infinity
-    for (let i = 0; i < pathPts.length; i++) {
-      const d = (pathPts[i]![0] - ox) ** 2 + (pathPts[i]![1] - oy) ** 2
-      if (d < minD) { minD = d; bestIdx = i }
+  function drawDiamond() {
+    diamond.clear()
+    for (let i = 0; i < sides.length; i++) {
+      const { from, to } = sides[i]!
+      const t = sideProxies[i]!.t
+      if (t < 0.001) continue
+      const ex = from.x + (to.x - from.x) * t
+      const ey = from.y + (to.y - from.y) * t
+      diamond.moveTo(from.x, from.y)
+      diamond.lineTo(ex, ey)
     }
-    ornDists.push(dists[bestIdx]!)
+    diamond.stroke({ width: 1.5, color: c.primary, alpha: 0.8 })
   }
 
-  const totalDist = dists[dists.length - 1]!
-  const trail = new Graphics()
-  stage.addChild(trail)
-  const progress = { v: 0 }
-
-  let lastOrnRevealed = -1
-
-  // Phase 1: Draw
-  const tl = gsap.timeline()
-  tl.to(progress, {
-    v: 1,
-    duration: 2.5,
-    ease: 'power3.inOut',
-    onUpdate() {
-      const curDist = totalDist * progress.v
-      drawTrail(trail, pathPts, dists, curDist, color)
-
-      // Reveal ornaments as line passes
-      while (lastOrnRevealed + 1 < ornDists.length && ornDists[lastOrnRevealed + 1]! <= curDist) {
-        lastOrnRevealed++
-        const o = ornGraphics[lastOrnRevealed]!
-        gsap.to(o.gfx, { alpha: 0.5, duration: 0.35, ease: 'power2.out' })
-      }
-
-      if (app) app.render()
-    },
+  // Site name text
+  const textStyle = new TextStyle({
+    fontFamily: 'Playfair Display, serif',
+    fontSize: 28,
+    fontStyle: 'italic',
+    fontWeight: '300',
+    fill: c.primary,
   })
+  const siteText = new Text({ text: 'RanpoNeko', style: textStyle })
+  siteText.anchor.set(0.5)
+  siteText.position.set(cx, cy)
+  siteText.alpha = 0
+  app.stage.addChild(siteText)
 
-  // Phase 2: Composition breathes + ornaments brighten
-  tl.to(stage.scale, { x: 1.03, y: 1.03, duration: 0.7, ease: 'sine.inOut', yoyo: true, repeat: 1 })
-  // Flash ornaments brighter
-  for (const o of ornGraphics) {
-    tl.to(o.gfx, { alpha: 0.9, duration: 0.3, yoyo: true, repeat: 1, delay: Math.random() * 0.3 }, '<')
+  // Phase A: Draw diamond sides in sequence
+  for (let i = 0; i < 4; i++) {
+    timeline.to(sideProxies[i]!, {
+      t: 1,
+      duration: 0.35,
+      ease: 'power2.inOut',
+      onUpdate: drawDiamond,
+    }, i === 0 ? '=0' : '-=0.1')
   }
 
-  // Phase 3: Retract from endpoint
-  tl.to(progress, {
-    v: 0,
-    duration: 0.85,
-    ease: 'power4.in',
-    onUpdate() {
-      drawTrail(trail, pathPts, dists, totalDist * progress.v, color)
-      if (app) app.render()
-    },
-    onComplete() {
-      // Exit: dissolve outward
-      gsap.to(stage, { alpha: 0, duration: 0.4, ease: 'power2.in', onComplete() { emit('done') } })
-      gsap.to(stage.scale, { x: 1.25, y: 1.25, duration: 0.4, ease: 'power2.in' })
-    },
-  }, '+=0.5')
+  // Fade in site name
+  timeline.to(siteText, { alpha: 0.7, duration: 0.5, ease: 'power2.in' }, '-=0.2')
+  timeline.to(siteText, { alpha: 1, duration: 0.3 }, '+=0.4')
+
+  // ── Phase A→C transition: Diamond shatters ─────────────────────────
+  const particles: Graphics[] = []
+  for (let i = 0; i < 16; i++) {
+    const p = new Graphics()
+    const size = 3 + Math.random() * 4
+    const shape = Math.random()
+    if (shape < 0.33) {
+      p.circle(0, 0, size / 2)
+    } else if (shape < 0.66) {
+      p.moveTo(-size / 2, -size / 2)
+      p.lineTo(size / 2, 0)
+      p.lineTo(-size / 2, size / 2)
+      p.closePath()
+    } else {
+      p.moveTo(0, -size / 2)
+      p.lineTo(size / 2, size / 2)
+      p.lineTo(-size / 2, size / 2)
+      p.closePath()
+    }
+    p.fill({ color: c.primary, alpha: 0.6 })
+    p.position.set(cx, cy)
+    p.alpha = 0
+    app.stage.addChild(p)
+    particles.push(p)
+  }
+
+  // Shatter particles outward
+  for (const p of particles) {
+    const angle = Math.random() * Math.PI * 2
+    const dist = 60 + Math.random() * 120
+    timeline.to(p, {
+      x: cx + Math.cos(angle) * dist,
+      y: cy + Math.sin(angle) * dist,
+      alpha: 0,
+      duration: 0.6,
+      ease: 'power2.out',
+    }, '-=0.5')
+  }
+
+  // Diamond and text fade out
+  timeline.to([diamond, siteText], { alpha: 0, duration: 0.3 }, '-=0.5')
+
+  // ── Phase C: Curved descent lines ──────────────────────────────────
+  const LINE_COUNT = 8
+  const descentLines: { gfx: Graphics; x: number; y: number; curve: number }[] = []
+
+  for (let i = 0; i < LINE_COUNT; i++) {
+    const gfx = new Graphics()
+    gfx.alpha = 0
+    app.stage.addChild(gfx)
+
+    const x = W * (0.1 + (i / (LINE_COUNT - 1)) * 0.8)
+    const curve = (Math.random() - 0.5) * 80 // lateral curve amount
+    descentLines.push({ gfx, x, y: -20, curve })
+  }
+
+  // Animate lines descending with cubic-bezier-like curved paths
+  const lineProxies = descentLines.map(() => ({ t: 0 }))
+  const LINE_Y_START = -30
+  const LINE_Y_END = H + 30
+
+  function drawCurvedLines() {
+    for (let i = 0; i < descentLines.length; i++) {
+      const { gfx, x, curve } = descentLines[i]!
+      const t = lineProxies[i]!.t
+      if (t < 0.001) { gfx.clear(); continue }
+
+      // Parametric curved path: x sways left/right as y descends
+      const y = LINE_Y_START + (LINE_Y_END - LINE_Y_START) * t
+      const cp = curve * Math.sin(t * Math.PI * 2.5) // multi-sway curve
+      gfx.clear()
+      // Draw the visible portion as a trailing line
+      const trailLen = 80
+      const steps = 10
+      for (let s = 0; s < steps; s++) {
+        const st = Math.max(0, t - (s / steps) * 0.15)
+        const sy = LINE_Y_START + (LINE_Y_END - LINE_Y_START) * st
+        const sx = x + curve * Math.sin(st * Math.PI * 2.5)
+        if (s === 0) gfx.moveTo(sx, sy)
+        else gfx.lineTo(sx, sy)
+      }
+      gfx.stroke({ width: 1, color: COLORS().primary, alpha: 0.5 })
+    }
+  }
+
+  for (let i = 0; i < LINE_COUNT; i++) {
+    const delay = 0.08
+    timeline.fromTo(descentLines[i]!.gfx, { alpha: 0 }, { alpha: 1, duration: 0.15 }, `-=${delay * (i + 1)}`)
+    timeline.to(lineProxies[i]!, {
+      t: 1,
+      duration: 0.7,
+      ease: 'power3.in',
+      onUpdate: drawCurvedLines,
+    }, `-=${0.05}`)
+  }
+
+  // Lines morph into page structure (briefly form a grid then dissolve)
+  timeline.to(descentLines.map(l => l.gfx), {
+    alpha: 0,
+    duration: 0.4,
+    stagger: 0.03,
+    ease: 'power2.in',
+  }, '+=0.2')
+
+  // ── Done ───────────────────────────────────────────────────────────
+  timeline.call(() => {
+    emit('done')
+  })
 })
 
 onUnmounted(() => {
-  if (app) { app.destroy(true, { children: true }); app = null }
+  ctx?.revert()
+  ctx = null
+  if (app) {
+    app.destroy(true, { children: true })
+    app = null
+  }
 })
 </script>
 
@@ -279,7 +227,9 @@ onUnmounted(() => {
 
 <style scoped>
 .loading-screen {
-  position: fixed; inset: 0; z-index: 9999;
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
   background: var(--color-bg);
   transition: background-color 0.6s ease;
 }
