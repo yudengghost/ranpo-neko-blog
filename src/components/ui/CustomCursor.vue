@@ -38,40 +38,41 @@ function detectMode(x: number, y: number): CursorMode {
 
 function drawCursor() {
   if (!cursorGfx) return
-  const color = hexToNumber(colors.value.primary)
+  const primary = hexToNumber(colors.value.primary)
+  const contrast = hexToNumber(colors.value.text)
   cursorGfx.clear()
 
-  // Outer ring — always present
+  // Contrast outline — ensures visibility on any background
+  cursorGfx.circle(0, 0, OUTER_R + 1)
+  cursorGfx.stroke({ width: 2.2, color: contrast, alpha: 0.25 })
+
+  // Outer ring
   cursorGfx.circle(0, 0, OUTER_R)
-  cursorGfx.stroke({ width: 1.5, color, alpha: currentMode === 'text' ? 0.4 : 0.7 })
+  cursorGfx.stroke({ width: 1.5, color: primary, alpha: currentMode === 'text' ? 0.5 : 0.9 })
 
   // Inner element varies by context
   switch (currentMode) {
     case 'text': {
-      // Thin vertical I-beam line
       cursorGfx.moveTo(0, -9)
       cursorGfx.lineTo(0, 9)
-      cursorGfx.stroke({ width: 1.5, color, alpha: 0.6 })
+      cursorGfx.stroke({ width: 1.5, color: primary, alpha: 0.75 })
       break
     }
     case 'pointer': {
-      // Expanded inner ring
       cursorGfx.circle(0, 0, 6.5)
-      cursorGfx.stroke({ width: 1, color, alpha: 0.55 })
+      cursorGfx.stroke({ width: 1, color: primary, alpha: 0.7 })
       break
     }
     case 'select': {
-      // Downward V chevron
       cursorGfx.moveTo(-3.5, -1.5)
       cursorGfx.lineTo(0, 3)
       cursorGfx.lineTo(3.5, -1.5)
-      cursorGfx.stroke({ width: 1.2, color, alpha: 0.55 })
+      cursorGfx.stroke({ width: 1.2, color: primary, alpha: 0.7 })
       break
     }
     default: {
-      // Default inner ring
       cursorGfx.circle(0, 0, INNER_R)
-      cursorGfx.stroke({ width: 1, color, alpha: 0.4 })
+      cursorGfx.stroke({ width: 1, color: primary, alpha: 0.55 })
     }
   }
 }
@@ -90,7 +91,7 @@ function drawArcRing(ring: Graphics, sweep: number, phase: 1 | 2) {
     arcEnd = START_ANGLE - TWO_PI
   }
   ring.arc(0, 0, CLICK_RADIUS, arcStart, arcEnd, true)
-  ring.stroke({ width: 1.5, color, alpha: 0.75 })
+  ring.stroke({ width: 1.5, color, alpha: 0.9 })
   if (app) app.render()
 }
 
