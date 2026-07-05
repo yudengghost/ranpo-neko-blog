@@ -1,0 +1,188 @@
+/* ═══════════════════════════════════════════════════
+   .prose-ornamental — Geometric Manuscript Style
+   Requires .prose as base. Use: class="prose prose-ornamental"
+   ─────────────────────────────────────────────── */
+
+.prose-ornamental {
+  position: relative;
+  /* Subtle geometric grid background */
+  background-image:
+    linear-gradient(var(--color-borderLight) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-borderLight) 1px, transparent 1px);
+  background-size: 64px 64px;
+  background-position: center center;
+  border: 1px solid var(--color-borderLight);
+  border-radius: 2px;
+  padding: 48px 40px;
+}
+
+/* ── Top ornamental rule ── */
+.prose-ornamental::before {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 1px;
+  margin: 0 auto 40px;
+  background: var(--color-primary);
+  position: relative;
+  /* diamond at each end of the top rule */
+  box-shadow:
+    -28px 0 0 -2px var(--bg, var(--color-bg)),
+    -28px 0 0 0 var(--color-primary),
+    28px 0 0 -2px var(--bg, var(--color-bg)),
+    28px 0 0 0 var(--color-primary);
+}
+
+/* ── Drop cap ── */
+.prose-ornamental .lead::first-letter {
+  font-family: 'Playfair Display', serif;
+  font-size: 3.8em;
+  font-weight: 400;
+  float: left;
+  line-height: 0.75;
+  padding-right: 12px;
+  padding-top: 4px;
+  color: var(--color-primary);
+}
+
+/* ── Section headings with diamond ornament ── */
+.prose-ornamental h2 {
+  text-align: center;
+  position: relative;
+  padding-bottom: 20px;
+}
+
+.prose-ornamental h2::after {
+  content: '◆';
+  display: block;
+  font-size: 0.45em;
+  color: var(--color-primary);
+  text-align: center;
+  margin-top: 14px;
+  letter-spacing: 0;
+}
+
+/* ── Ornamental blockquote ── */
+.prose-ornamental blockquote {
+  border-left: none;
+  position: relative;
+  padding: 24px 32px;
+  margin: 40px 0;
+  text-align: center;
+  font-style: italic;
+  color: var(--color-text);
+}
+
+.prose-ornamental blockquote::before {
+  content: '\201C';
+  display: block;
+  font-family: 'Playfair Display', serif;
+  font-size: 4rem;
+  line-height: 0.6;
+  color: var(--color-primary);
+  opacity: 0.35;
+}
+
+.prose-ornamental blockquote::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 1px;
+  background: var(--color-primary);
+  margin: 16px auto 0;
+}
+
+.prose-ornamental blockquote cite {
+  margin-top: 12px;
+  text-align: center;
+}
+
+/* ── Decorative horizontal rule ── */
+.prose-ornamental hr {
+  border: none;
+  height: 1px;
+  background: var(--color-borderLight);
+  margin: 40px 0;
+  position: relative;
+  overflow: visible;
+}
+
+.prose-ornamental hr::after {
+  content: '◆';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--color-primary);
+  font-size: 0.5rem;
+  background: var(--color-bg);
+  padding: 0 10px;
+}
+
+/* ── Figure with geometric frame ── */
+.prose-ornamental figure {
+  margin: 36px 0;
+  position: relative;
+  outline: 1px solid var(--color-borderLight);
+  outline-offset: 8px;
+}
+
+.prose-ornamental figure img {
+  display: block;
+  width: 100%;
+  border-radius: 1px;
+}
+
+.prose-ornamental figcaption {
+  text-align: center;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 0.8rem;
+  color: var(--color-textMuted);
+  margin-top: 16px;
+  letter-spacing: 0.04em;
+}
+
+/* ── Bottom ornamental finial ── */
+.prose-ornamental::after {
+  content: '';
+  display: block;
+  margin-top: 40px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50px;
+  height: 50px;
+  background:
+    radial-gradient(circle, var(--color-primary) 1.5px, transparent 1.5px) 25px 0px,
+    radial-gradient(circle, var(--color-primary) 1.5px, transparent 1.5px) 12px 16px,
+    radial-gradient(circle, var(--color-primary) 1.5px, transparent 1.5px) 38px 16px;
+  background-repeat: no-repeat;
+  opacity: 0.5;
+}
+
+/* ── Strong emphasis ── */
+.prose-ornamental strong {
+  font-weight: 500;
+  color: var(--color-primary);
+}
+
+/* ── Subtitle / byline ── */
+.prose-ornamental .byline {
+  text-align: center;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 0.85rem;
+  color: var(--color-textMuted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .prose-ornamental {
+    padding: 32px 20px;
+  }
+
+  .prose-ornamental .lead::first-letter {
+    font-size: 2.8em;
+  }
+}

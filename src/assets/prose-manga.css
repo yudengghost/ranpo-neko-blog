@@ -1,0 +1,211 @@
+/* ═══════════════════════════════════════════════════
+   .prose-manga — Anime / ACG Style
+   Requires .prose as base. Use: class="prose prose-manga"
+   Suitable for anime, manga, game, and otaku-culture articles
+   ─────────────────────────────────────────────── */
+
+.prose-manga {
+  position: relative;
+  padding: 48px 40px;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 15% 85%, rgba(244, 114, 182, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 85% 15%, rgba(167, 139, 250, 0.06) 0%, transparent 50%),
+    var(--color-bg);
+  box-shadow:
+    inset 0 0 0 1px var(--color-borderLight),
+    0 0 0 1px var(--color-borderLight);
+}
+
+/* ── Top sparkle border ── */
+.prose-manga::before {
+  content: '✧ ˚ ༘ ⋆｡˚ ✧ ˚ ༘ ⋆｡˚ ✧';
+  display: block;
+  text-align: center;
+  margin-bottom: 36px;
+  font-size: 0.82rem;
+  color: #f472b6;
+  letter-spacing: 0.15em;
+  opacity: 0.65;
+}
+
+/* ── Drop cap with pink-purple gradient ── */
+.prose-manga .lead::first-letter {
+  font-family: 'Playfair Display', serif;
+  font-size: 3.8em;
+  font-weight: 600;
+  float: left;
+  line-height: 0.75;
+  padding-right: 12px;
+  padding-top: 4px;
+  background: linear-gradient(135deg, #f472b6, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Headings with gradient left accent ── */
+.prose-manga h2 {
+  position: relative;
+  padding-left: 18px;
+  border-left: 4px solid;
+  border-image: linear-gradient(to bottom, #f472b6, #a78bfa) 1;
+  margin-top: 44px;
+  margin-bottom: 18px;
+}
+
+.prose-manga h3 {
+  position: relative;
+  padding-left: 14px;
+  color: var(--color-text);
+}
+.prose-manga h3::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #f472b6;
+}
+
+/* ── Speech bubble blockquote ── */
+.prose-manga blockquote {
+  border-left: none;
+  background: linear-gradient(
+    135deg,
+    rgba(244, 114, 182, 0.08),
+    rgba(167, 139, 250, 0.08)
+  );
+  border-radius: 0 18px 18px 18px;
+  padding: 22px 26px;
+  margin: 36px 0 36px 14px;
+  position: relative;
+  color: var(--color-text);
+  font-style: italic;
+}
+/* Bubble tail */
+.prose-manga blockquote::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -14px;
+  width: 0;
+  height: 0;
+  border-top: 14px solid rgba(244, 114, 182, 0.08);
+  border-left: 14px solid transparent;
+}
+/* Reset prose base blockquote ::before if any */
+.prose-manga blockquote::after {
+  content: none;
+}
+.prose-manga blockquote cite {
+  margin-top: 12px;
+  color: var(--color-textMuted);
+}
+
+/* ── Sparkle horizontal rule ── */
+.prose-manga hr {
+  border: none;
+  height: auto;
+  text-align: center;
+  margin: 40px 0;
+  background: none;
+  overflow: visible;
+}
+.prose-manga hr::after {
+  content: '‧₊˚ ✧ ˚₊‧';
+  color: #f472b6;
+  font-size: 0.88rem;
+  letter-spacing: 0.2em;
+  opacity: 0.7;
+}
+
+/* ── Figure with soft glow frame ── */
+.prose-manga figure {
+  margin: 36px 0;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 28px rgba(244, 114, 182, 0.14);
+}
+.prose-manga figure img {
+  display: block;
+  width: 100%;
+}
+.prose-manga figcaption {
+  text-align: center;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 0.8rem;
+  color: var(--color-textMuted);
+  margin-top: 12px;
+  padding: 0 8px;
+  letter-spacing: 0.04em;
+}
+
+/* ── Bottom kawaii finial ── */
+.prose-manga::after {
+  content: '⋆｡°✩  おわり  ✩°｡⋆';
+  display: block;
+  text-align: center;
+  margin-top: 48px;
+  font-size: 0.85rem;
+  color: #a78bfa;
+  opacity: 0.55;
+  letter-spacing: 0.1em;
+}
+
+/* ── Strong text — pink highlight marker ── */
+.prose-manga strong {
+  font-weight: 500;
+  background: linear-gradient(to top, rgba(244, 114, 182, 0.18) 42%, transparent 42%);
+  padding: 0 2px;
+}
+
+/* ── Inline em — gradient italics ── */
+.prose-manga em {
+  background: linear-gradient(135deg, #f472b6, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-style: italic;
+}
+
+/* ── Byline (article subtitle) ── */
+.prose-manga .byline {
+  text-align: center;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 0.82rem;
+  color: var(--color-textMuted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+}
+
+/* ── Tags / badges ── */
+.prose-manga .tag {
+  display: inline-block;
+  background: linear-gradient(135deg, rgba(244, 114, 182, 0.12), rgba(167, 139, 250, 0.12));
+  border-radius: 999px;
+  padding: 3px 14px;
+  font-size: 0.78rem;
+  color: #f472b6;
+  margin-right: 8px;
+  margin-bottom: 6px;
+  font-weight: 400;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .prose-manga {
+    padding: 32px 20px;
+  }
+  .prose-manga .lead::first-letter {
+    font-size: 2.8em;
+  }
+  .prose-manga blockquote {
+    margin-left: 8px;
+    padding: 18px 20px;
+  }
+}
