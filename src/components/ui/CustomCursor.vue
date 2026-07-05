@@ -79,7 +79,6 @@ function drawCursor() {
 // Shared arc drawing for click animation phases
 function drawArcRing(ring: Graphics, sweep: number, phase: 1 | 2) {
   ring.clear()
-  if (sweep < 0.005) return
   const color = hexToNumber(colors.value.primary)
   let arcStart: number
   let arcEnd: number
@@ -118,8 +117,8 @@ function onMouseDown(e: MouseEvent) {
   const obj = { sweep: 0 }
   ctx?.add(() => {
     const tl = gsap.timeline()
-    tl.to(obj, { sweep: 1, duration: 0.55, ease: 'power2.inOut', onUpdate() { drawArcRing(ring, obj.sweep, 1) } })
-    tl.to(obj, { sweep: 0, duration: 0.35, ease: 'power2.in',  onUpdate() { drawArcRing(ring, obj.sweep, 2) }, onComplete() { ring.destroy() } })
+    tl.to(obj, { sweep: 1, duration: 0.4, ease: 'power2.inOut', onUpdate() { drawArcRing(ring, obj.sweep, 1) } })
+    tl.to(obj, { sweep: 0, duration: 0.25, ease: 'power2.in',  onUpdate() { drawArcRing(ring, obj.sweep, 2) }, onComplete() { ring.destroy() } })
   })
 
   if (cursorGfx) {
