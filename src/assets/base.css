@@ -25,7 +25,7 @@ body {
   cursor: none;
 }
 
-body :not(input):not(textarea):not(select):not([contenteditable]) {
+body * {
   cursor: none;
 }
 

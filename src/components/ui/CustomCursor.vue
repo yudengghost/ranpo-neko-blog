@@ -13,20 +13,67 @@ const CLICK_RADIUS = 22
 const TWO_PI = Math.PI * 2
 const START_ANGLE = -Math.PI / 2
 
+type CursorMode = 'default' | 'text' | 'pointer' | 'select'
+
 let app: Application | null = null
 let cursorGfx: Graphics | null = null
 let ctx: gsap.Context | null = null
 let cursorX = -100
 let cursorY = -100
+let currentMode: CursorMode = 'default'
+
+const ELEM_TEXT = new Set(['INPUT', 'TEXTAREA'])
+const ELEM_CLICKABLE = new Set(['A', 'BUTTON'])
+const ELEM_SELECT = new Set(['SELECT'])
+
+function detectMode(x: number, y: number): CursorMode {
+  const el = document.elementFromPoint(x, y)
+  if (!el) return 'default'
+  const tag = el.tagName
+  if (ELEM_TEXT.has(tag) || el.getAttribute('contenteditable') === 'true') return 'text'
+  if (ELEM_SELECT.has(tag)) return 'select'
+  if (ELEM_CLICKABLE.has(tag) || el.closest('a, button')) return 'pointer'
+  return 'default'
+}
 
 function drawCursor() {
   if (!cursorGfx) return
   const color = hexToNumber(colors.value.primary)
   cursorGfx.clear()
+
+  // Outer ring — always present
   cursorGfx.circle(0, 0, OUTER_R)
-  cursorGfx.stroke({ width: 1.5, color, alpha: 0.7 })
-  cursorGfx.circle(0, 0, INNER_R)
-  cursorGfx.stroke({ width: 1, color, alpha: 0.4 })
+  cursorGfx.stroke({ width: 1.5, color, alpha: currentMode === 'text' ? 0.4 : 0.7 })
+
+  // Inner element varies by context
+  switch (currentMode) {
+    case 'text': {
+      // Thin vertical I-beam line
+      cursorGfx.moveTo(0, -9)
+      cursorGfx.lineTo(0, 9)
+      cursorGfx.stroke({ width: 1.5, color, alpha: 0.6 })
+      break
+    }
+    case 'pointer': {
+      // Expanded inner ring
+      cursorGfx.circle(0, 0, 6.5)
+      cursorGfx.stroke({ width: 1, color, alpha: 0.55 })
+      break
+    }
+    case 'select': {
+      // Downward V chevron
+      cursorGfx.moveTo(-3.5, -1.5)
+      cursorGfx.lineTo(0, 3)
+      cursorGfx.lineTo(3.5, -1.5)
+      cursorGfx.stroke({ width: 1.2, color, alpha: 0.55 })
+      break
+    }
+    default: {
+      // Default inner ring
+      cursorGfx.circle(0, 0, INNER_R)
+      cursorGfx.stroke({ width: 1, color, alpha: 0.4 })
+    }
+  }
 }
 
 // Shared arc drawing for click animation phases
@@ -53,6 +100,11 @@ function onMouseMove(e: MouseEvent) {
   cursorY = e.clientY
   if (cursorGfx) {
     cursorGfx.position.set(cursorX, cursorY)
+    const mode = detectMode(cursorX, cursorY)
+    if (mode !== currentMode) {
+      currentMode = mode
+      drawCursor()
+    }
     if (app) app.render()
   }
 }
