@@ -47,7 +47,7 @@ function formatDate(iso: string): string {
 
     <!-- Header -->
     <header class="article-header">
-      <RouterLink to="/" class="back-link">&larr; Back</RouterLink>
+      <RouterLink :to="`/category/${meta.category}`" class="back-link">&larr; Back</RouterLink>
       <div class="header-category">{{ meta.category }}</div>
       <h1 class="header-title">{{ meta.title }}</h1>
       <div class="header-meta">
