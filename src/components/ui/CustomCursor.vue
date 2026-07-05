@@ -3,91 +3,89 @@ import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { Application, Graphics } from 'pixi.js'
 import { gsap } from 'gsap'
 import { useTheme } from '@/composables/useTheme'
+import { hexToNumber } from '@/utils/color'
 
 const { colors } = useTheme()
 const containerRef = ref<HTMLDivElement>()
+const OUTER_R = 11
+const INNER_R = 4.5
+const CLICK_RADIUS = 22
+const TWO_PI = Math.PI * 2
+const START_ANGLE = -Math.PI / 2
+
 let app: Application | null = null
 let cursorGfx: Graphics | null = null
+let ctx: gsap.Context | null = null
 let cursorX = -100
 let cursorY = -100
 
-function hexToNumber(hex: string): number {
-  return parseInt(hex.replace('#', ''), 16)
-}
-
-function drawCursor(alpha = 1) {
+function drawCursor() {
   if (!cursorGfx) return
   const color = hexToNumber(colors.value.primary)
   cursorGfx.clear()
-  // Outer ring
-  cursorGfx.circle(0, 0, 11)
-  cursorGfx.stroke({ width: 1.5, color, alpha: alpha * 0.7 })
-  // Inner ring
-  cursorGfx.circle(0, 0, 4.5)
-  cursorGfx.stroke({ width: 1, color, alpha: alpha * 0.4 })
+  cursorGfx.circle(0, 0, OUTER_R)
+  cursorGfx.stroke({ width: 1.5, color, alpha: 0.7 })
+  cursorGfx.circle(0, 0, INNER_R)
+  cursorGfx.stroke({ width: 1, color, alpha: 0.4 })
 }
 
-function playClickAnim(x: number, y: number) {
-  if (!app) return
+// Shared arc drawing for click animation phases
+function drawArcRing(ring: Graphics, sweep: number, phase: 1 | 2) {
+  ring.clear()
+  if (sweep < 0.005) return
   const color = hexToNumber(colors.value.primary)
-  const radius = 22
-  const startAngle = -Math.PI / 2 // 12 o'clock
-  const ring = new Graphics()
-  ring.position.set(x, y)
-  app.stage.addChild(ring)
-
-  const obj = { sweep: 0 }
-
-  // Phase 1: line grows CCW from 12 o'clock around the circle (0 → 1)
-  const tl = gsap.timeline()
-  tl.to(obj, {
-    sweep: 1,
-    duration: 0.55,
-    ease: 'power2.inOut',
-    onUpdate() {
-      ring.clear()
-      if (obj.sweep < 0.005) return
-      const endAngle = startAngle - Math.PI * 2 * obj.sweep
-      ring.arc(0, 0, radius, startAngle, endAngle, true)
-      ring.stroke({ width: 1.5, color, alpha: 0.75 })
-    },
-  })
-  // Phase 2: line shrinks from 12 o'clock going CW (1 → 0)
-  tl.to(obj, {
-    sweep: 0,
-    duration: 0.35,
-    ease: 'power2.in',
-    onUpdate() {
-      ring.clear()
-      if (obj.sweep < 0.005) return
-      // Start point moves CW as sweep decreases: eat the line from the front
-      const moveStart = startAngle - Math.PI * 2 * (1 - obj.sweep)
-      ring.arc(0, 0, radius, moveStart, startAngle - Math.PI * 2, true)
-      ring.stroke({ width: 1.5, color, alpha: 0.75 })
-    },
-    onComplete() {
-      ring.destroy()
-    },
-  })
+  let arcStart: number
+  let arcEnd: number
+  if (phase === 1) {
+    arcStart = START_ANGLE
+    arcEnd = START_ANGLE - TWO_PI * sweep
+  } else {
+    arcStart = START_ANGLE - TWO_PI * (1 - sweep)
+    arcEnd = START_ANGLE - TWO_PI
+  }
+  ring.arc(0, 0, CLICK_RADIUS, arcStart, arcEnd, true)
+  ring.stroke({ width: 1.5, color, alpha: 0.75 })
 }
 
 function onMouseMove(e: MouseEvent) {
   cursorX = e.clientX
   cursorY = e.clientY
-  if (cursorGfx) {
-    cursorGfx.position.set(cursorX, cursorY)
-  }
+  if (cursorGfx) cursorGfx.position.set(cursorX, cursorY)
 }
 
 function onMouseDown(e: MouseEvent) {
-  playClickAnim(e.clientX, e.clientY)
+  if (!app) return
+  const ring = new Graphics()
+  ring.position.set(e.clientX, e.clientY)
+  app.stage.addChild(ring)
+
+  const obj = { sweep: 0 }
+  ctx?.add(() => {
+    const tl = gsap.timeline()
+    tl.to(obj, { sweep: 1, duration: 0.55, ease: 'power2.inOut', onUpdate() { drawArcRing(ring, obj.sweep, 1) } })
+    tl.to(obj, { sweep: 0, duration: 0.35, ease: 'power2.in',  onUpdate() { drawArcRing(ring, obj.sweep, 2) }, onComplete() { ring.destroy() } })
+  })
+
   if (cursorGfx) {
     gsap.to(cursorGfx, { alpha: 0.5, duration: 0.15, yoyo: true, repeat: 1 })
   }
 }
 
+function onMouseLeave() {
+  if (cursorGfx) gsap.to(cursorGfx, { alpha: 0, duration: 0.3 })
+}
+
+function onMouseEnter() {
+  if (cursorGfx) {
+    cursorGfx.position.set(cursorX, cursorY)
+    gsap.to(cursorGfx, { alpha: 1, duration: 0.3 })
+  }
+}
+
 onMounted(async () => {
   if (!containerRef.value) return
+
+  ctx = gsap.context(() => {})
 
   app = new Application()
   await app.init({
@@ -97,6 +95,7 @@ onMounted(async () => {
     antialias: true,
     resolution: Math.min(window.devicePixelRatio || 1, 2),
     autoDensity: true,
+    autoStart: false,
   })
 
   containerRef.value.appendChild(app.canvas)
@@ -105,37 +104,36 @@ onMounted(async () => {
   cursorGfx.alpha = 0
   app.stage.addChild(cursorGfx)
   drawCursor()
+  app.render()
 
-  // Fade cursor in on first mouse move
   const fadeIn = () => {
     if (cursorGfx) {
+      if (app) app.render()
       gsap.to(cursorGfx, { alpha: 1, duration: 0.3 })
       drawCursor()
     }
-    window.removeEventListener('mousemove', fadeIn)
   }
   window.addEventListener('mousemove', fadeIn, { once: true })
 
   window.addEventListener('mousemove', onMouseMove, { passive: true })
   window.addEventListener('mousedown', onMouseDown)
-  document.addEventListener('mouseleave', () => { if (cursorGfx) gsap.to(cursorGfx, { alpha: 0, duration: 0.3 }) })
-  document.addEventListener('mouseenter', () => {
-    if (cursorGfx) {
-      cursorGfx.position.set(cursorX, cursorY)
-      gsap.to(cursorGfx, { alpha: 1, duration: 0.3 })
-    }
-  })
+  document.addEventListener('mouseleave', onMouseLeave)
+  document.addEventListener('mouseenter', onMouseEnter)
 })
 
-watch(() => colors.value.primary, () => { drawCursor() })
+watch(() => colors.value.primary, () => { drawCursor(); if (app) app.render() })
 
 onUnmounted(() => {
+  ctx?.revert()
+  ctx = null
   if (app) {
     app.destroy(true, { children: true })
     app = null
   }
   window.removeEventListener('mousemove', onMouseMove)
   window.removeEventListener('mousedown', onMouseDown)
+  document.removeEventListener('mouseleave', onMouseLeave)
+  document.removeEventListener('mouseenter', onMouseEnter)
 })
 </script>
 

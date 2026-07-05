@@ -2,14 +2,11 @@
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { Application, Graphics, Container } from 'pixi.js'
 import { useTheme } from '@/composables/useTheme'
+import { hexToNumber } from '@/utils/color'
 
 const { currentScheme, colors } = useTheme()
 const containerRef = ref<HTMLDivElement>()
 let app: Application | null = null
-
-function hexToNumber(hex: string): number {
-  return parseInt(hex.replace('#', ''), 16)
-}
 
 function drawGrid(g: Graphics, w: number, h: number, spacing: number, color: number, alpha: number) {
   g.clear()
