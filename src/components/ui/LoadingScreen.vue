@@ -33,6 +33,32 @@ interface Particle {
 onMounted(async () => {
   if (!containerRef.value) return
 
+  // === Preload resources ===
+  const preloads: Promise<unknown>[] = [
+    document.fonts?.ready ?? Promise.resolve(),
+    preloadImage('/images/hero-bg.jpg'),
+  ]
+
+  // Preload all article cover images found by glob
+  try {
+    const { useArticles } = await import('@/composables/useArticles')
+    const articles = useArticles().getAll()
+    for (const a of articles) {
+      if (a.coverImage) preloads.push(preloadImage(a.coverImage))
+    }
+  } catch {}
+
+  const resourcesReady = Promise.all(preloads)
+
+  function preloadImage(src: string): Promise<void> {
+    return new Promise((resolve) => {
+      const img = new Image()
+      img.onload = () => resolve()
+      img.onerror = () => resolve()
+      img.src = src
+    })
+  }
+
   app = new Application()
   await app.init({
     canvas: document.createElement('canvas'),
@@ -133,8 +159,13 @@ onMounted(async () => {
     }, '-=0.1')
   }
 
-  // Phase 3: Hold
-  tl.to({}, { duration: HOLD_TIME })
+  // Phase 3: Hold until resources ready (min HOLD_TIME, then wait)
+  tl.add(async () => {
+    const minHold = Date.now() + HOLD_TIME * 1000
+    await resourcesReady
+    const remaining = minHold - Date.now()
+    if (remaining > 0) await new Promise((r) => setTimeout(r, remaining))
+  })
 
   // Phase 4: Shatter — break diamond into particles
   tl.call(() => {
