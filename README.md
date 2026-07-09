@@ -3,7 +3,7 @@
 This template should help get you started developing with Vue 3 in Vite.
 
 ## Online View
-[RanpoNeko](blog.shadowgarden.top)
+[RanpoNeko](https://blog.shadowgarden.top)
 
 ## Recommended IDE Setup
 
