@@ -15,7 +15,7 @@ html {
 }
 
 body {
-  font-family: 'Work Sans', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-body);
   font-weight: 300;
   line-height: 1.7;
   background-color: var(--color-bg);
@@ -29,10 +29,10 @@ body {
   cursor: none !important;
 }
 
-/* ===== Typography ===== */
+/* ===== Typography (uses style tokens) ===== */
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
-  font-weight: 400;
+  font-family: var(--font-heading);
+  font-weight: var(--heading-weight, 400);
   line-height: 1.3;
   letter-spacing: -0.01em;
 }
@@ -58,7 +58,7 @@ img {
 }
 
 code, pre {
-  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-family: var(--font-mono);
   font-size: 0.9em;
 }
 
@@ -102,8 +102,95 @@ code, pre {
   transform: translateY(-12px);
 }
 
-/* ===== Theme Color Variables ===== */
-:root,
+/* ==================================================
+   STYLE TOKENS — Design tokens per visual style
+   ================================================== */
+
+/* ── Geometric (default) — elegant serif, soft, spacious ── */
+[data-visual-style='geometric'] {
+  --font-heading: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-body: 'Work Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --heading-weight: 400;
+  --radius-card: 16px;
+  --radius-btn: 10px;
+  --radius-input: 8px;
+  --border-width: 1px;
+  --border-style: solid;
+  --shadow-card: 0 4px 20px var(--color-glow);
+  --shadow-card-hover: 0 12px 40px var(--color-glow);
+  --shadow-dropdown: 0 8px 32px var(--color-glow);
+  --backdrop-blur: blur(12px);
+  --card-bg: var(--color-surface);
+  --card-border: var(--color-borderLight);
+  --btn-bg: transparent;
+  --card-hover-transform: translateY(-2px);
+  --card-padding: 28px 32px;
+  --section-padding: 40px 0 100px;
+  --header-height: 64px;
+  --header-bg: color-mix(in srgb, var(--color-bg) 80%, transparent);
+  --header-border: var(--color-borderLight);
+}
+
+/* ── Neo-Brutalism — raw, hard shadows, no rounded corners, bold ── */
+[data-visual-style='brutalist'] {
+  --font-heading: 'Space Mono', 'JetBrains Mono', monospace;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Space Mono', 'JetBrains Mono', monospace;
+  --heading-weight: 700;
+  --radius-card: 0px;
+  --radius-btn: 0px;
+  --radius-input: 0px;
+  --border-width: 4px;
+  --border-style: solid;
+  --shadow-card: 4px 4px 0 var(--color-border);
+  --shadow-card-hover: 8px 8px 0 var(--color-border);
+  --shadow-dropdown: 6px 6px 0 var(--color-border);
+  --backdrop-blur: none;
+  --card-bg: var(--color-surface);
+  --card-border: var(--color-border);
+  --btn-bg: var(--color-accent);
+  --card-hover-transform: translate(-4px, -4px);
+  --card-padding: 20px 24px;
+  --section-padding: 32px 0 80px;
+  --header-height: 56px;
+  --header-bg: var(--color-bg);
+  --header-border: var(--color-border);
+}
+
+/* ── Retro-Futurism — neon glow, glassmorphism, synthwave ── */
+[data-visual-style='retro-futurism'] {
+  --font-heading: 'Orbitron', 'Rajdhani', sans-serif;
+  --font-body: 'Share Tech Mono', 'JetBrains Mono', monospace;
+  --font-mono: 'Share Tech Mono', 'JetBrains Mono', monospace;
+  --heading-weight: 600;
+  --radius-card: 6px;
+  --radius-btn: 4px;
+  --radius-input: 4px;
+  --border-width: 1px;
+  --border-style: solid;
+  --shadow-card: 0 0 8px var(--color-glow), 0 0 20px var(--color-glow), inset 0 0 20px rgba(255,255,255,0.03);
+  --shadow-card-hover: 0 0 16px var(--color-glow), 0 0 40px var(--color-glowSecondary), inset 0 0 30px rgba(255,255,255,0.05);
+  --shadow-dropdown: 0 0 12px var(--color-glow), 0 8px 32px rgba(0,0,0,0.5);
+  --backdrop-blur: blur(12px);
+  --card-bg: var(--color-surface);
+  --card-border: var(--color-border);
+  --btn-bg: var(--color-primary);
+  --card-hover-transform: translateY(-3px);
+  --card-padding: 20px 24px;
+  --section-padding: 40px 0 100px;
+  --header-height: 60px;
+  --header-bg: color-mix(in srgb, var(--color-bgAlt) 85%, transparent);
+  --header-border: var(--color-border);
+}
+
+/* ==================================================
+   COLOR Variables — per data-theme (variant)
+   Grouped under data-visual-style for proper cascade
+   ================================================== */
+
+/* ── Geometric color variants ── */
+[data-visual-style='geometric'][data-theme='mint'],
 [data-theme='mint'] {
   --color-bg: #F7FAF8;
   --color-bgAlt: #EEF5F0;
@@ -116,13 +203,14 @@ code, pre {
   --color-primaryHover: #5A9B7F;
   --color-accent: #C4956B;
   --color-accentHover: #A87A52;
+  --color-cursorColor: #4A8C6F;
   --color-border: #D4E5DB;
   --color-borderLight: #E8F2EC;
   --color-glow: rgba(126, 184, 160, 0.15);
   --color-glowSecondary: rgba(196, 149, 107, 0.1);
 }
 
-[data-theme='rose'] {
+[data-visual-style='geometric'][data-theme='rose'] {
   --color-bg: #FBF7F7;
   --color-bgAlt: #F5EEEE;
   --color-surface: #FFFFFF;
@@ -134,13 +222,14 @@ code, pre {
   --color-primaryHover: #A87A7A;
   --color-accent: #8FA88D;
   --color-accentHover: #6B8A68;
+  --color-cursorColor: #8B4A5A;
   --color-border: #E8D4D5;
   --color-borderLight: #F2E4E5;
   --color-glow: rgba(196, 149, 149, 0.15);
   --color-glowSecondary: rgba(143, 168, 141, 0.1);
 }
 
-[data-theme='lavender'] {
+[data-visual-style='geometric'][data-theme='lavender'] {
   --color-bg: #F9F7FB;
   --color-bgAlt: #F2EEF5;
   --color-surface: #FFFFFF;
@@ -152,13 +241,14 @@ code, pre {
   --color-primaryHover: #7B6BA8;
   --color-accent: #C4956B;
   --color-accentHover: #A87A52;
+  --color-cursorColor: #6B5BA0;
   --color-border: #E0D4E8;
   --color-borderLight: #EDE4F2;
   --color-glow: rgba(155, 142, 196, 0.15);
   --color-glowSecondary: rgba(196, 149, 107, 0.1);
 }
 
-[data-theme='sand'] {
+[data-visual-style='geometric'][data-theme='sand'] {
   --color-bg: #FBF9F7;
   --color-bgAlt: #F5F0EB;
   --color-surface: #FFFFFF;
@@ -170,13 +260,14 @@ code, pre {
   --color-primaryHover: #A88B5A;
   --color-accent: #7E9BC4;
   --color-accentHover: #5A7BA8;
+  --color-cursorColor: #8B6B4A;
   --color-border: #E8DCCB;
   --color-borderLight: #F2EBDE;
   --color-glow: rgba(196, 168, 126, 0.15);
   --color-glowSecondary: rgba(126, 155, 196, 0.1);
 }
 
-[data-theme='sage'] {
+[data-visual-style='geometric'][data-theme='sage'] {
   --color-bg: #F8F9F7;
   --color-bgAlt: #F0F3EE;
   --color-surface: #FFFFFF;
@@ -188,13 +279,14 @@ code, pre {
   --color-primaryHover: #6B8A68;
   --color-accent: #A88DA0;
   --color-accentHover: #8A6B82;
+  --color-cursorColor: #4A6B4A;
   --color-border: #D8E0D5;
   --color-borderLight: #E8EDE5;
   --color-glow: rgba(143, 168, 141, 0.15);
   --color-glowSecondary: rgba(168, 141, 160, 0.1);
 }
 
-[data-theme='ocean'] {
+[data-visual-style='geometric'][data-theme='ocean'] {
   --color-bg: #F7F9FA;
   --color-bgAlt: #EEF2F5;
   --color-surface: #FFFFFF;
@@ -206,13 +298,14 @@ code, pre {
   --color-primaryHover: #6B96A8;
   --color-accent: #C4A87E;
   --color-accentHover: #A88B5A;
+  --color-cursorColor: #4A6B8B;
   --color-border: #D4DEE5;
   --color-borderLight: #E5EBF0;
   --color-glow: rgba(142, 180, 196, 0.15);
   --color-glowSecondary: rgba(196, 168, 126, 0.1);
 }
 
-[data-theme='noir'] {
+[data-visual-style='geometric'][data-theme='noir'] {
   --color-bg: #0F1117;
   --color-bgAlt: #161922;
   --color-surface: #1C1F2B;
@@ -224,8 +317,87 @@ code, pre {
   --color-primaryHover: #A8BED8;
   --color-accent: #C4A47E;
   --color-accentHover: #D4B892;
+  --color-cursorColor: #B8C8E0;
   --color-border: #2A2D3A;
   --color-borderLight: #222536;
   --color-glow: rgba(139, 164, 196, 0.12);
   --color-glowSecondary: rgba(196, 164, 126, 0.08);
+}
+
+/* ── Neo-Brutalism color variants ── */
+[data-visual-style='brutalist'][data-theme='brutal-light'] {
+  --color-bg: #FFFDF5;
+  --color-bgAlt: #F5F0E0;
+  --color-surface: #FFFFFF;
+  --color-surfaceHover: #FFEB3B;
+  --color-text: #000000;
+  --color-textSecondary: #333333;
+  --color-textMuted: #666666;
+  --color-primary: #FF3366;
+  --color-primaryHover: #E02050;
+  --color-accent: #FFD93D;
+  --color-accentHover: #E5C020;
+  --color-cursorColor: #000000;
+  --color-border: #000000;
+  --color-borderLight: #333333;
+  --color-glow: rgba(255, 51, 102, 0.2);
+  --color-glowSecondary: rgba(255, 217, 61, 0.2);
+}
+
+[data-visual-style='brutalist'][data-theme='brutal-dark'] {
+  --color-bg: #1A1A2E;
+  --color-bgAlt: #16213E;
+  --color-surface: #0F0F1A;
+  --color-surfaceHover: #252545;
+  --color-text: #FFFFFF;
+  --color-textSecondary: #CCCCCC;
+  --color-textMuted: #999999;
+  --color-primary: #FF3366;
+  --color-primaryHover: #FF5588;
+  --color-accent: #6BCB77;
+  --color-accentHover: #8DE099;
+  --color-cursorColor: #FFFFFF;
+  --color-border: #FFFFFF;
+  --color-borderLight: #CCCCCC;
+  --color-glow: rgba(255, 51, 102, 0.3);
+  --color-glowSecondary: rgba(107, 203, 119, 0.2);
+}
+
+/* ── Retro-Futurism color variants ── */
+[data-visual-style='retro-futurism'][data-theme='retro-sunset'] {
+  --color-bg: #0D0221;
+  --color-bgAlt: #1A0B2E;
+  --color-surface: rgba(26, 11, 46, 0.7);
+  --color-surfaceHover: rgba(45, 20, 70, 0.8);
+  --color-text: #E8E8FF;
+  --color-textSecondary: #B8B8D0;
+  --color-textMuted: #8080A0;
+  --color-primary: #FF6B9D;
+  --color-primaryHover: #FF8DB5;
+  --color-accent: #FFAA00;
+  --color-accentHover: #FFCC44;
+  --color-cursorColor: #00D4FF;
+  --color-border: #FF6B9D;
+  --color-borderLight: #C77DFF;
+  --color-glow: rgba(255, 107, 157, 0.4);
+  --color-glowSecondary: rgba(199, 125, 255, 0.3);
+}
+
+[data-visual-style='retro-futurism'][data-theme='retro-neon'] {
+  --color-bg: #0A0A1A;
+  --color-bgAlt: #12122A;
+  --color-surface: rgba(10, 10, 30, 0.75);
+  --color-surfaceHover: rgba(20, 20, 50, 0.85);
+  --color-text: #E0E8FF;
+  --color-textSecondary: #A0B0D0;
+  --color-textMuted: #6878A0;
+  --color-primary: #00D4FF;
+  --color-primaryHover: #44E8FF;
+  --color-accent: #C77DFF;
+  --color-accentHover: #DDAAFF;
+  --color-cursorColor: #00D4FF;
+  --color-border: #00D4FF;
+  --color-borderLight: #C77DFF;
+  --color-glow: rgba(0, 212, 255, 0.4);
+  --color-glowSecondary: rgba(199, 125, 255, 0.3);
 }

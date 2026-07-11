@@ -4,12 +4,13 @@ import PixiBackground from '@/components/ui/PixiBackground.vue'
 import CustomCursor from '@/components/ui/CustomCursor.vue'
 import LoadingScreen from '@/components/ui/LoadingScreen.vue'
 import ScrollIndicator from '@/components/ui/ScrollIndicator.vue'
+import StyleTransition from '@/components/ui/StyleTransition.vue'
 import AppHeader from '@/components/layout/AppHeader.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
-import { useTheme } from '@/composables/useTheme'
+import { useVisualStyle } from '@/composables/useVisualStyle'
 import { useStats } from '@/composables/useStats'
 
-useTheme()
+useVisualStyle()
 
 const loaded = ref(false)
 
@@ -25,6 +26,7 @@ if (!sessionStorage.getItem(SESSION_FLAG)) {
 
   <div class="app-shell" v-show="loaded">
     <PixiBackground />
+    <StyleTransition />
     <CustomCursor />
     <AppHeader />
     <main class="app-main">

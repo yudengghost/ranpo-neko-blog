@@ -35,7 +35,7 @@ const categoryInfo = computed(() => getCategories().find((c) => c.slug === categ
 .category-page {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 24px 100px;
+  padding: var(--section-padding, 40px 24px 100px);
 }
 
 .category-header {
@@ -44,13 +44,19 @@ const categoryInfo = computed(() => getCategories().find((c) => c.slug === categ
 
 .back-link {
   display: inline-block;
-  font-family: 'Work Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.85rem;
-  font-weight: 300;
+  font-weight: 400;
   color: var(--color-textMuted);
   text-decoration: none;
   margin-bottom: 20px;
   transition: color 0.3s ease;
+}
+
+[data-visual-style='brutalist'] .back-link {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .back-link:hover {
@@ -58,20 +64,38 @@ const categoryInfo = computed(() => getCategories().find((c) => c.slug === categ
 }
 
 .category-title {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-heading);
   font-size: clamp(2rem, 4vw, 2.8rem);
-  font-weight: 400;
+  font-weight: var(--heading-weight, 400);
   color: var(--color-text);
   margin-bottom: 8px;
   text-transform: capitalize;
-  transition: color 0.6s ease;
+  transition: color 0.6s ease, text-shadow 0.6s ease;
+}
+
+[data-visual-style='brutalist'] .category-title {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+[data-visual-style='retro-futurism'] .category-title {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 10px var(--color-glow);
 }
 
 .category-count {
-  font-family: 'Work Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.9rem;
-  font-weight: 300;
+  font-weight: 400;
   color: var(--color-textMuted);
+}
+
+[data-visual-style='brutalist'] .category-count {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .articles-list {
@@ -83,9 +107,15 @@ const categoryInfo = computed(() => getCategories().find((c) => c.slug === categ
 .category-empty {
   text-align: center;
   padding: 80px 20px;
-  font-family: 'Work Sans', sans-serif;
-  font-weight: 300;
+  font-family: var(--font-body);
+  font-weight: 400;
   color: var(--color-textMuted);
+}
+
+[data-visual-style='brutalist'] .category-empty {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .category-empty a {

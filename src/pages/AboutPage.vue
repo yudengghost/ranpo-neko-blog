@@ -85,31 +85,65 @@ onMounted(async () => {
 }
 
 .about-title {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-heading);
   font-size: clamp(2.5rem, 5vw, 4rem);
-  font-weight: 300;
+  font-weight: var(--heading-weight, 300);
   font-style: italic;
   color: var(--color-text);
   margin-bottom: 20px;
-  transition: color 0.6s ease;
+  transition: color 0.6s ease, text-shadow 0.6s ease;
+}
+
+[data-visual-style='brutalist'] .about-title {
+  font-style: normal;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+[data-visual-style='retro-futurism'] .about-title {
+  font-style: normal;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 15px var(--color-glow), 0 0 30px var(--color-glowSecondary);
 }
 
 .about-line {
   width: 60px;
-  height: 2px;
+  height: var(--border-width, 2px);
   background: var(--color-primary);
   margin-bottom: 36px;
   border-radius: 1px;
-  transition: background-color 0.6s ease;
+  transition: background-color 0.6s ease, box-shadow 0.6s ease;
+}
+
+[data-visual-style='brutalist'] .about-line {
+  height: 4px;
+  width: 100px;
+}
+
+[data-visual-style='retro-futurism'] .about-line {
+  box-shadow: 0 0 8px var(--color-glow);
 }
 
 .about-text {
-  font-family: 'Work Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.95rem;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 2;
   color: var(--color-textSecondary);
   transition: color 0.6s ease;
+}
+
+[data-visual-style='brutalist'] .about-text {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  text-transform: none;
+}
+
+[data-visual-style='retro-futurism'] .about-text {
+  letter-spacing: 0.03em;
 }
 
 .about-text p {
@@ -117,16 +151,32 @@ onMounted(async () => {
 }
 
 .about-text em {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-heading);
   font-style: italic;
   color: var(--color-primary);
   transition: color 0.6s ease;
 }
 
+[data-visual-style='brutalist'] .about-text em {
+  font-style: normal;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+[data-visual-style='retro-futurism'] .about-text em {
+  font-style: normal;
+  text-shadow: 0 0 6px var(--color-glow);
+}
+
 .about-text strong {
-  font-weight: 400;
+  font-weight: var(--heading-weight, 400);
   color: var(--color-text);
   transition: color 0.6s ease;
+}
+
+[data-visual-style='brutalist'] .about-text strong {
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .about-links {
@@ -139,21 +189,43 @@ onMounted(async () => {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-family: 'Work Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.85rem;
-  font-weight: 300;
+  font-weight: 400;
   color: var(--color-text);
   text-decoration: none;
   padding: 10px 20px;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  transition: border-color 0.3s ease, color 0.3s ease, background-color 0.3s ease;
+  border: var(--border-width, 1px) var(--border-style, solid) var(--color-border);
+  border-radius: var(--radius-btn, 8px);
+  transition: border-color 0.3s ease, color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+[data-visual-style='brutalist'] .about-link {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  text-transform: uppercase;
+  border-radius: 0;
+  border-width: 3px;
+}
+
+[data-visual-style='retro-futurism'] .about-link {
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
 }
 
 .about-link:hover {
   border-color: var(--color-primary);
   color: var(--color-primary);
   background: var(--color-surfaceHover);
+}
+
+[data-visual-style='brutalist'] .about-link:hover {
+  background: var(--color-primary);
+  color: var(--color-bg);
+}
+
+[data-visual-style='retro-futurism'] .about-link:hover {
+  box-shadow: 0 0 12px var(--color-glow);
 }
 
 .link-icon {
@@ -163,10 +235,14 @@ onMounted(async () => {
 .about-stats {
   margin-top: 48px;
   padding-top: 28px;
-  border-top: 1px solid var(--color-borderLight);
+  border-top: var(--border-width, 1px) var(--border-style, solid) var(--color-borderLight);
   display: flex;
   gap: 40px;
   transition: border-color 0.6s ease;
+}
+
+[data-visual-style='brutalist'] .about-stats {
+  border-top-width: 4px;
 }
 
 .stats-item {
@@ -177,24 +253,40 @@ onMounted(async () => {
 }
 
 .stats-number {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-heading);
   font-size: 2rem;
-  font-weight: 300;
+  font-weight: var(--heading-weight, 300);
   font-style: italic;
   color: var(--color-primary);
-  transition: color 0.6s ease;
+  transition: color 0.6s ease, text-shadow 0.6s ease;
+}
+
+[data-visual-style='brutalist'] .stats-number {
+  font-style: normal;
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+[data-visual-style='retro-futurism'] .stats-number {
+  font-style: normal;
+  font-weight: 700;
+  text-shadow: 0 0 10px var(--color-glow);
 }
 
 .stats-label {
-  font-family: 'Work Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.75rem;
-  font-weight: 300;
+  font-weight: 400;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--color-textMuted);
 }
 
-/* Decorative shapes */
+[data-visual-style='brutalist'] .stats-label {
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
 .about-decor {
   position: absolute;
   inset: 0;
@@ -208,10 +300,21 @@ onMounted(async () => {
   right: -40px;
   width: 120px;
   height: 120px;
-  border: 1px solid var(--color-border);
+  border: var(--border-width, 1px) var(--border-style, solid) var(--color-border);
   opacity: 0.3;
   transform: rotate(15deg);
-  transition: border-color 0.6s ease;
+  transition: border-color 0.6s ease, border-width 0.6s ease;
+}
+
+[data-visual-style='brutalist'] .decor-square {
+  border-width: 4px;
+  transform: rotate(0deg);
+  opacity: 0.5;
+}
+
+[data-visual-style='retro-futurism'] .decor-square {
+  box-shadow: 0 0 10px var(--color-glow), inset 0 0 10px var(--color-glow);
+  opacity: 0.2;
 }
 
 .decor-circle {
@@ -221,9 +324,24 @@ onMounted(async () => {
   width: 200px;
   height: 200px;
   border-radius: 50%;
-  border: 1px solid var(--color-borderLight);
+  border: var(--border-width, 1px) var(--border-style, solid) var(--color-borderLight);
   opacity: 0.2;
-  transition: border-color 0.6s ease;
+  transition: border-color 0.6s ease, border-width 0.6s ease;
+}
+
+[data-visual-style='brutalist'] .decor-circle {
+  border-radius: 0;
+  border-width: 4px;
+  border-color: var(--color-border);
+  width: 150px;
+  height: 150px;
+  left: -40px;
+  opacity: 0.4;
+}
+
+[data-visual-style='retro-futurism'] .decor-circle {
+  box-shadow: 0 0 15px var(--color-glowSecondary);
+  opacity: 0.15;
 }
 
 .decor-diamond {
@@ -232,10 +350,21 @@ onMounted(async () => {
   right: 20px;
   width: 80px;
   height: 80px;
-  border: 1px solid var(--color-border);
+  border: var(--border-width, 1px) var(--border-style, solid) var(--color-border);
   opacity: 0.2;
   transform: rotate(45deg);
-  transition: border-color 0.6s ease;
+  transition: border-color 0.6s ease, border-width 0.6s ease;
+}
+
+[data-visual-style='brutalist'] .decor-diamond {
+  border-width: 3px;
+  opacity: 0.4;
+  width: 60px;
+  height: 60px;
+}
+
+[data-visual-style='retro-futurism'] .decor-diamond {
+  display: none;
 }
 
 @media (max-width: 640px) {

@@ -176,10 +176,9 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-/* ===== Hero (full viewport width) ===== */
 .hero {
   position: relative;
-  min-height: calc(100vh - 64px);
+  min-height: calc(100vh - var(--header-height, 64px));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -204,6 +203,12 @@ onUnmounted(() => {
       black 15%,
       black 85%,
       transparent 100%);
+  transition: opacity 0.6s ease;
+}
+
+[data-visual-style='brutalist'] .hero-bg,
+[data-visual-style='retro-futurism'] .hero-bg {
+  opacity: 0;
 }
 
 .hero-overlay {
@@ -224,47 +229,76 @@ onUnmounted(() => {
 }
 
 .hero-title {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-heading);
   font-size: clamp(2.8rem, 7vw, 5.5rem);
-  font-weight: 300;
+  font-weight: var(--heading-weight, 300);
   font-style: italic;
   line-height: 1.15;
   letter-spacing: -0.02em;
   color: var(--color-text);
   margin-bottom: 32px;
   text-shadow: 0 2px 40px var(--color-bg);
-  transition: color 0.6s ease;
+  transition: color 0.6s ease, text-shadow 0.6s ease;
+}
+
+[data-visual-style='brutalist'] .hero-title {
+  font-style: normal;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+[data-visual-style='retro-futurism'] .hero-title {
+  font-style: normal;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 20px var(--color-glow), 0 0 40px var(--color-glowSecondary);
 }
 
 .hero-line {
   width: 80px;
-  height: 2px;
+  height: var(--border-width, 2px);
   background: var(--color-primary);
   margin: 0 auto 32px;
   border-radius: 1px;
-  transition: background-color 0.6s ease;
+  transition: background-color 0.6s ease, box-shadow 0.6s ease;
+}
+
+[data-visual-style='brutalist'] .hero-line {
+  height: 4px;
+  width: 120px;
+}
+
+[data-visual-style='retro-futurism'] .hero-line {
+  box-shadow: 0 0 8px var(--color-glow);
 }
 
 .hero-subtitle {
-  font-family: 'Work Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 1.05rem;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.8;
   letter-spacing: 0.04em;
   color: var(--color-textSecondary);
   transition: color 0.6s ease;
 }
 
+[data-visual-style='brutalist'] .hero-subtitle {
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
 .hero-subtitle-cursor {
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 200;
+  font-family: var(--font-mono);
+  font-weight: 400;
   color: var(--color-primary);
   opacity: 0;
   margin-left: 2px;
   transition: color 0.6s ease;
 }
 
-/* Scroll hint */
 .hero-scroll-hint {
   position: absolute;
   bottom: 40px;
@@ -278,21 +312,24 @@ onUnmounted(() => {
 }
 
 .scroll-line {
-  width: 1px;
+  width: var(--border-width, 1px);
   height: 32px;
   background: var(--color-border);
   transition: background-color 0.6s ease;
 }
 
+[data-visual-style='brutalist'] .scroll-line {
+  width: 3px;
+}
+
 .scroll-text {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.65rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-textMuted);
 }
 
-/* ===== Content Container ===== */
 .home-page {
   max-width: 1200px;
   margin: 0 auto;
@@ -300,7 +337,7 @@ onUnmounted(() => {
 }
 
 .articles-section {
-  padding: 40px 0 100px;
+  padding: var(--section-padding, 40px 0 100px);
 }
 
 .section-header {
@@ -311,19 +348,40 @@ onUnmounted(() => {
 }
 
 .section-title {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-heading);
   font-size: 1.8rem;
-  font-weight: 400;
+  font-weight: var(--heading-weight, 400);
   color: var(--color-text);
   white-space: nowrap;
   transition: color 0.6s ease;
 }
 
+[data-visual-style='brutalist'] .section-title {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+[data-visual-style='retro-futurism'] .section-title {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 8px var(--color-glow);
+}
+
 .section-line {
   flex: 1;
-  height: 1px;
+  height: var(--border-width, 1px);
   background: var(--color-borderLight);
   transition: background-color 0.6s ease;
+}
+
+[data-visual-style='brutalist'] .section-line {
+  height: 4px;
+  background: var(--color-border);
+}
+
+[data-visual-style='retro-futurism'] .section-line {
+  box-shadow: 0 0 6px var(--color-glow);
 }
 
 .articles-list {
@@ -332,7 +390,6 @@ onUnmounted(() => {
   gap: 24px;
 }
 
-/* Skeleton */
 .articles-skel {
   display: flex;
   flex-direction: column;

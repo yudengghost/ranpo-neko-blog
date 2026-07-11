@@ -2,7 +2,7 @@
 import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { gsap } from 'gsap'
-import ColorSwitcher from '@/components/ui/ColorSwitcher.vue'
+import StyleSwitcher from '@/components/ui/StyleSwitcher.vue'
 import SearchModal from '@/components/blog/SearchModal.vue'
 import MailIcon from '@/components/ui/MailIcon.vue'
 import EmailModal from '@/components/blog/EmailModal.vue'
@@ -254,7 +254,7 @@ onUnmounted(() => {
         <button class="mail-btn" @click="mailOpen = true" aria-label="站内信">
           <MailIcon />
         </button>
-        <ColorSwitcher />
+        <StyleSwitcher />
         <button
           class="mobile-toggle"
           @click="mobileOpen = !mobileOpen"
@@ -277,12 +277,12 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   z-index: 100;
-  height: 64px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  background: color-mix(in srgb, var(--color-bg) 80%, transparent);
-  border-bottom: 1px solid var(--color-borderLight);
-  transition: background-color 0.6s ease, border-color 0.6s ease;
+  height: var(--header-height, 64px);
+  backdrop-filter: var(--backdrop-blur, blur(12px));
+  -webkit-backdrop-filter: var(--backdrop-blur, blur(12px));
+  background: var(--header-bg, color-mix(in srgb, var(--color-bg) 80%, transparent));
+  border-bottom: var(--border-width, 1px) var(--border-style, solid) var(--header-border, var(--color-borderLight));
+  transition: background-color 0.6s ease, border-color 0.6s ease, height 0.4s ease;
 }
 
 .header-inner {
@@ -295,7 +295,6 @@ onUnmounted(() => {
   justify-content: space-between;
 }
 
-/* ===== Logo ===== */
 .header-logo {
   text-decoration: none;
   color: var(--color-text);
@@ -304,20 +303,34 @@ onUnmounted(() => {
 
 .logo-text {
   display: inline-block;
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-heading);
   font-size: 1.4rem;
-  font-weight: 400;
+  font-weight: var(--heading-weight, 400);
   font-style: italic;
   letter-spacing: -0.02em;
   color: var(--color-primary);
   transition: color 0.3s ease;
 }
 
+[data-visual-style='brutalist'] .logo-text {
+  font-style: normal;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+[data-visual-style='retro-futurism'] .logo-text {
+  font-style: normal;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 8px var(--color-glow);
+}
+
 .header-logo:hover .logo-text {
   color: var(--color-primaryHover);
 }
 
-/* ===== Nav ===== */
 .header-nav {
   display: flex;
   align-items: center;
@@ -326,9 +339,9 @@ onUnmounted(() => {
 
 .nav-link {
   display: inline-block;
-  font-family: 'Work Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.85rem;
-  font-weight: 300;
+  font-weight: 400;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--color-textSecondary);
@@ -339,16 +352,34 @@ onUnmounted(() => {
   transition: color 0.25s ease;
 }
 
-/* Active indicator — thin geometric line that slides in */
+[data-visual-style='brutalist'] .nav-link {
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+[data-visual-style='retro-futurism'] .nav-link {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+}
+
 .nav-link::after {
   content: '';
   position: absolute;
   bottom: 0;
   left: 50%;
   width: 0;
-  height: 1px;
+  height: var(--border-width, 1px);
   background: var(--color-primary);
   transition: width 0.3s ease, left 0.3s ease;
+}
+
+[data-visual-style='brutalist'] .nav-link::after {
+  height: 3px;
+}
+
+[data-visual-style='retro-futurism'] .nav-link::after {
+  box-shadow: 0 0 6px var(--color-glow);
 }
 
 .nav-link:hover {
@@ -363,10 +394,9 @@ onUnmounted(() => {
 
 .nav-link.router-link-exact-active {
   color: var(--color-text);
-  font-weight: 400;
+  font-weight: 600;
 }
 
-/* Categories trigger arrow */
 .cat-trigger {
   cursor: pointer;
   user-select: none;
@@ -385,7 +415,6 @@ onUnmounted(() => {
   transform: rotate(180deg);
 }
 
-/* Click indicator — expanding diamond */
 .click-dot {
   position: absolute;
   width: 8px;
@@ -400,7 +429,20 @@ onUnmounted(() => {
   opacity: 1;
 }
 
-/* ===== Categories Dropdown ===== */
+[data-visual-style='brutalist'] .click-dot {
+  border-radius: 0;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  margin-top: -5px;
+  transform: rotate(0deg) scale(1);
+}
+
+[data-visual-style='retro-futurism'] .click-dot {
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--color-glow);
+}
+
 .nav-dropdown {
   position: relative;
 }
@@ -410,14 +452,19 @@ onUnmounted(() => {
   top: calc(100% + 12px);
   left: 50%;
   transform: translateX(-50%);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
+  background: var(--card-bg, var(--color-surface));
+  border: var(--border-width, 1px) var(--border-style, solid) var(--card-border, var(--color-border));
+  border-radius: var(--radius-card, 12px);
   padding: 8px;
   min-width: 160px;
-  box-shadow: 0 12px 36px var(--color-glow);
+  box-shadow: var(--shadow-dropdown, 0 12px 36px var(--color-glow));
   z-index: 150;
   transition: background-color 0.6s ease, border-color 0.6s ease;
+}
+
+[data-visual-style='retro-futurism'] .dropdown-panel {
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
 }
 
 .dropdown-link {
@@ -426,10 +473,10 @@ onUnmounted(() => {
   justify-content: space-between;
   gap: 12px;
   padding: 10px 14px;
-  border-radius: 8px;
-  font-family: 'Work Sans', sans-serif;
+  border-radius: var(--radius-sm, 8px);
+  font-family: var(--font-body);
   font-size: 0.8rem;
-  font-weight: 300;
+  font-weight: 400;
   letter-spacing: 0.03em;
   color: var(--color-text);
   text-decoration: none;
@@ -437,8 +484,19 @@ onUnmounted(() => {
   transition: background-color 0.15s ease;
 }
 
+[data-visual-style='brutalist'] .dropdown-link {
+  border-radius: 0;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
 .dropdown-link:hover {
   background: var(--color-surfaceHover);
+}
+
+[data-visual-style='brutalist'] .dropdown-link:hover {
+  background: var(--color-accent);
+  color: var(--color-bg);
 }
 
 .dropdown-name {
@@ -453,20 +511,19 @@ onUnmounted(() => {
 }
 
 .dropdown-count {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.65rem;
   color: var(--color-textMuted);
 }
 
 .dropdown-empty {
   padding: 10px 14px;
-  font-family: 'Work Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.8rem;
-  font-weight: 300;
+  font-weight: 400;
   color: var(--color-textMuted);
 }
 
-/* ===== Actions ===== */
 .header-actions {
   display: flex;
   align-items: center;
@@ -479,15 +536,20 @@ onUnmounted(() => {
   justify-content: center;
   width: 36px;
   height: 36px;
-  border: none;
-  border-radius: 8px;
+  border: var(--border-width, 1px) var(--border-style, solid) transparent;
+  border-radius: var(--radius-btn, 8px);
   background: transparent;
   cursor: pointer;
   padding: 0;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 .mail-btn:hover {
   background: var(--color-surfaceHover);
+  border-color: var(--color-border);
+}
+
+[data-visual-style='brutalist'] .mail-btn {
+  border-color: var(--color-border);
 }
 
 .mobile-toggle {
@@ -503,9 +565,13 @@ onUnmounted(() => {
 .mobile-toggle span {
   display: block;
   width: 20px;
-  height: 1px;
+  height: var(--border-width, 1px);
   background: var(--color-text);
   transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+[data-visual-style='brutalist'] .mobile-toggle span {
+  height: 3px;
 }
 
 .mobile-toggle span.open:first-child {
@@ -523,11 +589,11 @@ onUnmounted(() => {
 
   .header-nav {
     position: fixed;
-    top: 64px;
+    top: var(--header-height, 64px);
     left: 0;
     right: 0;
     background: var(--color-bg);
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: var(--border-width, 1px) var(--border-style, solid) var(--color-border);
     flex-direction: column;
     gap: 0;
     padding: 16px 0;

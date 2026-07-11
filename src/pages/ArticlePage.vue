@@ -101,15 +101,26 @@ function formatDate(iso: string): string {
   padding: 0 24px 80px;
 }
 
-/* Cover */
 .article-cover {
   position: relative;
   width: 100%;
   max-height: 480px;
   overflow: hidden;
-  border-radius: 16px;
+  border-radius: var(--radius-card, 16px);
   margin-bottom: 48px;
   margin-top: 20px;
+  border: var(--border-width, 0) var(--border-style, solid) var(--card-border, transparent);
+  transition: border-color 0.6s ease, border-radius 0.6s ease;
+}
+
+[data-visual-style='brutalist'] .article-cover {
+  border-radius: 0;
+  border-width: 4px;
+}
+
+[data-visual-style='retro-futurism'] .article-cover {
+  border-radius: 4px;
+  box-shadow: 0 0 15px var(--color-glow);
 }
 
 .article-cover img {
@@ -128,7 +139,6 @@ function formatDate(iso: string): string {
   background: linear-gradient(transparent, var(--color-bg));
 }
 
-/* Header */
 .article-header {
   max-width: 720px;
   margin: 0 auto 48px;
@@ -136,13 +146,19 @@ function formatDate(iso: string): string {
 
 .back-link {
   display: inline-block;
-  font-family: 'Work Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.85rem;
-  font-weight: 300;
+  font-weight: 400;
   color: var(--color-textMuted);
   text-decoration: none;
   margin-bottom: 24px;
   transition: color 0.3s ease;
+}
+
+[data-visual-style='brutalist'] .back-link {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .back-link:hover {
@@ -151,7 +167,7 @@ function formatDate(iso: string): string {
 
 .header-category {
   display: inline-block;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.7rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -160,26 +176,49 @@ function formatDate(iso: string): string {
   transition: color 0.6s ease;
 }
 
+[data-visual-style='brutalist'] .header-category {
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
 .header-title {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-heading);
   font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 400;
+  font-weight: var(--heading-weight, 400);
   line-height: 1.25;
   color: var(--color-text);
   margin-bottom: 16px;
-  transition: color 0.6s ease;
+  transition: color 0.6s ease, text-shadow 0.6s ease;
+}
+
+[data-visual-style='brutalist'] .header-title {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+[data-visual-style='retro-futurism'] .header-title {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 12px var(--color-glow);
 }
 
 .header-meta {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: 'Work Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.85rem;
-  font-weight: 300;
+  font-weight: 400;
   color: var(--color-textMuted);
   margin-bottom: 20px;
   transition: color 0.6s ease;
+}
+
+[data-visual-style='brutalist'] .header-meta {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .meta-sep {
@@ -193,47 +232,67 @@ function formatDate(iso: string): string {
 }
 
 .tag {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.7rem;
   padding: 4px 10px;
-  border: 1px solid var(--color-border);
+  border: var(--border-width, 1px) var(--border-style, solid) var(--color-border);
   border-radius: 100px;
   color: var(--color-textSecondary);
   background: var(--color-bgAlt);
   transition: background-color 0.6s ease, border-color 0.6s ease, color 0.6s ease;
 }
 
-/* Article body */
+[data-visual-style='brutalist'] .tag {
+  border-radius: 0;
+  border-width: 2px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+[data-visual-style='retro-futurism'] .tag {
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  box-shadow: 0 0 4px var(--color-glow);
+}
+
 .article-body {
   max-width: 720px;
   margin: 0 auto;
 }
 
-/* Divider */
 .article-divider {
   max-width: 720px;
   margin: 60px auto;
-  height: 1px;
+  height: var(--border-width, 1px);
   background: var(--color-borderLight);
   transition: background-color 0.6s ease;
 }
 
-/* Not found */
+[data-visual-style='brutalist'] .article-divider {
+  height: 4px;
+  background: var(--color-border);
+}
+
+[data-visual-style='retro-futurism'] .article-divider {
+  box-shadow: 0 0 6px var(--color-glow);
+}
+
 .article-not-found {
   text-align: center;
   padding: 120px 20px;
 }
 
 .article-not-found h2 {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-heading);
   font-size: 1.8rem;
+  font-weight: var(--heading-weight, 400);
   color: var(--color-text);
   margin-bottom: 16px;
 }
 
 .article-not-found a {
-  font-family: 'Work Sans', sans-serif;
-  font-weight: 300;
+  font-family: var(--font-body);
+  font-weight: 400;
   color: var(--color-primary);
 }
 </style>

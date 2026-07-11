@@ -32,30 +32,47 @@ export interface CategoryInfo {
   articleCount: number
 }
 
-export type ColorSchemeId = 'mint' | 'rose' | 'lavender' | 'sand' | 'sage' | 'ocean' | 'noir'
+export type VisualStyleId = 'geometric' | 'brutalist' | 'retro-futurism'
+
+export type ColorSchemeId =
+  | 'mint' | 'rose' | 'lavender' | 'sand' | 'sage' | 'ocean' | 'noir'
+  | 'brutal-light' | 'brutal-dark'
+  | 'retro-sunset' | 'retro-neon'
+
+export interface ColorColors {
+  bg: string
+  bgAlt: string
+  surface: string
+  surfaceHover: string
+  text: string
+  textSecondary: string
+  textMuted: string
+  primary: string
+  primaryHover: string
+  accent: string
+  accentHover: string
+  cursorColor: string
+  border: string
+  borderLight: string
+  glow: string
+  glowSecondary: string
+}
 
 export interface ColorSchemeDef {
   id: ColorSchemeId
   name: string
   nameZh: string
-  colors: {
-    bg: string
-    bgAlt: string
-    surface: string
-    surfaceHover: string
-    text: string
-    textSecondary: string
-    textMuted: string
-    primary: string
-    primaryHover: string
-    accent: string
-    accentHover: string
-    cursorColor: string
-    border: string
-    borderLight: string
-    glow: string
-    glowSecondary: string
-  }
+  visualStyle: VisualStyleId
+  colors: ColorColors
+}
+
+export interface VisualStyleDef {
+  id: VisualStyleId
+  name: string
+  nameZh: string
+  description: string
+  colorVariants: ColorSchemeId[]
+  defaultVariant: ColorSchemeId
 }
 
 export interface NavItem {

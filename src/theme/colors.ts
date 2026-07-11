@@ -1,10 +1,12 @@
-import type { ColorSchemeId, ColorSchemeDef } from '@/types'
+import type { ColorSchemeId, ColorSchemeDef, VisualStyleId } from '@/types'
 
 export const colorSchemes: Record<ColorSchemeId, ColorSchemeDef> = {
+  // ===== Geometric (existing 7) =====
   mint: {
     id: 'mint',
     name: 'Mint Cream',
     nameZh: '薄荷奶油',
+    visualStyle: 'geometric',
     colors: {
       bg: '#F7FAF8',
       bgAlt: '#EEF5F0',
@@ -28,6 +30,7 @@ export const colorSchemes: Record<ColorSchemeId, ColorSchemeDef> = {
     id: 'rose',
     name: 'Dusty Rose',
     nameZh: '复古玫瑰',
+    visualStyle: 'geometric',
     colors: {
       bg: '#FBF7F7',
       bgAlt: '#F5EEEE',
@@ -51,6 +54,7 @@ export const colorSchemes: Record<ColorSchemeId, ColorSchemeDef> = {
     id: 'lavender',
     name: 'Lavender Mist',
     nameZh: '薰衣草雾',
+    visualStyle: 'geometric',
     colors: {
       bg: '#F9F7FB',
       bgAlt: '#F2EEF5',
@@ -74,6 +78,7 @@ export const colorSchemes: Record<ColorSchemeId, ColorSchemeDef> = {
     id: 'sand',
     name: 'Warm Sand',
     nameZh: '暖沙色',
+    visualStyle: 'geometric',
     colors: {
       bg: '#FBF9F7',
       bgAlt: '#F5F0EB',
@@ -97,6 +102,7 @@ export const colorSchemes: Record<ColorSchemeId, ColorSchemeDef> = {
     id: 'sage',
     name: 'Sage Green',
     nameZh: '鼠尾草绿',
+    visualStyle: 'geometric',
     colors: {
       bg: '#F8F9F7',
       bgAlt: '#F0F3EE',
@@ -120,6 +126,7 @@ export const colorSchemes: Record<ColorSchemeId, ColorSchemeDef> = {
     id: 'ocean',
     name: 'Ocean Haze',
     nameZh: '海洋薄雾',
+    visualStyle: 'geometric',
     colors: {
       bg: '#F7F9FA',
       bgAlt: '#EEF2F5',
@@ -143,6 +150,7 @@ export const colorSchemes: Record<ColorSchemeId, ColorSchemeDef> = {
     id: 'noir',
     name: 'Noir Ink',
     nameZh: '墨夜',
+    visualStyle: 'geometric',
     colors: {
       bg: '#0F1117',
       bgAlt: '#161922',
@@ -162,6 +170,116 @@ export const colorSchemes: Record<ColorSchemeId, ColorSchemeDef> = {
       glowSecondary: 'rgba(196, 164, 126, 0.08)',
     },
   },
+
+  // ===== Neo-Brutalism =====
+  'brutal-light': {
+    id: 'brutal-light',
+    name: 'Brutal Light',
+    nameZh: '粗野·奶白',
+    visualStyle: 'brutalist',
+    colors: {
+      bg: '#FFFDF5',
+      bgAlt: '#F5F0E0',
+      surface: '#FFFFFF',
+      surfaceHover: '#FFEB3B',
+      text: '#000000',
+      textSecondary: '#333333',
+      textMuted: '#666666',
+      primary: '#FF3366',
+      primaryHover: '#E02050',
+      accent: '#FFD93D',
+      accentHover: '#E5C020',
+      cursorColor: '#000000',
+      border: '#000000',
+      borderLight: '#333333',
+      glow: 'rgba(255, 51, 102, 0.2)',
+      glowSecondary: 'rgba(255, 217, 61, 0.2)',
+    },
+  },
+  'brutal-dark': {
+    id: 'brutal-dark',
+    name: 'Brutal Dark',
+    nameZh: '粗野·暗夜',
+    visualStyle: 'brutalist',
+    colors: {
+      bg: '#1A1A2E',
+      bgAlt: '#16213E',
+      surface: '#0F0F1A',
+      surfaceHover: '#252545',
+      text: '#FFFFFF',
+      textSecondary: '#CCCCCC',
+      textMuted: '#999999',
+      primary: '#FF3366',
+      primaryHover: '#FF5588',
+      accent: '#6BCB77',
+      accentHover: '#8DE099',
+      cursorColor: '#FFFFFF',
+      border: '#FFFFFF',
+      borderLight: '#CCCCCC',
+      glow: 'rgba(255, 51, 102, 0.3)',
+      glowSecondary: 'rgba(107, 203, 119, 0.2)',
+    },
+  },
+
+  // ===== Retro-Futurism =====
+  'retro-sunset': {
+    id: 'retro-sunset',
+    name: 'Retro Sunset',
+    nameZh: '复古·日落',
+    visualStyle: 'retro-futurism',
+    colors: {
+      bg: '#0D0221',
+      bgAlt: '#1A0B2E',
+      surface: 'rgba(26, 11, 46, 0.7)',
+      surfaceHover: 'rgba(45, 20, 70, 0.8)',
+      text: '#E8E8FF',
+      textSecondary: '#B8B8D0',
+      textMuted: '#8080A0',
+      primary: '#FF6B9D',
+      primaryHover: '#FF8DB5',
+      accent: '#FFAA00',
+      accentHover: '#FFCC44',
+      cursorColor: '#00D4FF',
+      border: '#FF6B9D',
+      borderLight: '#C77DFF',
+      glow: 'rgba(255, 107, 157, 0.4)',
+      glowSecondary: 'rgba(199, 125, 255, 0.3)',
+    },
+  },
+  'retro-neon': {
+    id: 'retro-neon',
+    name: 'Retro Neon',
+    nameZh: '复古·霓虹',
+    visualStyle: 'retro-futurism',
+    colors: {
+      bg: '#0A0A1A',
+      bgAlt: '#12122A',
+      surface: 'rgba(10, 10, 30, 0.75)',
+      surfaceHover: 'rgba(20, 20, 50, 0.85)',
+      text: '#E0E8FF',
+      textSecondary: '#A0B0D0',
+      textMuted: '#6878A0',
+      primary: '#00D4FF',
+      primaryHover: '#44E8FF',
+      accent: '#C77DFF',
+      accentHover: '#DDAAFF',
+      cursorColor: '#00D4FF',
+      border: '#00D4FF',
+      borderLight: '#C77DFF',
+      glow: 'rgba(0, 212, 255, 0.4)',
+      glowSecondary: 'rgba(199, 125, 255, 0.3)',
+    },
+  },
 }
 
-export const schemeList: ColorSchemeId[] = ['mint', 'rose', 'lavender', 'sand', 'sage', 'ocean', 'noir']
+export const schemeList: ColorSchemeId[] = [
+  'mint', 'rose', 'lavender', 'sand', 'sage', 'ocean', 'noir',
+  'brutal-light', 'brutal-dark',
+  'retro-sunset', 'retro-neon',
+]
+
+export function getSchemesForStyle(style: VisualStyleId): ColorSchemeId[] {
+  return Object.values(colorSchemes)
+    .filter((s) => s.visualStyle === style)
+    .map((s) => s.id)
+}
